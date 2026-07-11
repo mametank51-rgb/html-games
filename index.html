@@ -2,36 +2,151 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a38">
+<meta name="description" content="スマホで遊べる6本のオリジナルHTMLゲーム集">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KATO GAMES">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>KATO GAMES COLLECTION</title>
 <style>
-body{margin:0;background:#0b1020;color:#fff;font-family:system-ui,sans-serif}
-header{padding:40px 20px;text-align:center;background:linear-gradient(135deg,#1d2b64,#0b1020)}
-h1{margin:0;font-size:2.2rem}
-p{color:#c8d2ff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;padding:24px;max-width:1100px;margin:auto}
-.card{background:#17203a;border:1px solid #334;border-radius:18px;padding:18px}
-.card h2{margin-top:0}
-a.button{display:block;text-align:center;background:#63d8ff;color:#08111d;text-decoration:none;
-padding:12px;border-radius:12px;font-weight:bold;margin-top:16px}
-footer{text-align:center;color:#9aa;padding:20px}
+*{box-sizing:border-box}
+html{background:#0b1020}
+body{
+  margin:0;min-height:100vh;background:#0b1020;color:#fff;
+  font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif
+}
+header{
+  padding:max(38px,env(safe-area-inset-top)) 20px 38px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 85% 0,rgba(92,222,255,.25),transparent 33%),
+    linear-gradient(135deg,#263b86,#0b1020)
+}
+h1{margin:0;font-size:clamp(2rem,8vw,3.4rem);letter-spacing:-.04em}
+header p{margin:10px 0 0;color:#c8d2ff}
+#installButton{
+  display:none;margin:22px auto 0;padding:13px 20px;border:0;border-radius:999px;
+  background:linear-gradient(135deg,#79f2ff,#8d9dff);color:#07101e;
+  font-weight:900;font-size:15px;box-shadow:0 10px 28px rgba(90,210,255,.25)
+}
+#installMessage{min-height:18px;margin:10px 0 0;font-size:11px;color:#aab8de}
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;padding:24px;max-width:1100px;margin:auto
+}
+.card{
+  background:linear-gradient(145deg,#1a2545,#11182d);
+  border:1px solid #34446d;border-radius:18px;padding:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.23)
+}
+.card h2{margin:0;font-size:1.25rem}
+.card p{min-height:2.8em;margin:10px 0;color:#adb9db;font-size:.88rem;line-height:1.6}
+a.button{
+  display:block;text-align:center;background:#63d8ff;color:#08111d;
+  text-decoration:none;padding:13px;border-radius:12px;font-weight:900;margin-top:16px
+}
+footer{
+  text-align:center;color:#7f8aac;
+  padding:20px 20px max(30px,env(safe-area-inset-bottom));font-size:12px
+}
+@media(max-width:540px){
+  .grid{padding:16px 12px}
+}
 </style>
 </head>
 <body>
 <header>
-<h1>KATO GAMES COLLECTION</h1>
-<p>スマホで遊べるオリジナルゲーム集</p>
+  <h1>KATO GAMES COLLECTION</h1>
+  <p>スマホで遊べるオリジナルゲーム集</p>
+  <button id="installButton" type="button">アプリをインストール</button>
+  <div id="installMessage">Chromeのメニューから「アプリをインストール」も選べます</div>
 </header>
 
-<div class="grid">
-<div class="card"><h2>🏯 戦国十二州 天下争覇録</h2><a class="button" href="戦国十二州_天下争覇録_極・完成版.html">プレイ</a></div>
-<div class="card"><h2>↕ GRAVITY SHIFT</h2><a class="button" href="GRAVITY SHIFT.html">プレイ</a></div>
-<div class="card"><h2>💥 CRASH CORE</h2><a class="button" href="crash_core.html">プレイ</a></div>
-<div class="card"><h2>🚀 VOID STRIKER DX</h2><a class="button" href="void_striker_dx.html">プレイ</a></div>
-<div class="card"><h2>✨ 星使いと魔物の王国</h2><a class="button" href="星使いと魔物の王国.html">プレイ</a></div>
-<div class="card"><h2>⚔ 月影一閃</h2><a class="button" href="月影一閃.html">プレイ</a></div>
-</div>
+<main class="grid">
+  <article class="card">
+    <h2>🏯 戦国十二州 天下争覇録</h2>
+    <p>領地を広げ、十二州の統一を目指す戦略シミュレーション。</p>
+    <a class="button" href="./戦国十二州_天下争覇録_極・完成版.html">プレイ</a>
+  </article>
 
-<footer>© KATO GAMES COLLECTION</footer>
+  <article class="card">
+    <h2>↕ GRAVITY SHIFT</h2>
+    <p>重力を上下左右へ切り替えて迷宮を攻略する思考型パズル。</p>
+    <a class="button" href="./GRAVITY SHIFT.html">プレイ</a>
+  </article>
+
+  <article class="card">
+    <h2>💥 CRASH CORE</h2>
+    <p>同色ブロックをつなぎ、大連鎖で敵を倒すバトルパズル。</p>
+    <a class="button" href="./crash_core.html">プレイ</a>
+  </article>
+
+  <article class="card">
+    <h2>🚀 VOID STRIKER DX</h2>
+    <p>宇宙を駆け抜けるスマホ向けハイスピードシューティング。</p>
+    <a class="button" href="./void_striker_dx.html">プレイ</a>
+  </article>
+
+  <article class="card">
+    <h2>✨ 星使いと魔物の王国</h2>
+    <p>星の力を操り、魔物の王国へ挑むファンタジーRPG。</p>
+    <a class="button" href="./星使いと魔物の王国.html">プレイ</a>
+  </article>
+
+  <article class="card">
+    <h2>⚔ 月影一閃</h2>
+    <p>月夜を駆けて敵を斬る、和風スタイリッシュアクション。</p>
+    <a class="button" href="./月影一閃.html">プレイ</a>
+  </article>
+</main>
+
+<footer>
+  © KATO GAMES COLLECTION<br>
+  インストール後はホーム画面のアイコンから起動できます
+</footer>
+
+<script>
+let deferredInstallPrompt = null;
+const installButton = document.getElementById('installButton');
+const installMessage = document.getElementById('installMessage');
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  installButton.style.display = 'inline-block';
+  installMessage.textContent = 'インストールの準備ができました';
+});
+
+installButton.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const result = await deferredInstallPrompt.userChoice;
+  if (result.outcome === 'accepted') {
+    installMessage.textContent = 'インストールを開始しました';
+  }
+  deferredInstallPrompt = null;
+  installButton.style.display = 'none';
+});
+
+window.addEventListener('appinstalled', () => {
+  installMessage.textContent = 'インストール済みです';
+  installButton.style.display = 'none';
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      await navigator.serviceWorker.register('./service-worker.js');
+      console.log('Service Worker registered');
+    } catch (error) {
+      console.error('Service Worker registration failed:', error);
+    }
+  });
+}
+</script>
 </body>
 </html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#15120d">
+<title>戦国十二州 ― 天下争覇録 ― 極・完成版</title>
+<style>
+:root{
+  --bg:#100e0a;--ink:#16120d;--paper:#efe4c9;--paper2:#d8c49b;--line:#806d4b;
+  --gold:#e3bd63;--red:#9e342d;--blue:#315d85;--green:#47755b;--shadow:rgba(0,0,0,.42);
+  --safe-top:max(10px,env(safe-area-inset-top));--safe-bottom:max(10px,env(safe-area-inset-bottom));
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080704;color:#f6efd9;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;touch-action:manipulation}
+button,input{font:inherit}button{color:inherit;cursor:pointer}
+#app{position:fixed;inset:0;margin:auto;max-width:560px;overflow:hidden;background:radial-gradient(circle at 50% -10%,#3d2d18 0,#18130d 35%,#0b0906 100%);box-shadow:0 0 80px #000}
+.hidden{display:none!important}
+.screen{position:absolute;inset:0}
+.overlay{position:absolute;z-index:50;inset:0;display:flex;align-items:center;justify-content:center;padding:calc(var(--safe-top) + 6px) 14px calc(var(--safe-bottom) + 6px);background:rgba(5,4,2,.78);backdrop-filter:blur(6px);overflow:auto}
+.panel{width:min(100%,500px);max-height:96vh;overflow:auto;border:1px solid rgba(239,218,167,.28);border-radius:18px;background:linear-gradient(180deg,rgba(44,35,23,.98),rgba(17,14,10,.99));box-shadow:0 26px 80px #000;padding:20px}
+.paperPanel{background:linear-gradient(150deg,#f4e9cd,#d7c090);color:#21190f;border:3px double #7d6845;box-shadow:0 20px 70px #000,inset 0 0 45px rgba(115,83,34,.12)}
+.titlePanel{text-align:center;padding:28px 20px 24px;position:relative;overflow:hidden}
+.titlePanel:before,.titlePanel:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(232,201,127,.13)}
+.titlePanel:before{width:380px;height:380px;left:-190px;top:-160px}.titlePanel:after{width:280px;height:280px;right:-150px;bottom:-130px}
+.crest{width:86px;height:86px;margin:0 auto 12px;border-radius:50%;border:3px double #dec071;position:relative;background:radial-gradient(circle,#8d2d27 0 31%,#261b12 33% 48%,#c9a957 50% 53%,#17110c 55%);box-shadow:0 0 32px rgba(228,189,90,.22)}
+.crest:before,.crest:after{content:"";position:absolute;background:#e2c779;border-radius:2px;left:20px;right:20px;height:7px;top:39px;transform:rotate(45deg)}.crest:after{transform:rotate(-45deg)}
+h1{font-family:serif;font-size:32px;line-height:1.18;letter-spacing:.08em;margin:9px 0 4px;color:#f5e4b0;text-shadow:0 3px 0 #000,0 0 30px rgba(224,182,80,.24)}
+.subtitle{font-size:9px;letter-spacing:.28em;color:#b9a57d}.tagline{font-family:serif;font-size:14px;color:#d8c49d;margin:18px 0 22px}
+.btnGrid{display:grid;gap:10px}.btn{min-height:48px;border-radius:11px;border:1px solid rgba(231,208,154,.28);background:linear-gradient(180deg,#584527,#2a2116);box-shadow:inset 0 1px rgba(255,255,255,.08),0 5px 15px rgba(0,0,0,.3);font-weight:850;letter-spacing:.04em;padding:10px 14px}.btn.primary{background:linear-gradient(180deg,#ad4437,#67241f);border-color:#dc8c75}.btn.gold{background:linear-gradient(180deg,#9b7a34,#564018);border-color:#dfbf69}.btn.blue{background:linear-gradient(180deg,#456f92,#253e59);border-color:#83a7c7}.btn.ghost{background:rgba(255,255,255,.045)}.btn:disabled{opacity:.38;filter:grayscale(.8)}.btn:active{transform:translateY(1px);filter:brightness(1.1)}
+.small{font-size:10px;line-height:1.65;color:#baa984}.muted{color:#9e8e70}.goldText{color:#efca71}.danger{color:#e98775}.good{color:#83d5a4}
+.sectionTitle{font-family:serif;color:#efd18a;font-size:15px;margin:17px 0 8px;border-bottom:1px solid rgba(239,211,143,.22);padding-bottom:6px;letter-spacing:.08em}
+.closeBtn{position:sticky;float:right;top:0;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:#271f16;font-weight:900;z-index:2}
+/* title */
+#titleRecords{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0}.record{border:1px solid rgba(237,210,147,.15);border-radius:10px;padding:9px 4px;background:rgba(255,255,255,.035)}.record small{display:block;color:#a99570;font-size:8px}.record b{font-size:14px;color:#e9c66d}
+/* faction */
+.factionGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.factionCard{text-align:left;min-height:145px;border:2px solid rgba(255,255,255,.16);border-radius:14px;padding:13px;position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(0,0,0,.25))}.factionCard:before{content:"";position:absolute;width:92px;height:92px;border-radius:50%;right:-25px;top:-25px;background:var(--f);opacity:.35}.factionCard strong{display:block;font-family:serif;font-size:17px;color:#fff}.factionCard .mark{font-size:30px;line-height:1;margin:8px 0;color:var(--f)}.factionCard p{font-size:9px;line-height:1.55;color:#c6b99e;margin:5px 0}.factionCard.selected{border-color:#f1cf78;box-shadow:0 0 24px rgba(232,195,104,.22)}
+/* game HUD */
+#gameScreen{display:flex;flex-direction:column;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
+#hud{height:92px;flex:0 0 92px;margin:0 8px 6px;border:1px solid rgba(238,210,145,.22);border-radius:13px;background:linear-gradient(180deg,rgba(42,34,23,.96),rgba(19,15,10,.94));box-shadow:0 8px 22px rgba(0,0,0,.35);overflow:hidden}
+#hudTop{display:flex;height:39px;align-items:center;padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.1);gap:7px}.lordMark{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--faction,#8d342e);border:2px solid rgba(255,255,255,.35);font-family:serif;font-weight:900}.turnInfo{min-width:82px}.turnInfo b{display:block;font-size:12px}.turnInfo small{font-size:8px;color:#b8a98b}.resourceRow{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;flex:1}.resource{font-size:9px;text-align:center;color:#b9aa8b}.resource b{display:block;font-size:13px;color:#f5e8c8}.apPips{display:flex;gap:4px;align-items:center}.apPips i{width:9px;height:9px;border-radius:50%;background:#443c2f;border:1px solid #786c57}.apPips i.on{background:#efc45f;box-shadow:0 0 9px #f3bd43}
+#messageBar{height:31px;padding:6px 10px;font-size:9px;color:#d5c6a7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mapArea{position:relative;flex:1;min-height:0;margin:0 8px 6px;border-radius:16px;border:1px solid rgba(233,207,145,.22);overflow:hidden;background:
+radial-gradient(circle at 22% 18%,rgba(88,108,78,.28),transparent 24%),radial-gradient(circle at 76% 71%,rgba(82,96,70,.24),transparent 30%),linear-gradient(155deg,#bca879,#8f7b55 48%,#6d5c3e);box-shadow:inset 0 0 48px rgba(36,26,11,.5),0 10px 28px rgba(0,0,0,.34)}
+#mapArea:before{content:"";position:absolute;inset:0;opacity:.22;background-image:repeating-linear-gradient(15deg,transparent 0 18px,rgba(48,39,24,.25) 19px 20px)}
+#mapSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.road{stroke:rgba(45,33,17,.48);stroke-width:2.2;stroke-dasharray:2 2}.road.active{stroke:#fff1b8;stroke-width:3.5;filter:drop-shadow(0 0 3px #d6a93f)}
+.territory{position:absolute;width:50px;height:50px;transform:translate(-50%,-50%);border-radius:50%;border:3px solid rgba(255,255,255,.45);background:var(--owner);box-shadow:0 4px 9px rgba(0,0,0,.45),inset 0 0 15px rgba(0,0,0,.3);display:grid;place-items:center;padding:0;z-index:3}.territory:before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(255,255,255,.3)}.territory span{font-size:19px;filter:drop-shadow(0 2px 1px #000)}.territory small{position:absolute;top:43px;left:50%;transform:translateX(-50%);min-width:76px;text-align:center;font-size:8px;font-weight:900;color:#24190d;text-shadow:0 1px rgba(255,255,255,.6);white-space:nowrap}.territory .troopTag{position:absolute;right:-9px;top:-8px;background:#17120d;border:1px solid #cbb681;border-radius:9px;padding:1px 4px;font-size:7px;color:#f3e6c6}.territory.capital{border-color:#f7d56c;box-shadow:0 0 0 3px rgba(246,207,92,.18),0 5px 12px #000}.territory.selected{transform:translate(-50%,-50%) scale(1.14);z-index:5;box-shadow:0 0 0 5px rgba(255,244,190,.25),0 0 25px #fff0a8}.territory.targetable{animation:targetPulse 1s infinite}.territory.dim{filter:brightness(.62)}
+@keyframes targetPulse{50%{box-shadow:0 0 0 8px rgba(255,238,164,.12),0 0 22px rgba(255,226,112,.62)}}
+#mapLegend{position:absolute;left:7px;bottom:6px;z-index:8;padding:5px 7px;border-radius:8px;background:rgba(31,24,15,.73);font-size:8px;color:#e7d8b6;pointer-events:none}
+#bottomBar{height:68px;flex:0 0 68px;margin:0 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.navBtn{border:1px solid rgba(236,211,153,.2);border-radius:12px;background:linear-gradient(180deg,#403221,#1f1810);font-size:9px;font-weight:850;padding:6px 2px}.navBtn b{display:block;font-size:20px;line-height:1.1;margin-bottom:2px}.navBtn.end{background:linear-gradient(180deg,#92372f,#56201b);border-color:#c97563}
+/* territory sheet */
+#territorySheet{position:absolute;z-index:20;left:8px;right:8px;bottom:calc(var(--safe-bottom) + 72px);border:1px solid rgba(239,214,157,.3);border-radius:15px;background:linear-gradient(180deg,rgba(48,38,25,.98),rgba(18,14,9,.98));box-shadow:0 14px 45px #000;padding:12px;transform:translateY(0);transition:.22s}.sheetTop{display:grid;grid-template-columns:auto 1fr auto;gap:9px;align-items:center}.typeIcon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:23px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)}.sheetName{font-family:serif;font-size:17px}.sheetMeta{font-size:9px;color:#beae8d;margin-top:3px}.ownerBadge{padding:5px 8px;border-radius:99px;background:var(--owner);font-size:9px;font-weight:900;border:1px solid rgba(255,255,255,.35)}.sheetStats{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:9px 0}.sheetStat{text-align:center;padding:5px 2px;border-radius:8px;background:rgba(255,255,255,.045);font-size:8px;color:#a99b7e}.sheetStat b{display:block;color:#f4e7c8;font-size:12px}.sheetActions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.actionBtn{min-height:42px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:#3c3021;font-size:9px;font-weight:900}.actionBtn.attack{background:#7c2d27}.actionBtn:disabled{opacity:.35}
+/* cards, roster */
+.cardList{display:grid;gap:8px}.generalCard{display:grid;grid-template-columns:49px 1fr auto;gap:9px;align-items:center;border:1px solid rgba(239,214,157,.18);border-radius:12px;padding:9px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(0,0,0,.18));position:relative}.portrait{width:49px;height:58px;border-radius:9px;display:grid;place-items:center;font-family:serif;font-size:27px;background:linear-gradient(160deg,var(--pc),#16110b);border:1px solid rgba(255,255,255,.25);box-shadow:inset 0 0 20px rgba(0,0,0,.4)}.generalInfo strong{font-family:serif;font-size:14px}.generalInfo p{margin:3px 0 0;font-size:8px;line-height:1.45;color:#b9aa8e}.statsLine{font-size:8px;margin-top:5px;color:#efd07d}.unitBadge{font-size:9px;padding:4px 6px;border-radius:99px;background:rgba(255,255,255,.08);white-space:nowrap}.selectCheck{width:24px;height:24px;accent-color:#c9483d}
+.policyGrid{display:grid;gap:9px}.policyCard{text-align:left;border:1px solid rgba(238,211,149,.21);border-radius:12px;background:linear-gradient(145deg,#4b3a22,#211910);padding:13px}.policyCard strong{display:block;color:#f0ca6f}.policyCard p{font-size:9px;line-height:1.55;color:#c4b394;margin:5px 0 0}.policyCard.owned{opacity:.58;border-color:#7abb91}
+/* modal event */
+.modalTitle{font-family:serif;font-size:22px;margin:0 0 6px;color:#f1d28c}.modalText{font-size:11px;line-height:1.75;color:#cbbd9f;white-space:pre-line}.choiceBtns{display:grid;gap:8px;margin-top:16px}
+/* battle */
+#battleOverlay{background:radial-gradient(circle at 50% 20%,rgba(104,76,38,.32),rgba(5,4,2,.92) 65%)}
+.battlePanel{padding:13px;max-height:98vh}.battleHeader{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;text-align:center}.battleSide strong{display:block;font-family:serif;font-size:15px}.battleSide small{font-size:8px;color:#b5a487}.vs{font-family:serif;font-size:24px;color:#e9c66b}.wallBar,.armyBar{height:8px;background:#1a1510;border:1px solid rgba(255,255,255,.18);border-radius:99px;overflow:hidden;margin-top:5px}.wallBar i,.armyBar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#915f2e,#e1bd68);transition:.35s}.armyBar i{background:linear-gradient(90deg,#8d2f2a,#e47b60)}
+#battleField{margin:10px 0;border:1px solid rgba(236,210,151,.19);border-radius:14px;padding:8px;background:linear-gradient(180deg,rgba(111,86,46,.25),rgba(26,21,14,.74));min-height:265px}.lane{display:grid;grid-template-columns:1fr 34px 1fr;align-items:center;gap:5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08)}.lane:last-child{border-bottom:0}.fighter{border-radius:9px;background:rgba(0,0,0,.28);padding:6px;min-height:69px}.fighter.enemy{text-align:right}.fighter.dead{opacity:.35;filter:grayscale(1)}.fighterName{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fighterMeta{font-size:7px;color:#bdae91;margin:2px 0}.hpMini{height:6px;border-radius:99px;background:#17120e;overflow:hidden;border:1px solid rgba(255,255,255,.14)}.hpMini i{display:block;height:100%;background:#b94939;transition:.3s}.enemy .hpMini i{margin-left:auto;background:#536f96}.clash{text-align:center;font-size:18px}.clash.hit{animation:clash .3s}@keyframes clash{50%{transform:scale(1.7);filter:brightness(2)}}
+#battleLog{height:67px;overflow:auto;border-radius:9px;background:rgba(0,0,0,.3);padding:7px;font-size:8px;line-height:1.5;color:#d4c5a6}.tacticRow{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}.tacticBtn{min-height:48px;border:1px solid rgba(255,255,255,.18);border-radius:9px;background:#372b1d;font-size:9px;font-weight:900}.tacticBtn.selected{border-color:#f2cf75;background:#74552a;box-shadow:0 0 18px rgba(235,194,92,.16)}.battleActions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+/* preparation */
+.prepareStats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}.prepBox{border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px;background:rgba(255,255,255,.04);font-size:9px}.prepBox b{display:block;font-size:15px;color:#f0cb72}.rangeWrap{margin:12px 0}.rangeWrap input{width:100%;accent-color:#b94135}.selectedCount{text-align:center;font-size:10px;color:#eacb7d;margin:8px 0}
+/* ending */
+.bigMark{font-size:64px;text-align:center;line-height:1.1}.endingMap{height:150px;border-radius:13px;margin:14px 0;background:radial-gradient(circle at 50% 45%,rgba(235,203,117,.35),transparent 32%),linear-gradient(145deg,#856f45,#3b2d19);display:grid;place-items:center;font-family:serif;font-size:28px;color:#f6dfa0;border:2px double #cfb36d}
+#toast{position:absolute;z-index:100;left:50%;top:13%;transform:translate(-50%,-12px);padding:10px 15px;border-radius:99px;background:rgba(15,11,7,.94);border:1px solid rgba(239,211,147,.28);font-size:10px;font-weight:850;opacity:0;pointer-events:none;transition:.25s;white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis}#toast.show{opacity:1;transform:translate(-50%,0)}
+.rotateHint{display:none;position:absolute;z-index:200;inset:0;background:#0b0805;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.8;color:#d7c7a5;padding:30px}@media(orientation:landscape) and (max-height:520px){.rotateHint{display:flex}}
+@media(max-width:360px){h1{font-size:27px}.panel{padding:15px}.territory{width:45px;height:45px}.territory small{top:39px;font-size:7px}.factionCard{min-height:135px;padding:10px}.sheetActions{gap:4px}.actionBtn{font-size:8px}.battlePanel{padding:9px}}
+
+/* complete edition additions */
+.versionTag{display:inline-block;margin-bottom:10px;padding:4px 9px;border:1px solid rgba(230,199,119,.35);border-radius:99px;font-size:7px;letter-spacing:.2em;color:#d9bd74;background:rgba(0,0,0,.22)}
+.difficultyGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.difficultyBtn{min-height:62px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.045);padding:8px 4px}.difficultyBtn strong{display:block;font-family:serif;color:#ead094;font-size:13px}.difficultyBtn small{display:block;margin-top:4px;color:#aa9a7e;font-size:7px;line-height:1.35}.difficultyBtn.selected{border-color:#efca70;background:linear-gradient(180deg,#73572a,#302314);box-shadow:0 0 18px rgba(232,194,91,.16)}
+#mapArea[data-season="夏"]{filter:saturate(1.08) brightness(1.03)}#mapArea[data-season="秋"]{filter:sepia(.12) saturate(1.15)}#mapArea[data-season="冬"]{filter:saturate(.72) brightness(1.08)}
+.territory.threatened{border-color:#ff9b78;animation:dangerPulse 1.25s infinite}.territory.threatened .troopTag{border-color:#ff9b78;color:#ffd1c2}@keyframes dangerPulse{50%{box-shadow:0 0 0 6px rgba(216,62,43,.17),0 0 20px rgba(230,76,53,.38)}}
+.forecastBox{margin:8px 0 11px;border:1px solid rgba(235,205,134,.2);border-radius:10px;padding:9px 10px;background:rgba(0,0,0,.2);font-size:9px;color:#d7c7a6}.forecastBox b{font-size:12px;color:#f0cc70}.forecastBox.good{border-color:rgba(92,190,127,.45)}.forecastBox.bad{border-color:rgba(224,103,83,.45)}
+.prepBox select{display:block;width:100%;margin-top:4px;border:1px solid rgba(255,255,255,.18);border-radius:7px;background:#211a12;color:#f1e2c2;padding:6px 5px;font-size:10px}
+.moraleGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 2px 5px}.moraleGrid small{display:block;font-size:8px;color:#c5b493;margin-bottom:3px}.moraleGrid>div:last-child{text-align:right}.moraleBar{height:6px;border-radius:99px;background:#17120e;overflow:hidden;border:1px solid rgba(255,255,255,.14)}.moraleBar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8f342b,#e3b957);transition:.3s}.moraleBar.enemy i{margin-left:auto;background:linear-gradient(90deg,#4f6f93,#819dc0)}
+#battleInsight{min-height:27px;margin:7px 0;border-radius:8px;padding:6px 8px;text-align:center;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.1);font-size:9px;color:#e4d3ae}#battleInsight.adv{color:#91e0ad;border-color:rgba(91,193,126,.4)}#battleInsight.disadv{color:#ef9c89;border-color:rgba(215,82,60,.45)}
+.rankingList,.goalList{display:grid;gap:7px}.rankRow{display:grid;grid-template-columns:26px 1fr auto;gap:8px;align-items:center;padding:9px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.035)}.rankNo{font-family:serif;font-size:17px;color:#d7bd7b}.rankName{font-size:11px;font-weight:850}.rankMeta{font-size:8px;color:#aa9b7f}.rankPower{text-align:right;font-size:8px;color:#b8a788}.rankPower b{display:block;font-size:13px;color:#efd078}.goal{display:grid;grid-template-columns:20px 1fr auto;gap:7px;align-items:center;padding:8px 9px;border-radius:9px;background:rgba(255,255,255,.04);font-size:9px}.goal.done{opacity:.58}.goal strong{color:#ead099}.goal em{font-style:normal;color:#b9aa8b}.historyList{max-height:170px;overflow:auto;border-radius:10px;background:rgba(0,0,0,.24);padding:7px 9px}.historyList div{font-size:8px;line-height:1.55;color:#c8b99d;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+#app.reduced-motion *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+@media(max-width:360px){.difficultyBtn strong{font-size:11px}.difficultyBtn small{font-size:6px}#bottomBar{gap:4px}.navBtn{font-size:8px}}
+
+/* ultimate edition additions */
+.levelBadge{display:inline-flex;align-items:center;justify-content:center;min-width:35px;margin-left:5px;padding:2px 5px;border:1px solid rgba(239,205,119,.34);border-radius:99px;background:rgba(142,104,37,.2);color:#f0cf7c;font-size:7px;vertical-align:2px}.xpLine{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin-top:5px;font-size:7px;color:#a99a7e}.xpBar{height:4px;border-radius:99px;background:#19140f;overflow:hidden;border:1px solid rgba(255,255,255,.1)}.xpBar i{display:block;height:100%;background:linear-gradient(90deg,#8f6a28,#e4c064)}
+.environmentBar{margin:0 0 7px;padding:6px 8px;border-radius:8px;background:linear-gradient(90deg,rgba(53,75,61,.34),rgba(44,52,69,.3));border:1px solid rgba(165,193,160,.24);font-size:8px;text-align:center;color:#d8e0c9}.battleActions{grid-template-columns:repeat(4,1fr)}#commandBtn{background:linear-gradient(180deg,#8d6c2d,#4b3514);border-color:#d7b85d}#commandBtn.used{opacity:.42;filter:grayscale(.65)}
+.missionCard{border:1px solid rgba(229,199,124,.24);border-radius:11px;padding:11px;background:linear-gradient(145deg,rgba(104,76,33,.2),rgba(0,0,0,.18))}.missionCard strong{display:block;color:#efd083;font-family:serif;font-size:13px}.missionCard p{margin:5px 0;font-size:9px;color:#c4b596;line-height:1.5}.missionProgress{height:7px;border-radius:99px;overflow:hidden;background:#18130e;border:1px solid rgba(255,255,255,.12)}.missionProgress i{display:block;height:100%;background:linear-gradient(90deg,#8d352d,#e4bd61)}.missionMeta{display:flex;justify-content:space-between;margin-top:5px;font-size:7px;color:#aa9a7d}.coalitionAlert{margin:8px 0;padding:8px 9px;border:1px solid rgba(222,80,61,.4);border-radius:9px;background:rgba(115,28,22,.23);color:#efaa96;font-size:9px;font-weight:800;text-align:center}
+.backupGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.backupGrid .btn{min-height:42px;font-size:9px}.skillLog{color:#f1ce75!important;font-weight:800}.rankUp{color:#8ce0aa!important}.territory.veteran:after{content:"★";position:absolute;left:-7px;top:-9px;color:#ffe08a;font-size:10px;filter:drop-shadow(0 1px 2px #000)}
+@media(max-width:360px){.battleActions{gap:4px}.battleActions .btn{padding:7px 2px;font-size:8px}.levelBadge{min-width:31px}}
+
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="titleScreen" class="screen">
+    <div class="overlay" style="background:radial-gradient(circle at 50% 20%,rgba(104,73,31,.24),rgba(6,5,3,.86))">
+      <div class="panel titlePanel">
+        <div class="versionTag">ULTIMATE EDITION 3.0</div><div class="crest"></div>
+        <h1>戦国十二州<br><span style="font-size:.55em">天下争覇録</span></h1>
+        <div class="subtitle">SENGOKU JUNISHU</div>
+        <div class="tagline">旗を掲げ、乱世を塗り替えよ。</div>
+        <div id="titleRecords">
+          <div class="record"><small>天下統一</small><b id="recordClears">0</b></div>
+          <div class="record"><small>最短記録</small><b id="recordBest">―</b></div>
+          <div class="record"><small>発見武将</small><b id="recordGenerals">0</b></div>
+        </div>
+        <div class="btnGrid">
+          <button id="newBtn" class="btn primary">新たな乱世</button>
+          <button id="continueBtn" class="btn gold">軍議を再開</button>
+          <button id="howBtn" class="btn ghost">遊び方・設定</button>
+        </div>
+        <p class="small">単一HTML・外部素材なし。武将育成、軍命、包囲網、設定を端末内へ保存します。</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameScreen" class="screen hidden">
+    <header id="hud">
+      <div id="hudTop">
+        <div id="lordMark" class="lordMark">炎</div>
+        <div class="turnInfo"><b id="hudFaction">炎狼家</b><small><span id="hudTurn">第1季</span>・<span id="hudSeason">春</span>　領地 <span id="hudLand">4</span>/24</small></div>
+        <div class="resourceRow">
+          <div class="resource">金<b id="hudGold">0</b></div>
+          <div class="resource">兵糧<b id="hudFood">0</b></div>
+          <div class="resource">総兵<b id="hudTroops">0</b></div>
+        </div>
+        <div class="apPips" id="apPips"><i></i><i></i></div>
+      </div>
+      <div id="messageBar">領地を選び、二つの軍令を実行してください。</div>
+    </header>
+    <main id="mapArea">
+      <svg id="mapSvg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+      <div id="territoryNodes"></div>
+      <div id="mapLegend">🏯本城　🛡砦　🌾農村　💰城下　⛏鉱山　🐎馬産</div>
+    </main>
+    <nav id="bottomBar">
+      <button class="navBtn" id="rosterBtn"><b>将</b>武将</button>
+      <button class="navBtn" id="policyBtn"><b>策</b>政策</button>
+      <button class="navBtn" id="statusBtn"><b>勢</b>戦況</button>
+      <button class="navBtn end" id="endTurnBtn"><b>終</b>季を進める</button>
+    </nav>
+    <section id="territorySheet" class="hidden">
+      <div class="sheetTop">
+        <div id="sheetIcon" class="typeIcon">🏯</div>
+        <div><div id="sheetName" class="sheetName">領地</div><div id="sheetMeta" class="sheetMeta"></div></div>
+        <div id="sheetOwner" class="ownerBadge">勢力</div>
+      </div>
+      <div class="sheetStats">
+        <div class="sheetStat">兵力<b id="sheetTroops">0</b></div>
+        <div class="sheetStat">開発<b id="sheetLevel">1</b></div>
+        <div class="sheetStat">金収入<b id="sheetGold">0</b></div>
+        <div class="sheetStat">兵糧<b id="sheetFood">0</b></div>
+      </div>
+      <div id="sheetHint" class="small" style="margin:0 0 8px"></div>
+      <div class="sheetActions">
+        <button id="recruitBtn" class="actionBtn">徴兵<br><small>金30/糧20</small></button>
+        <button id="developBtn" class="actionBtn">開発<br><small>金50</small></button>
+        <button id="moveBtn" class="actionBtn">兵移動<br><small>隣接領へ</small></button>
+        <button id="attackBtn" class="actionBtn attack hidden">進軍<br><small>合戦開始</small></button>
+        <button id="sheetCloseBtn" class="actionBtn">閉じる</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="factionOverlay" class="overlay hidden">
+    <div class="panel">
+      <h2 class="modalTitle">旗揚げ</h2>
+      <p class="modalText">四家のいずれかを選び、十二州の統一を目指します。勢力ごとに得意な戦い方が異なります。</p>
+      <div id="factionChoices" class="factionGrid"></div>
+      <div class="sectionTitle">難易度</div>
+      <div id="difficultyChoices" class="difficultyGrid">
+        <button class="difficultyBtn" data-difficulty="casual"><strong>初陣</strong><small>収入と戦闘に補正</small></button>
+        <button class="difficultyBtn selected" data-difficulty="normal"><strong>群雄</strong><small>標準の乱世</small></button>
+        <button class="difficultyBtn" data-difficulty="hard"><strong>修羅</strong><small>敵AIが精鋭化</small></button>
+      </div>
+      <div class="btnGrid" style="margin-top:14px"><button id="factionStartBtn" class="btn primary" disabled>この家で出陣</button><button id="factionBackBtn" class="btn ghost">戻る</button></div>
+    </div>
+  </div>
+
+  <div id="prepareOverlay" class="overlay hidden">
+    <div class="panel">
+      <h2 class="modalTitle">出陣軍議</h2>
+      <p id="prepareLead" class="modalText"></p>
+      <div class="prepareStats"><div class="prepBox">出陣元<select id="prepSourceSelect" aria-label="出陣元"></select></div><div class="prepBox">攻略先<b id="prepTarget"></b></div></div>
+      <div id="prepForecast" class="forecastBox">勝機を算定中…</div>
+      <div class="rangeWrap"><div class="small">投入兵力　<b id="troopValue" class="goldText"></b></div><input id="troopRange" type="range" min="80" max="200" step="10"></div>
+      <div class="sectionTitle">出陣武将（三名まで）</div>
+      <div id="prepareGenerals" class="cardList"></div>
+      <div id="selectedCount" class="selectedCount">選択 0 / 3</div>
+      <div class="btnGrid"><button id="battleStartBtn" class="btn primary">采配を執る</button><button id="prepareCancelBtn" class="btn ghost">中止</button></div>
+    </div>
+  </div>
+
+  <div id="battleOverlay" class="overlay hidden">
+    <div class="panel battlePanel">
+      <div class="battleHeader">
+        <div class="battleSide"><strong id="battleAName">自軍</strong><small id="battleATroops"></small><div class="armyBar"><i id="battleABar"></i></div></div>
+        <div><div class="vs">対</div><small id="battleRound">第一陣</small></div>
+        <div class="battleSide"><strong id="battleDName">敵軍</strong><small id="battleDTroops"></small><div class="armyBar"><i id="battleDBar"></i></div></div>
+      </div>
+      <div id="wallWrap" class="hidden"><div class="small" style="text-align:center;margin-top:7px">城壁 <span id="wallText"></span></div><div class="wallBar"><i id="wallBar"></i></div></div>
+      <div class="moraleGrid">
+        <div><small>自軍士気 <span id="moraleAText">100</span></small><div class="moraleBar"><i id="moraleABar"></i></div></div>
+        <div><small>敵軍士気 <span id="moraleDText">100</span></small><div class="moraleBar enemy"><i id="moraleDBar"></i></div></div>
+      </div>
+      <div id="battleInsight">敵の采配を見極めよ</div>
+      <div id="battleEnvironment" class="environmentBar">戦場を確認中…</div>
+      <div id="battleField"></div>
+      <div id="battleLog"></div>
+      <div class="tacticRow">
+        <button class="tacticBtn selected" data-tactic="charge">突撃<br><small>攻撃↑ 守備↓</small></button>
+        <button class="tacticBtn" data-tactic="guard">堅陣<br><small>守備↑</small></button>
+        <button class="tacticBtn" data-tactic="volley">斉射<br><small>弓・知略↑</small></button>
+      </div>
+      <div class="battleActions"><button id="retreatBtn" class="btn ghost">撤退</button><button id="commandBtn" class="btn gold">大将号令</button><button id="autoBtn" class="btn blue">自動 OFF</button><button id="nextRoundBtn" class="btn primary">次の刻</button></div>
+    </div>
+  </div>
+
+  <div id="rosterOverlay" class="overlay hidden"><div class="panel"><button class="closeBtn" data-close="rosterOverlay">×</button><h2 class="modalTitle">配下武将</h2><p class="modalText">武将は合戦で最大三名を選択します。出陣で経験を積み、最大Lv8まで成長します。兵種相性は 槍＞騎馬＞弓＞槍 です。</p><div id="rosterList" class="cardList"></div></div></div>
+  <div id="policyOverlay" class="overlay hidden"><div class="panel"><button class="closeBtn" data-close="policyOverlay">×</button><h2 class="modalTitle">国策</h2><p id="policyLead" class="modalText"></p><div id="policyList" class="policyGrid"></div></div></div>
+  <div id="statusOverlay" class="overlay hidden"><div class="panel"><button class="closeBtn" data-close="statusOverlay">×</button><h2 class="modalTitle">天下戦況</h2><p id="statusLead" class="modalText"></p><div id="statusRanking" class="rankingList"></div><div id="coalitionStatus"></div><div class="sectionTitle">当面の軍命</div><div id="statusMission"></div><div class="sectionTitle">軍略目標</div><div id="statusGoals" class="goalList"></div><div class="sectionTitle">軍記</div><div id="statusHistory" class="historyList"></div><button id="manualSaveBtn" class="btn gold" style="width:100%;margin-top:12px">現在の軍議を保存</button></div></div>
+
+  <div id="modalOverlay" class="overlay hidden"><div class="panel"><h2 id="modalTitle" class="modalTitle"></h2><p id="modalText" class="modalText"></p><div id="modalChoices" class="choiceBtns"></div></div></div>
+
+  <div id="howOverlay" class="overlay hidden">
+    <div class="panel"><button class="closeBtn" data-close="howOverlay">×</button><h2 class="modalTitle">遊び方・設定</h2>
+      <div class="sectionTitle">天下への道</div><p class="modalText">各季に二つの軍令を実行できます。領地を選び、徴兵・開発・兵移動・進軍を行ってください。16領地を支配するか、他勢力をすべて滅ぼすと天下統一です。</p>
+      <div class="sectionTitle">合戦</div><p class="modalText">三名まで武将を選び、毎刻「突撃」「堅陣」「斉射」から采配を選びます。突撃は斉射に、斉射は堅陣に、堅陣は突撃に有利です。地形と天候、武将レベル、士気、城壁も勝敗を左右します。大将号令は一戦に一度だけ使えます。</p><div class="sectionTitle">武将育成と軍命</div><p class="modalText">合戦へ出た武将は経験を積み、能力が上昇します。当面の軍命を達成すると金や兵糧を獲得できます。勢力が拡大すると敵国が包囲網を組むことがあります。</p>
+      <div class="sectionTitle">設定</div>
+      <div class="toggleRow" style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)"><span>効果音</span><button id="soundToggle" class="btn ghost" style="min-height:38px">ON</button></div>
+      <div class="toggleRow" style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1)"><span>振動</span><button id="vibrationToggle" class="btn ghost" style="min-height:38px">ON</button></div>
+      <div class="toggleRow" style="display:flex;justify-content:space-between;padding:12px 0"><span>演出軽減</span><button id="motionToggle" class="btn ghost" style="min-height:38px">OFF</button></div>
+      <div class="backupGrid"><button id="exportBtn" class="btn ghost">バックアップをコピー</button><button id="importBtn" class="btn ghost">バックアップを読込</button></div><button id="resetBtn" class="btn ghost" style="width:100%;margin-top:14px;color:#e68d7c">保存データを初期化</button>
+    </div>
+  </div>
+
+  <div id="endingOverlay" class="overlay hidden"><div class="panel" style="text-align:center"><div class="bigMark">天下</div><h2 class="modalTitle">十二州、統一</h2><p id="endingText" class="modalText"></p><div class="endingMap">天下泰平</div><div class="btnGrid"><button id="endingContinueBtn" class="btn gold">統一後も続ける</button><button id="endingTitleBtn" class="btn primary">タイトルへ</button></div></div></div>
+  <div id="defeatOverlay" class="overlay hidden"><div class="panel" style="text-align:center"><div class="bigMark">落城</div><h2 class="modalTitle">乱世に散る</h2><p id="defeatText" class="modalText"></p><div class="btnGrid"><button id="defeatRetryBtn" class="btn primary">同じ家で再起</button><button id="defeatTitleBtn" class="btn ghost">タイトルへ</button></div></div></div>
+  <div id="toast"></div>
+  <div class="rotateHint">端末を縦向きにすると<br>十二州の地図を遊びやすくなります。</div>
+</div>
+<script>
+"use strict";
+(() => {
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rand=(a,b)=>a+Math.random()*(b-a);
+const choose=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
+const SAVE_KEY="sengoku_junishu_save_v1";
+const VERSION=3;
+const DIFFICULTIES={
+ casual:{name:"初陣",playerPower:1.1,income:1.12,aiPower:.9,aiAggro:.58,aiActions:0,counter:.18},
+ normal:{name:"群雄",playerPower:1,income:1,aiPower:1,aiAggro:.72,aiActions:0,counter:.34},
+ hard:{name:"修羅",playerPower:.96,income:.94,aiPower:1.13,aiAggro:.86,aiActions:1,counter:.56}
+};
+const TACTICS={charge:{name:"突撃",beats:"volley"},guard:{name:"堅陣",beats:"charge"},volley:{name:"斉射",beats:"guard"}};
+const SEASONS=["春","夏","秋","冬"];
+const TERRAIN_DEF={capital:{id:"castle",name:"城郭"},town:{id:"city",name:"市街"},farm:{id:"plain",name:"平原"},fort:{id:"mountain",name:"山岳"},mine:{id:"mountain",name:"山岳"},horse:{id:"plain",name:"平原"}};
+const WEATHER_DEF={clear:{name:"晴天",desc:"突撃がわずかに有利"},rain:{name:"雨天",desc:"突撃と弓が弱まる"},fog:{name:"濃霧",desc:"忍が強く、弓が弱まる"},wind:{name:"強風",desc:"斉射が強化される"},snow:{name:"降雪",desc:"騎馬が弱まり守勢が有利"}};
+const WEATHER_BY_SEASON={"春":["clear","rain","wind"],"夏":["clear","rain","fog"],"秋":["clear","wind","fog"],"冬":["clear","snow","fog"]};
+const MISSION_DEFS=[
+ {type:"capture",name:"一城攻略",text:"敵領を1つ攻略せよ",goal:1,reward:{gold:80,food:30}},
+ {type:"develop",name:"富国の礎",text:"領地を2回開発せよ",goal:2,reward:{gold:35,food:100}},
+ {type:"recruit",name:"軍備拡張",text:"徴兵を2回実行せよ",goal:2,reward:{gold:70,food:55}},
+ {type:"move",name:"前線整備",text:"兵移動を2回実行せよ",goal:2,reward:{gold:55,food:75}}
+];
+const UNIT_ICON={spear:"槍",cavalry:"騎",bow:"弓",warrior:"武",monk:"僧",ninja:"忍"};
+const TYPE_DEF={
+  capital:{name:"本城",icon:"🏯",gold:10,food:10,wall:100},town:{name:"城下町",icon:"💰",gold:24,food:8,wall:20},
+  farm:{name:"農村",icon:"🌾",gold:8,food:25,wall:10},fort:{name:"砦",icon:"🛡",gold:9,food:10,wall:72},
+  mine:{name:"鉱山",icon:"⛏",gold:20,food:5,wall:18},horse:{name:"馬産地",icon:"🐎",gold:10,food:15,wall:14}
+};
+const FACTIONS={
+  fire:{name:"炎狼家",mark:"炎",color:"#a63d32",trait:"攻勢",desc:"突撃時の攻撃力が高い。序盤から攻めやすい。",bonus:"charge"},
+  blue:{name:"蒼鷹家",mark:"蒼",color:"#356b91",trait:"機動",desc:"兵移動量が多く、騎馬隊が強い。",bonus:"cavalry"},
+  white:{name:"白蛇家",mark:"白",color:"#7b7894",trait:"知略",desc:"斉射と登用に優れ、敵を崩して勝つ。",bonus:"intel"},
+  gold:{name:"金獅子家",mark:"金",color:"#a47b2e",trait:"富国",desc:"収入と城壁が高く、長期戦に強い。",bonus:"economy"},
+  moon:{name:"月影衆",mark:"月",color:"#654b83",trait:"奇襲",desc:"忍と弓を操る敵専用勢力。",bonus:"ninja"},
+  oni:{name:"鬼神軍",mark:"鬼",color:"#5f2829",trait:"猛将",desc:"兵力と武力に優れる敵専用勢力。",bonus:"power"}
+};
+const TERRITORY_NAMES=["暁ヶ原","紅葉谷","月見峠","霧隠里","蒼海浦","鷹ノ岬","炎守城","狼牙砦","天鏡湖","白糸郷","潮風宿","青龍城","蛇ノ森","雪代関","鬼哭原","黒鉄城","黄金野","獅子ヶ峰","白鷺城","薬師村","修羅坂","鬼門砦","金山郷","日輪城"];
+const TYPES=["capital","farm","fort","town","horse","capital","town","fort","farm","mine","town","fort","capital","farm","fort","capital","town","horse","capital","farm","mine","fort","mine","capital"];
+const OWNER_LAYOUT=["fire","fire","moon","moon","blue","blue","fire","fire","moon","moon","blue","blue","white","white","oni","oni","gold","gold","white","white","oni","oni","gold","gold"];
+const CAPITAL_IDS={fire:0,moon:2,blue:5,white:12,oni:15,gold:23};
+const POSITIONS=[];
+for(let r=0;r<4;r++)for(let c=0;c<6;c++)POSITIONS.push({x:10+c*16+(r%2?4:0),y:13+r*24});
+const neighborsFor=i=>{const r=Math.floor(i/6),c=i%6,out=[];for(const [dr,dc] of [[0,-1],[0,1],[-1,0],[1,0],[-1,r%2?1:-1],[1,r%2?1:-1]]){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<4&&nc>=0&&nc<6)out.push(nr*6+nc)}return [...new Set(out)]};
+const TERRITORY_DEFS=TERRITORY_NAMES.map((name,id)=>({id,name,type:TYPES[id],x:POSITIONS[id].x,y:POSITIONS[id].y,neighbors:neighborsFor(id),capital:Object.values(CAPITAL_IDS).includes(id)}));
+const GENERAL_DATA=[
+{id:"homura",name:"焔 真紅",faction:"fire",char:"焔",martial:88,command:76,intel:54,charisma:70,unit:"spear",skill:"紅蓮一文字",desc:"突撃時、最初の一撃が大幅上昇。"},
+{id:"gou",name:"牙城 豪",faction:"fire",char:"豪",martial:82,command:84,intel:48,charisma:59,unit:"warrior",skill:"不屈の牙",desc:"兵力半減後に守備が上昇。"},
+{id:"akane",name:"朱音 千景",faction:"fire",char:"朱",martial:69,command:67,intel:79,charisma:76,unit:"bow",skill:"火矢の陣",desc:"斉射で敵城壁へ追加損害。"},
+{id:"retsu",name:"烈堂 源馬",faction:"fire",char:"烈",martial:78,command:71,intel:61,charisma:58,unit:"cavalry",skill:"狼牙突進",desc:"騎馬有利時の倍率が上昇。"},
+{id:"souta",name:"水城 蒼太",faction:"blue",char:"蒼",martial:76,command:86,intel:67,charisma:72,unit:"cavalry",skill:"蒼天駆け",desc:"毎戦初手の被害を軽減。"},
+{id:"shizuka",name:"水城 静華",faction:"blue",char:"静",martial:58,command:71,intel:91,charisma:83,unit:"bow",skill:"水鏡の策",desc:"敵の攻撃力を毎刻わずかに低下。"},
+{id:"hayate",name:"風間 迅",faction:"blue",char:"迅",martial:84,command:72,intel:64,charisma:57,unit:"cavalry",skill:"疾風連牙",desc:"弱った敵へ追撃する。"},
+{id:"nagisa",name:"潮見 渚",faction:"blue",char:"渚",martial:66,command:79,intel:74,charisma:68,unit:"spear",skill:"潮壁",desc:"堅陣時の守備上昇が大きい。"},
+{id:"haku",name:"白峰 玄蛇",faction:"white",char:"蛇",martial:64,command:77,intel:92,charisma:71,unit:"ninja",skill:"影縫い",desc:"敵技能の発動率を下げる。"},
+{id:"yukino",name:"雪代 弥生",faction:"white",char:"雪",martial:61,command:70,intel:86,charisma:89,unit:"monk",skill:"慈雨",desc:"毎刻、最も傷ついた味方を回復。"},
+{id:"kiri",name:"霧島 小夜",faction:"white",char:"霧",martial:74,command:65,intel:84,charisma:63,unit:"bow",skill:"白蛇毒矢",desc:"斉射命中時に継続損害。"},
+{id:"gin",name:"銀嶺 宗近",faction:"white",char:"銀",martial:81,command:77,intel:70,charisma:65,unit:"spear",skill:"雪崩槍",desc:"槍有利時の攻撃が上昇。"},
+{id:"kinji",name:"金城 獅堂",faction:"gold",char:"獅",martial:80,command:89,intel:68,charisma:78,unit:"warrior",skill:"黄金の陣",desc:"城壁が残る間、全軍守備上昇。"},
+{id:"tomoe",name:"巴 御前代",faction:"gold",char:"巴",martial:86,command:74,intel:59,charisma:70,unit:"spear",skill:"獅子奮迅",desc:"突撃時に連撃することがある。"},
+{id:"zen",name:"商都 善兵衛",faction:"gold",char:"善",martial:49,command:68,intel:88,charisma:90,unit:"monk",skill:"兵站巧者",desc:"合戦後の兵損失を一部回復。"},
+{id:"gaku",name:"岩堂 玄斎",faction:"gold",char:"岩",martial:72,command:91,intel:62,charisma:60,unit:"spear",skill:"不動鉄壁",desc:"堅陣で味方全体を守る。"},
+{id:"tsukiyo",name:"月詠 夜叉",faction:"moon",char:"月",martial:82,command:78,intel:88,charisma:65,unit:"ninja",skill:"月蝕",desc:"初手に奇襲損害を与える。"},
+{id:"kage",name:"影森 半蔵",faction:"moon",char:"影",martial:78,command:70,intel:87,charisma:51,unit:"ninja",skill:"影分身",desc:"一定確率で攻撃を回避。"},
+{id:"rin",name:"鈴鹿 凛",faction:"moon",char:"鈴",martial:69,command:66,intel:82,charisma:73,unit:"bow",skill:"月下斉射",desc:"斉射の攻撃力が高い。"},
+{id:"mugen",name:"夢幻 道雪",faction:"moon",char:"幻",martial:71,command:75,intel:85,charisma:62,unit:"monk",skill:"幻惑",desc:"敵の命中を低下させる。"},
+{id:"raiga",name:"鬼塚 雷牙",faction:"oni",char:"鬼",martial:94,command:83,intel:43,charisma:66,unit:"warrior",skill:"鬼神撃",desc:"低兵力時に攻撃が大幅上昇。"},
+{id:"kurogane",name:"黒鉄 弁慶",faction:"oni",char:"鉄",martial:87,command:88,intel:46,charisma:54,unit:"spear",skill:"仁王立ち",desc:"味方の受ける損害を肩代わり。"},
+{id:"ran",name:"羅刹 蘭",faction:"oni",char:"蘭",martial:85,command:71,intel:69,charisma:61,unit:"cavalry",skill:"修羅駆け",desc:"騎馬攻撃が連続することがある。"},
+{id:"enma",name:"閻魔 景虎",faction:"oni",char:"閻",martial:89,command:79,intel:58,charisma:57,unit:"bow",skill:"轟弓",desc:"城壁を無視する強弓。"}
+];
+const GENERAL_MAP=Object.fromEntries(GENERAL_DATA.map(g=>[g.id,g]));
+const POLICIES=[
+{id:"levy",name:"兵農分離",desc:"徴兵で得る兵力 +25。",apply:s=>s.mods.recruit+=25},
+{id:"market",name:"楽市楽座",desc:"城下町と鉱山の金収入 +30%。",apply:s=>s.mods.gold*=1.3},
+{id:"granary",name:"大穀倉",desc:"農村の兵糧収入 +35%。",apply:s=>s.mods.food*=1.35},
+{id:"walls",name:"石垣普請",desc:"自領の城壁最大値 +25%。",apply:s=>s.mods.wall*=1.25},
+{id:"draft",name:"総動員令",desc:"各領地の基礎兵力上限 +60。",apply:s=>s.mods.cap+=60},
+{id:"charge",name:"赤備え",desc:"突撃の攻撃補正を強化。",apply:s=>s.mods.charge+=.13},
+{id:"guard",name:"鶴翼守勢",desc:"堅陣の防御補正を強化。",apply:s=>s.mods.guard+=.13},
+{id:"volley",name:"三段撃ち",desc:"斉射の知略補正を強化。",apply:s=>s.mods.volley+=.14},
+{id:"recruit",name:"寛仁の令",desc:"敵将の登用率 +20%。",apply:s=>s.mods.capture+=.2},
+{id:"march",name:"街道整備",desc:"兵移動量が80から120へ増える。",apply:s=>s.mods.move=120},
+{id:"supply",name:"兵站改革",desc:"合戦投入兵力の上限 +80。",apply:s=>s.mods.deploy+=80},
+{id:"heal",name:"陣中医療",desc:"合戦勝利後、生存兵を10%回復。",apply:s=>s.mods.recover=.1}
+];
+const EVENTS=[
+{title:"豊作",text:"領内の田畑が実り、米蔵が満ちています。",choices:[{label:"兵糧として蓄える",run:s=>{s.food+=110;return"兵糧 +110"}},{label:"市へ流して換金",run:s=>{s.gold+=75;return"金 +75"}}]},
+{title:"流浪の兵",text:"戦乱を逃れた兵たちが仕官を願い出ています。",choices:[{label:"本城へ迎える",run:s=>{capitalOf(s.player).troops+=90;return"本城兵力 +90"}},{label:"各地へ分ける",run:s=>{ownedBy(s.player).forEach(t=>t.troops+=25);return"全領地兵力 +25"}}]},
+{title:"豪商来訪",text:"遠国の豪商が交易の許可を求めています。",choices:[{label:"交易を許可",run:s=>{s.gold+=100;s.food=Math.max(0,s.food-25);return"金 +100、兵糧 -25"}},{label:"軍用物資を買う",run:s=>{s.gold=Math.max(0,s.gold-40);ownedBy(s.player).forEach(t=>t.troops+=15);return"全領地兵力 +15"}}]},
+{title:"一揆の兆し",text:"重税に苦しむ村から不穏な報せが届きました。",choices:[{label:"金を配り鎮める",run:s=>{s.gold=Math.max(0,s.gold-55);return"金 -55。民心が安定"}},{label:"兵で鎮圧",run:s=>{const t=choose(ownedBy(s.player));t.troops=Math.max(40,t.troops-55);return`${t.name}の兵力 -55`}}]},
+{title:"古戦場の秘策",text:"軍師が古い陣形図を発見しました。",choices:[{label:"攻めの策を学ぶ",run:s=>{s.temp.attack+=.05;return"今後の攻撃 +5%"}},{label:"守りの策を学ぶ",run:s=>{s.temp.defense+=.05;return"今後の守備 +5%"}}]},
+{title:"疫病",text:"一部の領地で疫病が広がっています。",choices:[{label:"薬を買い集める",run:s=>{s.gold=Math.max(0,s.gold-70);return"金 -70。被害を防いだ"}},{label:"領地を封鎖する",run:s=>{const t=choose(ownedBy(s.player));t.troops=Math.max(40,t.troops-70);return`${t.name}の兵力 -70`}}]},
+{title:"軍学者の来訪",text:"諸国を巡る軍学者が、配下へ兵法を授けたいと申し出ました。",choices:[{label:"全将へ講義を頼む",run:s=>{const notes=grantBattleXp(s.roster,12,false,false);return notes.length?notes.join("、"):"全武将が経験を得た"}},{label:"礼金を受け取る",run:s=>{s.gold+=65;return"金 +65"}}]},
+{title:"名馬の献上",text:"馬産地の豪族から優れた軍馬が献上されました。",choices:[{label:"騎馬隊へ配備",run:s=>{s.temp.attack+=.025;return"今後の攻撃 +2.5%"}},{label:"売却する",run:s=>{s.gold+=85;return"金 +85"}}]},
+{title:"築城の名手",text:"腕利きの石工集団が領内へ流れ着きました。",choices:[{label:"前線の城を補強",run:s=>{const t=ownedBy(s.player).sort((a,b)=>territoryThreat(b)-territoryThreat(a))[0];t.level=Math.min(5,t.level+1);return`${t.name}の開発度 +1`}},{label:"城下の整備を頼む",run:s=>{s.gold=Math.max(0,s.gold-35);s.food+=90;return"金 -35、兵糧 +90"}}]},
+{title:"戦勝の祭り",text:"民は近頃の戦勝を祝い、城下で大きな祭りを開いています。",choices:[{label:"兵を休ませる",run:s=>{ownedBy(s.player).forEach(t=>t.troops=Math.min(maxTroops(t),t.troops+18));return"全領地兵力 +18"}},{label:"献金を軍資金へ",run:s=>{s.gold+=75;return"金 +75"}}]}
+];
+const defaultRoot={version:VERSION,settings:{sound:true,vibration:true,reducedMotion:false},records:{clears:0,bestTurns:0,discovered:[]},campaign:null};
+let root=loadRoot(),state=null,selectedFaction=null,selectedDifficulty="normal",selectedId=null,moveSource=null,attackSource=null,attackTarget=null,battle=null,autoTimer=null;
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function loadRoot(){try{const raw=JSON.parse(localStorage.getItem(SAVE_KEY)||"null");if(!raw||typeof raw!=="object")return clone(defaultRoot);return sanitizeRoot(raw)}catch(e){console.warn("save reset",e);return clone(defaultRoot)}}
+function sanitizeRoot(raw){const r=clone(defaultRoot);r.settings={...r.settings,...(raw.settings||{})};r.records={...r.records,...(raw.records||{})};r.records.clears=Math.max(0,Number(r.records.clears)||0);r.records.bestTurns=Math.max(0,Number(r.records.bestTurns)||0);r.records.discovered=Array.isArray(r.records.discovered)?r.records.discovered.filter(id=>GENERAL_MAP[id]):[];if(raw.campaign&&Number(raw.campaign.version||1)<=VERSION)r.campaign=raw.campaign;return r}
+function persist(){try{root.campaign=state?clone(state):null;localStorage.setItem(SAVE_KEY,JSON.stringify(root))}catch(e){console.warn("save failed",e)}}
+class Sound{
+ constructor(){this.ctx=null;this.master=null}
+ ensure(){if(!root.settings.sound)return;if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=.12;this.master.connect(this.ctx.destination)}if(this.ctx.state==="suspended")this.ctx.resume().catch(()=>{})}
+ tone(f=440,d=.08,type="sine",v=.35,slide=0){if(!root.settings.sound)return;this.ensure();if(!this.ctx)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(35,f+slide),t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+d+.02)}
+ ui(){this.tone(560,.05,"sine",.22,100)} battle(){this.tone(100,.22,"sawtooth",.35,260)} hit(){this.tone(85,.1,"square",.24,-25)} win(){this.tone(330,.18,"triangle",.3,440);setTimeout(()=>this.tone(660,.25,"triangle",.25,220),120)}
+}
+const sound=new Sound();
+function vibrate(ms){if(root.settings.vibration&&navigator.vibrate)navigator.vibrate(ms)}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove("show"),1500)}
+function ownedBy(fid){return state.territories.filter(t=>t.owner===fid)}
+function capitalOf(fid){return state.territories.find(t=>t.id===CAPITAL_IDS[fid]&&t.owner===fid)||ownedBy(fid)[0]}
+function factionAlive(fid){return ownedBy(fid).length>0}
+function generalsOf(fid){return state.roster.filter(id=>GENERAL_MAP[id]&&GENERAL_MAP[id].faction===fid)}
+function territoryIncome(t){const d=TYPE_DEF[t.type],lv=1+(t.level-1)*.32;let g=d.gold*lv,f=d.food*lv;if(t.owner===state.player&&FACTIONS[state.player].bonus==="economy")g*=1.18;if(t.owner===state.player){g*=state.mods.gold;f*=state.mods.food}return{gold:Math.round(g),food:Math.round(f)}}
+function maxTroops(t){return 260+t.level*80+(t.owner===state.player?state.mods.cap:0)}
+function wallMax(t){let w=TYPE_DEF[t.type].wall+t.level*8;if(t.owner===state.player)w*=state.mods.wall;if(t.owner==="gold")w*=1.12;return Math.round(w)}
+function difficulty(){return DIFFICULTIES[state?.difficulty]||DIFFICULTIES.normal}
+function seasonName(){return SEASONS[(Math.max(1,state?.turn||1)-1)%4]}
+function territoryThreat(t){if(!state||t.owner!==state.player)return 0;return TERRITORY_DEFS[t.id].neighbors.map(n=>state.territories[n]).filter(x=>x.owner!==state.player).reduce((m,x)=>Math.max(m,x.troops+wallMax(x)*.3-t.troops),-999)}
+function factionPower(fid){const lands=ownedBy(fid);return Math.round(lands.reduce((sum,t)=>sum+t.troops+t.level*35+wallMax(t)*.15,0))}
+function tacticEdge(a,d){if(TACTICS[a]?.beats===d)return 1;if(TACTICS[d]?.beats===a)return-1;return 0}
+function mulberry32(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function progressOf(id){if(!state.generalProgress[id])state.generalProgress[id]={level:1,xp:0,battles:0,wins:0};return state.generalProgress[id]}
+function xpNeeded(level){return 45+level*35}
+function generalStats(id){const g=GENERAL_MAP[id],p=progressOf(id),b=Math.max(0,p.level-1);return{...g,martial:g.martial+b*2,command:g.command+b*2,intel:g.intel+b*2,charisma:g.charisma+b}}
+function grantBattleXp(ids,amount,won,countBattle=true){const notes=[];for(const id of [...new Set(ids)]){const p=progressOf(id);if(countBattle){p.battles++;if(won)p.wins++}if(p.level>=8)continue;p.xp+=amount;while(p.level<8&&p.xp>=xpNeeded(p.level)){p.xp-=xpNeeded(p.level);p.level++;notes.push(`${GENERAL_MAP[id].name}がLv${p.level}へ昇格`)}if(p.level>=8)p.xp=0}return notes}
+function battleEnvironment(target){const terrain=TERRAIN_DEF[target.type]||TERRAIN_DEF.farm,pool=WEATHER_BY_SEASON[seasonName()]||WEATHER_BY_SEASON["春"],seed=Math.abs((state.seed||1)+target.id*37+state.turn*19),weatherId=pool[seed%pool.length];return{terrain,weather:{id:weatherId,...WEATHER_DEF[weatherId]}}}
+function applyEnvironment(g,tactic,atk,def){const e=battle.environment;if(e.terrain.id==="plain"&&g.unit==="cavalry")atk*=1.12;if(e.terrain.id==="mountain"&&(g.unit==="spear"||g.unit==="ninja"))def*=1.11;if((e.terrain.id==="castle"||e.terrain.id==="city")&&g.unit==="bow")atk*=1.07;if((e.terrain.id==="castle"||e.terrain.id==="city")&&(g.unit==="spear"||g.unit==="warrior"))def*=1.06;if(e.weather.id==="clear"&&tactic==="charge")atk*=1.04;if(e.weather.id==="rain"){if(tactic==="charge")atk*=.9;if(g.unit==="bow")atk*=.94}if(e.weather.id==="fog"){if(g.unit==="ninja")atk*=1.15;if(g.unit==="bow")atk*=.88;def*=1.03}if(e.weather.id==="wind"&&tactic==="volley")atk*=1.12;if(e.weather.id==="snow"){if(g.unit==="cavalry")atk*=.9;if(tactic==="guard")def*=1.08}return{atk,def}}
+function createMission(){const pool=MISSION_DEFS.filter(m=>state.turn>2||m.type!=="capture"),base=clone(choose(pool));state.mission={...base,progress:0,deadline:state.turn+4,completed:false};return state.mission}
+function maintainMission(){if(!state.mission||state.mission.completed){createMission();return}if(state.turn>state.mission.deadline){state.history.unshift(`軍命「${state.mission.name}」は期限切れとなった。`);createMission()}}
+function advanceMission(type,amount=1){const m=state.mission;if(!m||m.completed||m.type!==type)return;m.progress=Math.min(m.goal,m.progress+amount);if(m.progress>=m.goal){m.completed=true;state.gold+=m.reward.gold;state.food+=m.reward.food;state.history.unshift(`軍命「${m.name}」達成。金+${m.reward.gold}、兵糧+${m.reward.food}。`);toast(`軍命達成：${m.name}`);sound.win()}}
+function updateCoalition(reports=[]){const lands=ownedBy(state.player).length,foes=Object.keys(FACTIONS).filter(f=>f!==state.player&&factionAlive(f)).length;if(lands>=10&&!state.coalition.triggered){state.coalition={triggered:true,active:true,turn:state.turn};for(const fid of Object.keys(FACTIONS)){if(fid===state.player)continue;for(const t of ownedBy(fid)){if(TERRITORY_DEFS[t.id].neighbors.some(n=>state.territories[n].owner===state.player))t.troops=Math.min(maxTroops(t),t.troops+35)}}reports.unshift(`諸勢力が反${FACTIONS[state.player].name}包囲網を結成`);state.history.unshift("天下包囲網が発令された。敵軍は我が領を優先して狙う。")}else if(state.coalition.active&&(lands<=7||foes<=2)){state.coalition.active=false;reports.unshift("敵の天下包囲網が崩壊");state.history.unshift("天下包囲網は瓦解した。")}return reports}
+function exportSave(){const data=JSON.stringify(root);if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(data).then(()=>toast("バックアップをコピーしました")).catch(()=>window.prompt("下の文字列をコピーしてください",data))}else window.prompt("下の文字列をコピーしてください",data)}
+function importSave(){const raw=window.prompt("バックアップ文字列を貼り付けてください");if(!raw)return;try{const parsed=JSON.parse(raw);root=sanitizeRoot(parsed);localStorage.setItem(SAVE_KEY,JSON.stringify(root));state=null;renderTitle();toast("バックアップを読み込みました")}catch(e){toast("バックアップを読み込めませんでした")}}
+function applyMotionSetting(){$("app").classList.toggle("reduced-motion",!!root.settings.reducedMotion)}
+function newCampaign(fid,diff=selectedDifficulty){
+ const seed=(Date.now()^Math.floor(Math.random()*0x7fffffff))>>>0,rng=mulberry32(seed);
+ const territories=TERRITORY_DEFS.map(d=>{const base=d.capital?260:d.type==="fort"?210:155,level=d.capital?2:(rng()<.16?2:1),troops=clamp(Math.round((base+(rng()-.5)*44)/5)*5,120,d.capital?285:235);return{id:d.id,name:d.name,type:d.type,owner:OWNER_LAYOUT[d.id],level,troops,governor:null}});
+ for(const f of Object.keys(FACTIONS)){const ids=shuffle(GENERAL_DATA.filter(g=>g.faction===f).map(g=>g.id)),lands=territories.filter(t=>t.owner===f);lands.forEach((t,i)=>t.governor=ids[i%ids.length])}
+ const roster=GENERAL_DATA.filter(g=>g.faction===fid).map(g=>g.id),generalProgress={};for(const id of roster)generalProgress[id]={level:1,xp:0,battles:0,wins:0};
+ state={version:VERSION,seed,player:fid,difficulty:DIFFICULTIES[diff]?diff:"normal",turn:1,ap:2,gold:180,food:220,territories,roster,generalProgress,policies:[],policyMilestones:[],mods:{recruit:0,gold:1,food:1,wall:1,cap:0,charge:0,guard:0,volley:0,capture:0,move:80,deploy:0,recover:0},temp:{attack:0,defense:0},mission:null,coalition:{triggered:false,active:false,turn:0},history:["旗揚げ。二つの軍令を実行せよ。"],stats:{wins:0,losses:0,captures:0,maxLands:4,orders:0},won:false,continued:false,lastFaction:fid};
+ createMission();for(const id of state.roster)discover(id);selectedId=CAPITAL_IDS[fid];moveSource=null;persist();openGame();showIntro();
+}
+function discover(id){if(!root.records.discovered.includes(id))root.records.discovered.push(id)}
+function showIntro(){showModal(`${FACTIONS[state.player].name}、旗揚げ`,`難易度：${difficulty().name}\n\n十二州は六つの勢力に割れた。\nまずは隣国を見定め、徴兵か開発で足場を固めよ。\n\n一季につき軍令は二つ。16領地を支配すれば天下統一となる。`,[{label:"軍議を始める",className:"primary",run:()=>{}}])}
+function openTitle(){stopAuto();state=null;root.campaign=root.campaign||null;$("titleScreen").classList.remove("hidden");$("gameScreen").classList.add("hidden");closeAll();renderTitle()}
+function openGame(){if(!state)return;$("titleScreen").classList.add("hidden");$("gameScreen").classList.remove("hidden");closeAll();renderAll()}
+function closeAll(){for(const el of document.querySelectorAll(".overlay"))if(el.id!=="titleScreen")el.classList.add("hidden");$("territorySheet").classList.add("hidden")}
+function renderTitle(){$("recordClears").textContent=root.records.clears;$("recordBest").textContent=root.records.bestTurns?`${root.records.bestTurns}季`:"―";$("recordGenerals").textContent=root.records.discovered.length;$("continueBtn").disabled=!root.campaign}
+function renderAll(){renderHud();renderMap();if(selectedId!==null)renderTerritorySheet(selectedId)}
+function renderHud(){const f=FACTIONS[state.player],lands=ownedBy(state.player);$("lordMark").textContent=f.mark;$("lordMark").style.setProperty("--faction",f.color);$("hudFaction").textContent=f.name;$("hudTurn").textContent=`第${state.turn}季`;$("hudSeason").textContent=seasonName();$("hudLand").textContent=lands.length;$("mapArea").dataset.season=seasonName();$("hudGold").textContent=Math.floor(state.gold);$("hudFood").textContent=Math.floor(state.food);$("hudTroops").textContent=lands.reduce((a,t)=>a+t.troops,0);[...$("apPips").children].forEach((p,i)=>p.classList.toggle("on",i<state.ap));const prefix=state.coalition?.active?"【天下包囲網】 ":"";$("messageBar").textContent=prefix+(moveSource!==null?`${state.territories[moveSource].name}から兵を移す隣接領地を選択中。`:state.history[0]||"軍令を実行してください。");$("endTurnBtn").disabled=false}
+function renderMap(){const svg=$("mapSvg"),nodes=$("territoryNodes");svg.innerHTML="";nodes.innerHTML="";const seen=new Set();for(const d of TERRITORY_DEFS){for(const n of d.neighbors){const key=[d.id,n].sort((a,b)=>a-b).join("-");if(seen.has(key))continue;seen.add(key);const nd=TERRITORY_DEFS[n],line=document.createElementNS("http://www.w3.org/2000/svg","line");line.setAttribute("x1",d.x);line.setAttribute("y1",d.y);line.setAttribute("x2",nd.x);line.setAttribute("y2",nd.y);line.setAttribute("class","road"+(selectedId!==null&&(d.id===selectedId||n===selectedId)?" active":""));svg.appendChild(line)}}
+ for(const t of state.territories){const d=TERRITORY_DEFS[t.id],f=FACTIONS[t.owner],b=document.createElement("button");b.className="territory"+(d.capital?" capital":"")+(selectedId===t.id?" selected":"")+(territoryThreat(t)>10?" threatened":"")+(t.owner===state.player&&progressOf(t.governor).level>=5?" veteran":"");if(moveSource!==null){if(d.neighbors.includes(moveSource)&&t.owner===state.player)b.classList.add("targetable");else if(t.id!==moveSource)b.classList.add("dim")}b.style.left=d.x+"%";b.style.top=d.y+"%";b.style.setProperty("--owner",f.color);b.innerHTML=`<span>${TYPE_DEF[t.type].icon}</span><small>${t.name}</small><em class="troopTag">${t.troops}</em>`;b.setAttribute("aria-label",`${t.name} ${f.name} 兵力${t.troops}`);b.addEventListener("click",()=>onTerritoryClick(t.id));nodes.appendChild(b)}}
+function onTerritoryClick(id){sound.ui();const t=state.territories[id];if(moveSource!==null){if(id===moveSource){moveSource=null;selectedId=id;toast("兵移動を中止");renderAll();return}if(TERRITORY_DEFS[moveSource].neighbors.includes(id)&&t.owner===state.player){executeMove(moveSource,id);return}toast("隣接する自領を選んでください");return}selectedId=id;renderMap();renderTerritorySheet(id)}
+function renderTerritorySheet(id){const t=state.territories[id],d=TERRITORY_DEFS[id],f=FACTIONS[t.owner],inc=territoryIncome(t),gov=t.governor&&GENERAL_MAP[t.governor]?generalStats(t.governor):null;$("territorySheet").classList.remove("hidden");$("sheetIcon").textContent=TYPE_DEF[t.type].icon;$("sheetName").textContent=t.name;$("sheetMeta").textContent=`${TYPE_DEF[t.type].name}・守将 ${gov?`${gov.name} Lv${progressOf(gov.id).level}`:"名もなき将"}`;$("sheetOwner").textContent=f.name;$("sheetOwner").style.setProperty("--owner",f.color);$("sheetTroops").textContent=t.troops;$("sheetLevel").textContent=t.level;$("sheetGold").textContent=`+${inc.gold}`;$("sheetFood").textContent=`+${inc.food}`;
+ const own=t.owner===state.player,adjOwn=d.neighbors.map(n=>state.territories[n]).filter(x=>x.owner===state.player&&x.troops>75).sort((a,b)=>b.troops-a.troops),canAttack=!own&&adjOwn.length>0;$("recruitBtn").classList.toggle("hidden",!own);$("developBtn").classList.toggle("hidden",!own);$("moveBtn").classList.toggle("hidden",!own);$("attackBtn").classList.toggle("hidden",!canAttack);$("recruitBtn").disabled=!own||state.ap<1||state.gold<30||state.food<20||t.troops>=maxTroops(t);$("developBtn").disabled=!own||state.ap<1||state.gold<50||t.level>=5;$("moveBtn").disabled=!own||state.ap<1||t.troops<=80||d.neighbors.every(n=>state.territories[n].owner!==state.player);$("attackBtn").disabled=!canAttack||state.ap<1;
+ if(own)$("sheetHint").textContent=`最大兵力 ${maxTroops(t)}。隣接敵領 ${d.neighbors.filter(n=>state.territories[n].owner!==state.player).length}。${territoryThreat(t)>10?" 敵の攻勢に注意。":""}`;else if(canAttack)$("sheetHint").textContent=`${adjOwn[0].name}から進軍可能。敵城壁 ${wallMax(t)}。`;else $("sheetHint").textContent="現在は隣接する自領がなく、進軍できません。";
+ $("attackBtn").onclick=()=>openPrepare(adjOwn[0].id,id)}
+function consumeAP(msg){state.ap=Math.max(0,state.ap-1);state.history.unshift(msg);persist();renderAll()}
+function doRecruit(){const t=state.territories[selectedId];if(!t||t.owner!==state.player||state.ap<1||state.gold<30||state.food<20)return;const add=70+state.mods.recruit;t.troops=Math.min(maxTroops(t),t.troops+add);state.gold-=30;state.food-=20;advanceMission("recruit");sound.battle();consumeAP(`${t.name}で徴兵。兵力が${t.troops}になった。`)}
+function doDevelop(){const t=state.territories[selectedId];if(!t||t.owner!==state.player||state.ap<1||state.gold<50||t.level>=5)return;t.level++;state.gold-=50;advanceMission("develop");sound.ui();consumeAP(`${t.name}を開発し、開発度${t.level}へ。`)}
+function startMove(){const t=state.territories[selectedId];if(!t||t.owner!==state.player||state.ap<1)return;moveSource=t.id;$("territorySheet").classList.add("hidden");state.history.unshift(`${t.name}から兵を移す先を選択。`);renderAll()}
+function executeMove(from,to){const a=state.territories[from],b=state.territories[to],amount=Math.min(state.mods.move,a.troops-40,maxTroops(b)-b.troops);if(amount<=0){toast("移動できる兵がありません");return}a.troops-=amount;b.troops+=amount;moveSource=null;selectedId=to;advanceMission("move");consumeAP(`${a.name}から${b.name}へ兵${amount}を移動。`)}
+function openPrepare(sourceId,targetId){attackTarget=targetId;const t=state.territories[targetId],sources=TERRITORY_DEFS[targetId].neighbors.map(n=>state.territories[n]).filter(x=>x.owner===state.player&&x.troops>75).sort((a,b)=>b.troops-a.troops);attackSource=sources.some(x=>x.id===sourceId)?sourceId:(sources[0]?.id??sourceId);const sel=$("prepSourceSelect");sel.innerHTML=sources.map(x=>`<option value="${x.id}" ${x.id===attackSource?"selected":""}>${x.name}（兵${x.troops}）</option>`).join("");$("prepareLead").textContent=`${FACTIONS[t.owner].name}が守る${t.name}へ進軍します。出陣元・兵力・武将を組み合わせてください。`;$("prepTarget").textContent=`${t.name} (${t.troops})`;refreshPrepareSource();renderPrepareGenerals();$("prepareOverlay").classList.remove("hidden")}
+function refreshPrepareSource(){attackSource=Number($("prepSourceSelect").value);const s=state.territories[attackSource],min=Math.min(80,Math.max(40,s.troops-40)),max=Math.max(min,Math.min(s.troops-40,320+state.mods.deploy));$("troopRange").min=min;$("troopRange").max=max;$("troopRange").value=Math.max(min,Math.min(max,Math.round(max*.75/10)*10));renderTroopValue()}
+function renderTroopValue(){$("troopValue").textContent=`${$("troopRange").value}人`;renderForecast()}
+function estimateBattle(){if(attackTarget===null||attackSource===null)return .5;const target=state.territories[attackTarget],deployed=Number($("troopRange").value)||0,ids=[...$("prepareGenerals").querySelectorAll("input:checked")].map(x=>x.value),avg=ids.length?ids.reduce((sum,id)=>{const g=generalStats(id);return sum+g.martial*.45+g.command*.4+g.intel*.15},0)/ids.length:60,e=battleEnvironment(target);let env=1;if(e.terrain.id==="plain"&&ids.some(id=>GENERAL_MAP[id].unit==="cavalry"))env+=.04;if(e.weather.id==="rain")env-=.04;if(e.weather.id==="snow")env-=.025;const atk=deployed*(.72+avg/185)*difficulty().playerPower*env,def=(target.troops+wallMax(target)*.55)*(.78+averageFactionStat(target.owner)/190);return atk/(atk+def)}
+function renderForecast(){const box=$("prepForecast");if(!box||attackTarget===null)return;const chance=estimateBattle(),pct=Math.round(chance*100),e=battleEnvironment(state.territories[attackTarget]);box.className=`forecastBox ${pct>=58?"good":pct<43?"bad":""}`;box.innerHTML=`攻略見込み <b>${pct}%</b>　${pct>=65?"優勢。兵を温存する余地あり":pct>=50?"互角以上。相性で押し切れる":"劣勢。増兵か武将変更を推奨"}<br><span class="muted">戦場：${e.terrain.name}／${e.weather.name}　${e.weather.desc}</span>`}
+function renderPrepareGenerals(){const box=$("prepareGenerals");box.innerHTML="";const ids=state.roster.slice().sort((a,b)=>generalStats(b).command-generalStats(a).command);ids.forEach((id,i)=>{const g=generalStats(id),p=progressOf(id),need=xpNeeded(p.level),pct=p.level>=8?100:Math.round(p.xp/need*100),card=document.createElement("label");card.className="generalCard";card.innerHTML=`<div class="portrait" style="--pc:${FACTIONS[g.faction].color}">${g.char}</div><div class="generalInfo"><strong>${g.name}<span class="levelBadge">Lv${p.level}</span></strong><p>${g.skill}：${g.desc}</p><div class="statsLine">武${g.martial} 統${g.command} 知${g.intel} 魅${g.charisma}</div><div class="xpLine"><div class="xpBar"><i style="width:${pct}%"></i></div><span>${p.level>=8?"熟達":`${p.xp}/${need}`}</span></div></div><div><div class="unitBadge">${UNIT_ICON[g.unit]}</div><input class="selectCheck" type="checkbox" value="${id}" ${i<3?"checked":""}></div>`;box.appendChild(card)});for(const c of box.querySelectorAll("input"))c.addEventListener("change",()=>{const checked=[...box.querySelectorAll("input:checked")];if(checked.length>3){c.checked=false;toast("出陣できる武将は三名までです")}updateSelectedCount();renderForecast()});updateSelectedCount();renderForecast()}
+function updateSelectedCount(){const n=$("prepareGenerals").querySelectorAll("input:checked").length;$("selectedCount").textContent=`選択 ${n} / 3`;$("battleStartBtn").disabled=n===0;renderForecast()}
+function startBattle(){const lineup=[...$("prepareGenerals").querySelectorAll("input:checked")].map(x=>x.value).slice(0,3);if(!lineup.length)return;const source=state.territories[attackSource],target=state.territories[attackTarget],deployed=Number($("troopRange").value);if(deployed<=0||source.troops-deployed<35){toast("守備兵を残してください");return}source.troops-=deployed;const enemyRoster=GENERAL_DATA.filter(g=>g.faction===target.owner).map(g=>g.id),ordered=[target.governor,...enemyRoster.filter(id=>id!==target.governor)].filter(Boolean),defenders=ordered.slice(0,Math.min(3,lineup.length));while(defenders.length<lineup.length)defenders.push(ordered[defenders.length%ordered.length]);const perA=deployed/lineup.length,perD=target.troops/defenders.length,environment=battleEnvironment(target);
+ battle={sourceId:source.id,targetId:target.id,targetOwner:target.owner,deployed,initialA:deployed,initialD:target.troops,lineup:[...lineup],round:0,maxRounds:8,tactic:"charge",enemyTactic:"guard",moraleA:100,moraleD:100,lastEdge:0,wall:wallMax(target),wallMax:wallMax(target),environment,commandUsed:false,auto:false,finished:false,lanes:lineup.map((id,i)=>({a:id,d:defenders[i],aHp:perA,dHp:perD,aMax:perA,dMax:perD,poison:0})),logs:[`戦場は${environment.terrain.name}、天候は${environment.weather.name}。`,`${source.name}より${deployed}の兵が出陣。`]};$("prepareOverlay").classList.add("hidden");$("battleOverlay").classList.remove("hidden");sound.battle();renderBattle()}
+function unitMultiplier(a,b){if(a==="warrior"||b==="warrior"||a==="monk"||b==="monk"||a==="ninja"||b==="ninja")return 1;if((a==="spear"&&b==="cavalry")||(a==="cavalry"&&b==="bow")||(a==="bow"&&b==="spear"))return 1.24;if((b==="spear"&&a==="cavalry")||(b==="cavalry"&&a==="bow")||(b==="bow"&&a==="spear"))return .8;return 1}
+function chooseEnemyTactic(){const keys=Object.keys(TACTICS),counter=Object.keys(TACTICS).find(k=>TACTICS[k].beats===battle.tactic);if(Math.random()<difficulty().counter)return counter;const aliveA=battle.lanes.filter(l=>l.aHp>0),bows=battle.lanes.filter(l=>l.dHp>0&&GENERAL_MAP[l.d].unit==="bow").length;if(battle.environment.weather.id==="wind"&&Math.random()<.38)return"volley";if(battle.wall>0&&Math.random()<.45)return"guard";if(bows>=Math.ceil(aliveA.length/2)&&Math.random()<.55)return"volley";return choose(keys)}
+function battlePower(g,side,lane){const base=g.martial*.5+g.command*.33+g.intel*.17+rand(-7,7);let atk=1,def=1,tactic=side==="a"?battle.tactic:battle.enemyTactic;if(tactic==="charge"){atk*=1.22+(side==="a"?state.mods.charge:0);def*=.88}if(tactic==="guard"){atk*=.83;def*=1.32+(side==="a"?state.mods.guard:0)}if(tactic==="volley"){atk*=1.05+(side==="a"?state.mods.volley*(g.unit==="bow"?1.6:1):.06);if(g.unit==="bow")atk*=1.25}if(side==="a"){atk*=difficulty().playerPower*(1+state.temp.attack);def*=1+state.temp.defense;if(FACTIONS[state.player].bonus==="charge"&&tactic==="charge")atk*=1.1;if(FACTIONS[state.player].bonus==="intel"&&tactic==="volley")atk*=1.07;if(FACTIONS[state.player].bonus==="cavalry"&&g.unit==="cavalry")atk*=1.1}else{atk*=difficulty().aiPower;if(FACTIONS[battle.targetOwner].bonus==="power")atk*=1.08;if(battle.wall>0)def*=1.14}const env=applyEnvironment(g,tactic,atk,def);atk=env.atk;def=env.def;const morale=side==="a"?battle.moraleA:battle.moraleD;atk*=.78+morale/455;def*=.84+morale/625;return{base,atk,def}}
+function nextBattleRound(){if(!battle||battle.finished)return;battle.round++;battle.enemyTactic=chooseEnemyTactic();battle.lastEdge=tacticEdge(battle.tactic,battle.enemyTactic);let totalToD=0,totalToA=0;const playerHasHaku=battle.lanes.some(l=>l.aHp>0&&l.a==="haku");for(const lane of battle.lanes){if(lane.aHp<=0||lane.dHp<=0)continue;const a=generalStats(lane.a),d=generalStats(lane.d),ap=battlePower(a,"a",lane),dp=battlePower(d,"d",lane);let edgeA=battle.lastEdge>0?1.18:battle.lastEdge<0?.86:1,edgeD=battle.lastEdge<0?1.18:battle.lastEdge>0?.86:1,aAtk=ap.base*ap.atk*unitMultiplier(a.unit,d.unit)*edgeA,dAtk=dp.base*dp.atk*unitMultiplier(d.unit,a.unit)*edgeD,aDef=(a.command*.55+a.martial*.25)*ap.def,dDef=(d.command*.55+d.martial*.25)*dp.def,wallAbsorb=0,proc=[];
+ if(battle.wall>0){const ignore=a.id==="enma"?.55:1;wallAbsorb=Math.min(battle.wall,Math.max(4,aAtk*.12*ignore));battle.wall-=wallAbsorb;aAtk*=a.id==="enma"?.9:.72;if(a.id==="akane"&&battle.tactic==="volley"){battle.wall=Math.max(0,battle.wall-12);proc.push("火矢の陣")} }
+ let dmgD=clamp((aAtk-dDef*.34)*.32,4,35),dmgA=clamp((dAtk-aDef*.34)*.31,4,33),enemyProcRate=playerHasHaku?.55:1;
+ if(a.id==="homura"&&battle.round===1&&battle.tactic==="charge"){dmgD*=1.42;proc.push("紅蓮一文字")}if(a.id==="retsu"&&unitMultiplier(a.unit,d.unit)>1){dmgD*=1.18;proc.push("狼牙突進")}if(a.id==="gin"&&unitMultiplier(a.unit,d.unit)>1){dmgD*=1.15;proc.push("雪崩槍")}if(a.id==="tomoe"&&battle.tactic==="charge"&&Math.random()<.28){dmgD*=1.45;proc.push("獅子奮迅")}if(a.id==="kiri"&&battle.tactic==="volley"){lane.poison=3;proc.push("白蛇毒矢")}if(d.id==="kage"&&Math.random()<.16*enemyProcRate){dmgD=0;proc.push("敵・影分身")}if(d.id==="tsukiyo"&&battle.round===1){dmgA*=1.32*enemyProcRate;proc.push("敵・月蝕")}if(a.id==="hayate"&&lane.dHp/lane.dMax<.45){dmgD*=1.25;proc.push("疾風連牙")}if(a.id==="gou"&&lane.aHp/lane.aMax<.5){dmgA*=.72;proc.push("不屈の牙")}if(d.id==="raiga"&&lane.dHp/lane.dMax<.4){dmgA*=1+(0.3*enemyProcRate);proc.push("敵・鬼神撃")}if(a.id==="nagisa"&&battle.tactic==="guard")dmgA*=.76;if(a.id==="gaku"&&battle.tactic==="guard")dmgA*=.7;if(a.id==="kinji"&&battle.wall>0)dmgA*=.82;if(a.id==="souta"&&battle.round===1){dmgA*=.7;proc.push("蒼天駆け")}if(a.id==="mugen"){dmgA*=.86;proc.push("幻惑")}if(a.id==="ran"&&Math.random()<.2){dmgD*=1.32;proc.push("修羅駆け")}if(lane.poison>0){dmgD+=4;lane.poison--}
+ lane.dHp=Math.max(0,lane.dHp-dmgD);lane.aHp=Math.max(0,lane.aHp-dmgA);totalToD+=dmgD;totalToA+=dmgA;battle.logs.unshift(`${a.name} ${Math.round(dmgD)}撃 / ${d.name} ${Math.round(dmgA)}撃${wallAbsorb?`（城壁-${Math.round(wallAbsorb)}）`:""}`);if(proc.length)battle.logs.unshift(`【発動】${proc.join("・")}`);if(a.id==="yukino"){const weak=battle.lanes.filter(x=>x.aHp>0).sort((x,y)=>x.aHp/x.aMax-y.aHp/y.aMax)[0];if(weak){weak.aHp=Math.min(weak.aMax,weak.aHp+5);battle.logs.unshift("【慈雨】傷ついた味方を回復")}}if(a.id==="shizuka")battle.moraleD=Math.max(0,battle.moraleD-2)}
+ battle.moraleA=clamp(battle.moraleA-totalToA/battle.initialA*70+(battle.lastEdge>0?3:battle.lastEdge<0?-4:0),0,100);battle.moraleD=clamp(battle.moraleD-totalToD/battle.initialD*74+(battle.lastEdge<0?3:battle.lastEdge>0?-4:0),0,100);if(battle.moraleA<18)battle.logs.unshift("自軍に動揺が広がっている。");if(battle.moraleD<18)battle.logs.unshift("敵軍の陣形が崩れ始めた。");sound.hit();vibrate(18);renderBattle();checkBattleEnd()}
+function armyTotals(){return{a:battle.lanes.reduce((s,l)=>s+l.aHp,0),d:battle.lanes.reduce((s,l)=>s+l.dHp,0)}}
+function useCommanderOrder(){if(!battle||battle.finished||battle.commandUsed)return;battle.commandUsed=true;let text="";if(state.player==="fire"){battle.moraleD=clamp(battle.moraleD-18,0,100);battle.wall=Math.max(0,battle.wall-18);for(const l of battle.lanes)l.dHp=Math.max(0,l.dHp-4);text="炎狼猛攻。敵の士気と城壁を砕いた"}else if(state.player==="blue"){battle.moraleA=clamp(battle.moraleA+20,0,100);for(const l of battle.lanes)if(l.aHp>0)l.aHp=Math.min(l.aMax,l.aHp+l.aMax*.09);text="蒼天疾駆。全軍が態勢を立て直した"}else if(state.player==="white"){battle.moraleD=clamp(battle.moraleD-24,0,100);for(const l of battle.lanes)if(l.dHp>0)l.dHp=Math.max(0,l.dHp-5);text="白蛇幻策。敵陣に混乱が広がった"}else{battle.moraleA=clamp(battle.moraleA+14,0,100);for(const l of battle.lanes)if(l.aHp>0)l.aHp=Math.min(l.aMax,l.aHp+l.aMax*.12);text="黄金鼓舞。兵站を立て直し全軍を回復した"}state.stats.orders=(state.stats.orders||0)+1;battle.logs.unshift(`【大将号令】${text}`);sound.win();vibrate([35,25,65]);renderBattle();checkBattleEnd()}
+function checkBattleEnd(){const t=armyTotals();if(t.d<=1||battle.moraleD<=2){finishBattle(true);return}if(t.a<=1||battle.moraleA<=2){finishBattle(false);return}if(battle.round>=battle.maxRounds){finishBattle(t.a/battle.initialA>=t.d/battle.initialD);return}if(battle.auto&&!battle.finished){clearTimeout(autoTimer);autoTimer=setTimeout(nextBattleRound,root.settings.reducedMotion?120:620)}}
+function renderBattle(){const target=state.territories[battle.targetId],tot=armyTotals();$("battleAName").textContent=FACTIONS[state.player].name;$("battleDName").textContent=FACTIONS[battle.targetOwner].name;$("battleATroops").textContent=`残兵 ${Math.round(tot.a)}`;$("battleDTroops").textContent=`残兵 ${Math.round(tot.d)}`;$("battleABar").style.width=`${clamp(tot.a/battle.initialA*100,0,100)}%`;$("battleDBar").style.width=`${clamp(tot.d/battle.initialD*100,0,100)}%`;$("battleRound").textContent=battle.finished?"決着":`第${battle.round+1}刻 / ${battle.maxRounds}`;$("wallWrap").classList.toggle("hidden",battle.wallMax<=25);$("wallText").textContent=`${Math.round(battle.wall)} / ${battle.wallMax}`;$("wallBar").style.width=`${clamp(battle.wall/battle.wallMax*100,0,100)}%`;$("moraleAText").textContent=Math.round(battle.moraleA);$("moraleDText").textContent=Math.round(battle.moraleD);$("moraleABar").style.width=`${battle.moraleA}%`;$("moraleDBar").style.width=`${battle.moraleD}%`;const insight=$("battleInsight"),edge=battle.lastEdge;insight.className=edge>0?"adv":edge<0?"disadv":"";insight.textContent=battle.round===0?"采配相性：突撃 ＞ 斉射 ＞ 堅陣 ＞ 突撃":`自軍「${TACTICS[battle.tactic].name}」 対 敵軍「${TACTICS[battle.enemyTactic].name}」　${edge>0?"采配有利":edge<0?"采配不利":"互角"}`;$("battleEnvironment").textContent=`${TYPE_DEF[target.type].icon} ${battle.environment.terrain.name}　／　${battle.environment.weather.name}：${battle.environment.weather.desc}`;
+ const field=$("battleField");field.innerHTML="";battle.lanes.forEach(l=>{const a=GENERAL_MAP[l.a],d=GENERAL_MAP[l.d],p=progressOf(l.a),row=document.createElement("div");row.className="lane";row.innerHTML=`<div class="fighter ${l.aHp<=0?"dead":""}"><div class="fighterName">${UNIT_ICON[a.unit]} ${a.name} <span class="levelBadge">Lv${p.level}</span></div><div class="fighterMeta">${a.skill}</div><div class="hpMini"><i style="width:${clamp(l.aHp/l.aMax*100,0,100)}%"></i></div></div><div class="clash">⚔</div><div class="fighter enemy ${l.dHp<=0?"dead":""}"><div class="fighterName">${d.name} ${UNIT_ICON[d.unit]}</div><div class="fighterMeta">${d.skill}</div><div class="hpMini"><i style="width:${clamp(l.dHp/l.dMax*100,0,100)}%"></i></div></div>`;field.appendChild(row)});$("battleLog").innerHTML=battle.logs.slice(0,12).map(x=>`<div class="${x.includes("【")?"skillLog":""}">・${x}</div>`).join("");document.querySelectorAll(".tacticBtn").forEach(b=>b.classList.toggle("selected",b.dataset.tactic===battle.tactic));$("nextRoundBtn").disabled=battle.finished;$("retreatBtn").disabled=battle.finished||battle.round===0;$("commandBtn").disabled=battle.finished||battle.commandUsed;$("commandBtn").classList.toggle("used",battle.commandUsed);$("commandBtn").textContent=battle.commandUsed?"号令済":"大将号令";$("autoBtn").textContent=`自動 ${battle.auto?"ON":"OFF"}`}
+function finishBattle(win,retreat=false){if(!battle||battle.finished)return;stopAuto();battle.finished=true;const source=state.territories[battle.sourceId],target=state.territories[battle.targetId],tot=armyTotals(),survivors=Math.max(0,Math.round(tot.a)),xpNotes=grantBattleXp(battle.lineup,win?32:16,win),xpText=xpNotes.length?`\n${xpNotes.join("\n")}`:"";if(win){const former=target.owner,oldGov=target.governor,leaderId=battle.lineup[0];target.owner=state.player;let recover=state.mods.recover;if(battle.lineup.includes("zen"))recover+=.08;target.troops=Math.max(45,Math.round(survivors*(1+recover)));target.level=Math.max(1,target.level);target.governor=leaderId;const capChance=.45+state.mods.capture+(FACTIONS[state.player].bonus==="intel"?.12:0)+(generalStats(leaderId)?.charisma||60)/1000;let capture="";if(oldGov&&!state.roster.includes(oldGov)&&Math.random()<capChance){state.roster.push(oldGov);progressOf(oldGov);discover(oldGov);state.stats.captures++;capture=`\n敵将 ${GENERAL_MAP[oldGov].name} が降伏し、配下となった。`}state.stats.wins++;state.stats.maxLands=Math.max(state.stats.maxLands,ownedBy(state.player).length);advanceMission("capture");state.history.unshift(`${target.name}を攻略。${capture}`);sound.win();vibrate([50,40,90]);state.ap=Math.max(0,state.ap-1);selectedId=target.id;persist();showModal("勝鬨",`${target.name}を制圧した。\n残存兵力 ${target.troops}${capture}${xpText}`, [{label:"地図へ戻る",className:"primary",run:()=>{closeBattle();afterPlayerAction();}}]);checkEliminated(former)}else{source.troops=Math.max(35,source.troops+Math.round(survivors*.55));target.troops=Math.max(35,Math.round(tot.d));state.ap=Math.max(0,state.ap-1);state.stats.losses++;state.history.unshift(`${target.name}攻略に失敗。`);persist();showModal(retreat?"撤退":"敗走",`${target.name}を落とせず撤退した。\n帰還兵 ${Math.round(survivors*.55)}　敵残兵 ${target.troops}${xpText}`, [{label:"地図へ戻る",className:"primary",run:()=>{closeBattle();afterPlayerAction();}}])}renderBattle()}
+function retreatBattle(){if(battle&&battle.round>0&&!battle.finished)finishBattle(false,true)}
+function closeBattle(){$("battleOverlay").classList.add("hidden");battle=null;renderAll()}
+function stopAuto(){if(autoTimer)clearTimeout(autoTimer);autoTimer=null;if(battle)battle.auto=false}
+function toggleAuto(){if(!battle||battle.finished)return;battle.auto=!battle.auto;renderBattle();if(battle.auto)nextBattleRound();else stopAuto()}
+function afterPlayerAction(){checkVictory();if(state&&state.ap<=0)toast("軍令を使い切りました。季を進められます")}
+function endTurn(){if(!state)return;$("territorySheet").classList.add("hidden");moveSource=null;showModal("季を進める",state.ap>0?`軍令が${state.ap}残っています。使わずに次の季へ進めますか？`:"敵勢力が行動し、次の季の収入を得ます。",[{label:"次の季へ",className:"primary",run:()=>runEnemyTurn()},{label:"軍議へ戻る",run:()=>{}}])}
+function runEnemyTurn(){const reports=[];updateCoalition(reports);for(const fid of Object.keys(FACTIONS)){if(fid===state.player||!factionAlive(fid))continue;const actions=1+(state.turn>6?1:0)+difficulty().aiActions;for(let action=0;action<actions;action++){const lands=ownedBy(fid);if(!lands.length)break;const threatened=lands.map(t=>({t,pressure:TERRITORY_DEFS[t.id].neighbors.map(n=>state.territories[n]).filter(x=>x.owner!==fid).reduce((m,x)=>Math.max(m,x.troops-t.troops),-999)})).sort((a,b)=>b.pressure-a.pressure)[0],donor=lands.filter(t=>t.id!==threatened?.t.id&&TERRITORY_DEFS[t.id].neighbors.includes(threatened?.t.id)&&t.troops>170).sort((a,b)=>b.troops-a.troops)[0];if(threatened&&threatened.pressure>35&&donor&&Math.random()<.45){const moved=Math.min(75,donor.troops-80);donor.troops-=moved;threatened.t.troops=Math.min(maxTroops(threatened.t),threatened.t.troops+moved);continue}const options=[];for(const source of lands)for(const nid of TERRITORY_DEFS[source.id].neighbors){const target=state.territories[nid];if(target.owner===fid)continue;const typeValue=target.type==="capital"?75:target.type==="mine"||target.type==="town"?30:target.type==="fort"?-12:8,playerValue=target.owner===state.player?(state.difficulty==="hard"?32:10)+(state.coalition.active?42:0):0,score=source.troops-(target.troops+wallMax(target)*.48)+typeValue+playerValue+Math.random()*65;options.push({source,target,score})}options.sort((a,b)=>b.score-a.score);const best=options[0];if(best&&best.source.troops>115&&best.score>0&&Math.random()<difficulty().aiAggro+(state.coalition.active&&best.target.owner===state.player?.08:0)){reports.push(resolveAIBattle(fid,best.source,best.target))}else{const border=lands.filter(t=>TERRITORY_DEFS[t.id].neighbors.some(n=>state.territories[n].owner!==fid)),t=choose(border.length?border:lands);if(Math.random()<.68)t.troops=Math.min(maxTroops(t),t.troops+38+Math.round(state.turn*1.2));else t.level=Math.min(5,t.level+1)}}}
+ state.turn++;state.ap=2;collectIncome();maintainMission();state.stats.maxLands=Math.max(state.stats.maxLands,ownedBy(state.player).length);const headline=reports.length?reports.slice(0,4).join("\n"):"各地は静かな季を迎えた。";state.history.unshift(reports.length?reports.slice(0,3).join("　"):"各地は静かな季を迎えた。");persist();renderAll();if(checkDefeat())return;if(checkVictory())return;const pending=nextPolicyMilestone();if(pending){openPolicyChoice(pending);return}if(state.turn%3===0){openRandomEvent();return}showModal(`第${state.turn}季・${seasonName()}　軍情報告`,`${headline}\n\n金 ${Math.floor(state.gold)}　兵糧 ${Math.floor(state.food)}　支配 ${ownedBy(state.player).length}領\n軍命：${state.mission.name} ${state.mission.progress}/${state.mission.goal}`,[{label:"軍議を続ける",className:"primary",run:()=>{}}])}
+function resolveAIBattle(fid,source,target){const attack=Math.min(source.troops-50,225+state.turn*2),coalitionBoost=state.coalition.active&&target.owner===state.player?1.08:1,aPower=attack*(.75+averageFactionStat(fid)/180)*rand(.88,1.13)*difficulty().aiPower*coalitionBoost,dPower=(target.troops+wallMax(target)*.55)*(.78+averageFactionStat(target.owner)/190)*rand(.88,1.13)*(target.owner===state.player?difficulty().playerPower:1),oldOwner=target.owner;source.troops-=attack;if(aPower>dPower){const survive=Math.max(45,Math.round(attack*(1-dPower/aPower*.55)));target.owner=fid;target.troops=survive;const gov=GENERAL_DATA.find(g=>g.faction===fid);target.governor=gov?.id||target.governor;checkEliminated(oldOwner);return oldOwner===state.player?`我が領 ${target.name} が${FACTIONS[fid].name}に陥落`:`${FACTIONS[fid].name}が${target.name}を制圧`}target.troops=Math.max(40,Math.round(target.troops*(1-aPower/dPower*.42)));source.troops+=Math.round(attack*.25);return`${FACTIONS[fid].name}の${target.name}攻略は失敗`}
+function averageFactionStat(fid){const gs=GENERAL_DATA.filter(g=>g.faction===fid);return gs.reduce((s,g)=>s+g.command+g.martial,0)/(gs.length*2)}
+function collectIncome(){let gold=0,food=0;for(const t of ownedBy(state.player)){const inc=territoryIncome(t);gold+=inc.gold;food+=inc.food;t.troops=Math.min(maxTroops(t),t.troops+8+t.level*3)}const total=ownedBy(state.player).reduce((s,t)=>s+t.troops,0),upkeep=Math.round(total/42);food-=upkeep;gold=Math.round(gold*difficulty().income);food=Math.round(food*difficulty().income);state.gold+=gold;state.food+=food;if(state.food<0){const shortage=Math.min(45,Math.ceil(-state.food/3));ownedBy(state.player).forEach(t=>t.troops=Math.max(35,t.troops-shortage));state.food=0;state.history.unshift(`兵糧不足。各領地で兵が${shortage}離脱。`)}else state.history.unshift(`収入 金+${gold} 兵糧+${food+upkeep}、維持費-${upkeep}。`)}
+function nextPolicyMilestone(){const lands=ownedBy(state.player).length;return [6,10,14,18,22].find(m=>lands>=m&&!state.policyMilestones.includes(m))||0}
+function openPolicyChoice(m){state.policyMilestones.push(m);persist();const available=shuffle(POLICIES.filter(p=>!state.policies.includes(p.id))).slice(0,3);showModal("国策を定める",`支配領地が${m}に達した。国の進む道を一つ選べ。`,available.map(p=>({label:`${p.name}\n${p.desc}`,className:"gold",run:()=>adoptPolicy(p.id)})))}
+function adoptPolicy(id){const p=POLICIES.find(x=>x.id===id);if(!p||state.policies.includes(id))return;state.policies.push(id);rebuildMods();state.history.unshift(`国策「${p.name}」を採用。`);persist();renderAll();toast(`${p.name}を採用`)}
+function rebuildMods(){state.mods={recruit:0,gold:1,food:1,wall:1,cap:0,charge:0,guard:0,volley:0,capture:0,move:80,deploy:0,recover:0};for(const id of state.policies){const p=POLICIES.find(x=>x.id===id);if(p)p.apply(state)}}
+function openRandomEvent(){const ev=choose(EVENTS);showModal(ev.title,ev.text,ev.choices.map(c=>({label:c.label,run:()=>{const result=c.run(state);state.history.unshift(`${ev.title}：${result}`);persist();renderAll();toast(result)}})))}
+function checkEliminated(fid){if(fid&&fid!==state.player&&!factionAlive(fid))state.history.unshift(`${FACTIONS[fid].name}は滅亡した。`)}
+function checkVictory(){if(!state||state.won)return false;const lands=ownedBy(state.player).length,others=Object.keys(FACTIONS).filter(f=>f!==state.player&&factionAlive(f)).length;if(lands>=16||others===0){state.won=true;root.records.clears++;if(!root.records.bestTurns||state.turn<root.records.bestTurns)root.records.bestTurns=state.turn;persist();const top=state.roster.slice().sort((a,b)=>progressOf(b).level-progressOf(a).level)[0];$("endingText").textContent=`${FACTIONS[state.player].name}は第${state.turn}季、${lands}領を支配し天下人となった。\n配下武将 ${state.roster.length}名　採用国策 ${state.policies.length}\n戦勝 ${state.stats.wins}　歴戦筆頭 ${GENERAL_MAP[top].name} Lv${progressOf(top).level}。`;$("endingOverlay").classList.remove("hidden");sound.win();return true}return false}
+function checkDefeat(){if(ownedBy(state.player).length>0)return false;persist();$("defeatText").textContent=`第${state.turn}季、${FACTIONS[state.player].name}の最後の城は落ちた。\n内政と兵の移動を整え、再び乱世へ挑め。`;$("defeatOverlay").classList.remove("hidden");return true}
+function showModal(title,text,choices){$("modalTitle").textContent=title;$("modalText").textContent=text;const box=$("modalChoices");box.innerHTML="";for(const c of choices){const b=document.createElement("button");b.className=`btn ${c.className||"ghost"}`;b.textContent=c.label;b.addEventListener("click",()=>{$("modalOverlay").classList.add("hidden");sound.ui();if(c.run)c.run()});box.appendChild(b)}$("modalOverlay").classList.remove("hidden")}
+function renderRoster(){const box=$("rosterList");box.innerHTML="";for(const id of state.roster.slice().sort((a,b)=>progressOf(b).level-progressOf(a).level||generalStats(b).command-generalStats(a).command)){const g=generalStats(id),p=progressOf(id),need=xpNeeded(p.level),pct=p.level>=8?100:Math.round(p.xp/need*100),card=document.createElement("div");card.className="generalCard";card.innerHTML=`<div class="portrait" style="--pc:${FACTIONS[g.faction].color}">${g.char}</div><div class="generalInfo"><strong>${g.name}<span class="levelBadge">Lv${p.level}</span></strong><p>${g.skill}：${g.desc}</p><div class="statsLine">武力 ${g.martial}　統率 ${g.command}　知略 ${g.intel}　人望 ${g.charisma}</div><div class="xpLine"><div class="xpBar"><i style="width:${pct}%"></i></div><span>出陣${p.battles} 勝${p.wins}　${p.level>=8?"熟達":`${p.xp}/${need}`}</span></div></div><div class="unitBadge">${UNIT_ICON[g.unit]}兵</div>`;box.appendChild(card)}}
+function renderPolicies(){const box=$("policyList");box.innerHTML="";$("policyLead").textContent=`採用済み ${state.policies.length}。領地6・10・14・18・22で新たな国策を選べます。`;for(const p of POLICIES){const owned=state.policies.includes(p.id),b=document.createElement("div");b.className=`policyCard ${owned?"owned":""}`;b.innerHTML=`<strong>${owned?"✓ ":""}${p.name}</strong><p>${p.desc}</p>`;box.appendChild(b)}}
+function renderStatus(){const ranks=Object.keys(FACTIONS).filter(factionAlive).map(fid=>({fid,lands:ownedBy(fid).length,power:factionPower(fid)})).sort((a,b)=>b.power-a.power),playerRank=ranks.findIndex(x=>x.fid===state.player)+1;$("statusLead").textContent=`難易度 ${difficulty().name}・第${state.turn}季 ${seasonName()}。現在 ${playerRank}位 / ${ranks.length}勢力。`;$("statusRanking").innerHTML=ranks.map((r,i)=>`<div class="rankRow"><div class="rankNo">${i+1}</div><div><div class="rankName" style="color:${FACTIONS[r.fid].color}">${FACTIONS[r.fid].mark} ${FACTIONS[r.fid].name}${r.fid===state.player?"（自軍）":""}</div><div class="rankMeta">支配 ${r.lands}領</div></div><div class="rankPower">国力<b>${r.power}</b></div></div>`).join("");$("coalitionStatus").innerHTML=state.coalition.active?`<div class="coalitionAlert">天下包囲網 発令中　敵勢力は我が領を優先して進軍</div>`:"";const m=state.mission,pct=Math.round(m.progress/m.goal*100);$("statusMission").innerHTML=`<div class="missionCard"><strong>${m.completed?"✓ ":""}${m.name}</strong><p>${m.completed?"達成済み。次季に新たな軍命が下ります。":m.text}</p><div class="missionProgress"><i style="width:${pct}%"></i></div><div class="missionMeta"><span>${m.progress} / ${m.goal}</span><span>期限 第${m.deadline}季　報酬 金${m.reward.gold}・糧${m.reward.food}</span></div></div>`;const lands=ownedBy(state.player).length,maxLv=Math.max(...state.roster.map(id=>progressOf(id).level)),goals=[{done:lands>=6,name:"六領支配",text:"国策を解禁"},{done:maxLv>=5,name:"歴戦の将",text:`最高 Lv${maxLv}`},{done:state.roster.length>=6,name:"六将集結",text:`現在 ${state.roster.length}名`},{done:state.policies.length>=3,name:"三大国策",text:`現在 ${state.policies.length}`},{done:lands>=16,name:"天下統一",text:`現在 ${lands}/16領`}];$("statusGoals").innerHTML=goals.map(g=>`<div class="goal ${g.done?"done":""}"><span>${g.done?"✓":"◇"}</span><strong>${g.name}</strong><em>${g.text}</em></div>`).join("");$("statusHistory").innerHTML=state.history.slice(0,20).map(x=>`<div>${x}</div>`).join("")}
+function renderFactionChoices(){const box=$("factionChoices");box.innerHTML="";document.querySelectorAll(".difficultyBtn").forEach(b=>b.classList.toggle("selected",b.dataset.difficulty===selectedDifficulty));for(const id of ["fire","blue","white","gold"]){const f=FACTIONS[id],b=document.createElement("button");b.className=`factionCard ${selectedFaction===id?"selected":""}`;b.style.setProperty("--f",f.color);b.innerHTML=`<strong>${f.name}</strong><div class="mark">${f.mark}</div><p><b>${f.trait}</b>：${f.desc}</p>`;b.addEventListener("click",()=>{selectedFaction=id;$("factionStartBtn").disabled=false;renderFactionChoices();sound.ui()});box.appendChild(b)}}
+function updateSettings(){for(const [id,key] of [["soundToggle","sound"],["vibrationToggle","vibration"],["motionToggle","reducedMotion"]])$(id).textContent=root.settings[key]?"ON":"OFF";applyMotionSetting()}
+function toggleSetting(key){root.settings[key]=!root.settings[key];persist();updateSettings();sound.ui()}
+function resetData(){showModal("保存データ初期化","天下統一記録、進行中の軍議、設定をすべて消去します。",[{label:"初期化する",className:"primary",run:()=>{localStorage.removeItem(SAVE_KEY);root=clone(defaultRoot);state=null;updateSettings();renderTitle();toast("保存データを初期化しました")}},{label:"やめる",run:()=>{}}])}
+function repairCampaign(c){try{state=clone(c);if(!state||Number(state.version||1)>VERSION||!FACTIONS[state.player]||!Array.isArray(state.territories)||state.territories.length!==24)throw Error("invalid");state.version=VERSION;state.seed=Number(state.seed)||123456789;state.difficulty=DIFFICULTIES[state.difficulty]?state.difficulty:"normal";state.ap=clamp(Number(state.ap)||0,0,2);state.gold=Math.max(0,Number(state.gold)||0);state.food=Math.max(0,Number(state.food)||0);state.turn=Math.max(1,Number(state.turn)||1);state.roster=(state.roster||[]).filter(id=>GENERAL_MAP[id]);if(!state.roster.length)state.roster=GENERAL_DATA.filter(g=>g.faction===state.player).map(g=>g.id);state.generalProgress=state.generalProgress&&typeof state.generalProgress==="object"?state.generalProgress:{};for(const id of state.roster){const p=state.generalProgress[id]||{};state.generalProgress[id]={level:clamp(Number(p.level)||1,1,8),xp:Math.max(0,Number(p.xp)||0),battles:Math.max(0,Number(p.battles)||0),wins:Math.max(0,Number(p.wins)||0)}}state.policies=(state.policies||[]).filter(id=>POLICIES.some(p=>p.id===id));state.policyMilestones=Array.isArray(state.policyMilestones)?state.policyMilestones:[];state.temp={attack:0,defense:0,...state.temp};state.stats={wins:0,losses:0,captures:0,maxLands:ownedBy(state.player).length,orders:0,...state.stats};state.coalition={triggered:false,active:false,turn:0,...state.coalition};state.history=Array.isArray(state.history)?state.history:["軍議を再開。"];if(!state.mission||!MISSION_DEFS.some(m=>m.type===state.mission.type))createMission();else state.mission={...state.mission,progress:Math.max(0,Number(state.mission.progress)||0),goal:Math.max(1,Number(state.mission.goal)||1),deadline:Math.max(state.turn,Number(state.mission.deadline)||state.turn+4),completed:!!state.mission.completed};rebuildMods();selectedId=capitalOf(state.player)?.id??ownedBy(state.player)[0]?.id??0;persist();return true}catch(e){console.warn("campaign reset",e);state=null;root.campaign=null;persist();return false}}
+/* events */
+$("newBtn").addEventListener("click",()=>{selectedFaction=null;selectedDifficulty="normal";renderFactionChoices();$("factionStartBtn").disabled=true;$("factionOverlay").classList.remove("hidden");sound.ui()});
+$("continueBtn").addEventListener("click",()=>{if(root.campaign&&repairCampaign(root.campaign))openGame();else toast("再開できる軍議がありません")});
+$("howBtn").addEventListener("click",()=>{$("howOverlay").classList.remove("hidden");updateSettings();sound.ui()});
+$("factionBackBtn").addEventListener("click",()=>$("factionOverlay").classList.add("hidden"));
+$("factionStartBtn").addEventListener("click",()=>{if(selectedFaction){$("factionOverlay").classList.add("hidden");newCampaign(selectedFaction,selectedDifficulty)}});
+document.querySelectorAll(".difficultyBtn").forEach(b=>b.addEventListener("click",()=>{selectedDifficulty=b.dataset.difficulty;renderFactionChoices();sound.ui()}));
+$("sheetCloseBtn").addEventListener("click",()=>{$("territorySheet").classList.add("hidden");selectedId=null;renderMap()});
+$("recruitBtn").addEventListener("click",doRecruit);$("developBtn").addEventListener("click",doDevelop);$("moveBtn").addEventListener("click",startMove);
+$("rosterBtn").addEventListener("click",()=>{renderRoster();$("rosterOverlay").classList.remove("hidden");sound.ui()});
+$("policyBtn").addEventListener("click",()=>{renderPolicies();$("policyOverlay").classList.remove("hidden");sound.ui()});
+$("statusBtn").addEventListener("click",()=>{renderStatus();$("statusOverlay").classList.remove("hidden");sound.ui()});$("manualSaveBtn").addEventListener("click",()=>{persist();toast("軍議を保存しました");sound.ui()});$("endTurnBtn").addEventListener("click",endTurn);
+$("troopRange").addEventListener("input",renderTroopValue);$("prepSourceSelect").addEventListener("change",refreshPrepareSource);$("prepareCancelBtn").addEventListener("click",()=>$("prepareOverlay").classList.add("hidden"));$("battleStartBtn").addEventListener("click",startBattle);
+document.querySelectorAll(".tacticBtn").forEach(b=>b.addEventListener("click",()=>{if(!battle||battle.finished)return;battle.tactic=b.dataset.tactic;renderBattle();sound.ui()}));
+$("nextRoundBtn").addEventListener("click",nextBattleRound);$("retreatBtn").addEventListener("click",retreatBattle);$("commandBtn").addEventListener("click",useCommanderOrder);$("autoBtn").addEventListener("click",toggleAuto);
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>$(b.dataset.close).classList.add("hidden")));
+$("soundToggle").addEventListener("click",()=>toggleSetting("sound"));$("vibrationToggle").addEventListener("click",()=>toggleSetting("vibration"));$("motionToggle").addEventListener("click",()=>toggleSetting("reducedMotion"));$("exportBtn").addEventListener("click",exportSave);$("importBtn").addEventListener("click",importSave);$("resetBtn").addEventListener("click",resetData);
+$("endingContinueBtn").addEventListener("click",()=>{state.continued=true;$("endingOverlay").classList.add("hidden");renderAll();persist()});$("endingTitleBtn").addEventListener("click",()=>{root.campaign=null;state=null;persist();openTitle()});
+$("defeatRetryBtn").addEventListener("click",()=>{const f=state?.lastFaction||state?.player||"fire";$("defeatOverlay").classList.add("hidden");newCampaign(f,state?.difficulty||"normal")});$("defeatTitleBtn").addEventListener("click",()=>{root.campaign=null;state=null;persist();openTitle()});
+window.addEventListener("keydown",e=>{if(e.key==="Escape"){for(const id of ["rosterOverlay","policyOverlay","statusOverlay","howOverlay","prepareOverlay"]){if(!$(id).classList.contains("hidden")){ $(id).classList.add("hidden");return}}}if(e.key==="Enter"&&battle&&!battle.finished)nextBattleRound()});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)stopAuto()});
+renderTitle();updateSettings();applyMotionSetting();
+})();
+</script>
+</body>
+</html>

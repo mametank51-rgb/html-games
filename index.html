@@ -1,1757 +1,439 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#101827" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="icon" href="icon-192.png" />
-  <title>議事録一発｜録るだけ、会議が仕事になる</title>
-  <style>
-    :root{
-      --bg:#f3f6fb;
-      --panel:#ffffff;
-      --panel-2:#f8fafc;
-      --text:#132238;
-      --muted:#66758a;
-      --line:#dce4ee;
-      --primary:#1257d5;
-      --primary-2:#0b46b1;
-      --accent:#0f8f75;
-      --danger:#c43d4b;
-      --warning:#b87906;
-      --shadow:0 12px 36px rgba(31,54,87,.12);
-      --radius:18px;
-      --font-scale:1;
-    }
-    [data-theme="dark"]{
-      --bg:#0c1320;
-      --panel:#131d2c;
-      --panel-2:#182436;
-      --text:#edf3fb;
-      --muted:#aab8ca;
-      --line:#2b3b50;
-      --primary:#75a7ff;
-      --primary-2:#4f8ef7;
-      --accent:#5bd1b7;
-      --danger:#ff8792;
-      --warning:#ffc15c;
-      --shadow:0 14px 40px rgba(0,0,0,.3);
-    }
-    *{box-sizing:border-box}
-    html{font-size:calc(16px * var(--font-scale));}
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 10% -10%, rgba(18,87,213,.12), transparent 34%),
-        radial-gradient(circle at 110% 20%, rgba(15,143,117,.10), transparent 30%),
-        var(--bg);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Sans","Yu Gothic UI",sans-serif;
-      line-height:1.65;
-    }
-    button,input,textarea,select{font:inherit}
-    button{cursor:pointer}
-    .app-shell{min-height:100vh;padding-bottom:96px}
-    .topbar{
-      position:sticky;top:0;z-index:20;
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px max(16px, env(safe-area-inset-left));
-      background:color-mix(in srgb,var(--panel) 92%, transparent);
-      backdrop-filter:blur(18px);
-      border-bottom:1px solid var(--line);
-    }
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand-mark{
-      width:42px;height:42px;border-radius:13px;
-      display:grid;place-items:center;
-      background:linear-gradient(145deg,var(--primary),var(--primary-2));
-      color:#fff;font-weight:900;font-size:1.05rem;
-      box-shadow:0 8px 20px rgba(18,87,213,.28);
-    }
-    .brand h1{font-size:1.05rem;margin:0;line-height:1.2}
-    .brand p{font-size:.76rem;margin:3px 0 0;color:var(--muted)}
-    .icon-btn{
-      width:44px;height:44px;border-radius:14px;border:1px solid var(--line);
-      background:var(--panel);color:var(--text);display:grid;place-items:center;
-      font-size:1.1rem;
-    }
-    main{width:min(980px,100%);margin:0 auto;padding:18px 16px 32px}
-    .page{display:none}
-    .page.active{display:block;animation:fade .18s ease}
-    @keyframes fade{from{opacity:.3;transform:translateY(3px)}to{opacity:1;transform:none}}
-    .hero{
-      background:linear-gradient(145deg,#11213a,#173c75);
-      color:#fff;border-radius:24px;padding:22px;
-      box-shadow:var(--shadow);margin-bottom:16px;
-      overflow:hidden;position:relative;
-    }
-    .hero:after{
-      content:"";position:absolute;right:-40px;top:-55px;width:180px;height:180px;
-      border-radius:50%;background:rgba(255,255,255,.07);
-    }
-    .hero-badge{
-      display:inline-flex;align-items:center;gap:6px;
-      background:rgba(255,255,255,.14);padding:5px 10px;border-radius:999px;
-      font-size:.76rem;font-weight:700;
-    }
-    .hero h2{font-size:1.55rem;margin:12px 0 4px;letter-spacing:.01em}
-    .hero p{margin:0;color:#dbe8ff;font-size:.94rem}
-    .privacy{
-      display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding-top:14px;
-      border-top:1px solid rgba(255,255,255,.16);font-size:.78rem;color:#cfddf5;
-    }
-    .card{
-      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-      box-shadow:var(--shadow);padding:18px;margin-bottom:16px;
-    }
-    .card.flat{box-shadow:none}
-    .section-head{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      margin-bottom:14px;
-    }
-    .section-head h3{margin:0;font-size:1.02rem}
-    .section-head small{color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    label{display:block;font-weight:700;font-size:.86rem;margin-bottom:6px}
-    input,textarea,select{
-      width:100%;border:1.5px solid var(--line);background:var(--panel-2);
-      color:var(--text);border-radius:13px;padding:12px 13px;outline:none;
-      transition:.15s border,.15s box-shadow;
-    }
-    input:focus,textarea:focus,select:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 15%, transparent);
-    }
-    textarea{resize:vertical;min-height:120px}
-    #transcript{min-height:330px;line-height:1.8}
-    #minutesOutput{min-height:420px;line-height:1.8}
-    .help{font-size:.78rem;color:var(--muted);margin-top:6px}
-    .btn{
-      border:0;border-radius:14px;padding:13px 16px;font-weight:800;
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      min-height:48px;
-    }
-    .btn.primary{background:linear-gradient(145deg,var(--primary),var(--primary-2));color:#fff}
-    .btn.secondary{background:var(--panel-2);color:var(--text);border:1px solid var(--line)}
-    .btn.success{background:var(--accent);color:#fff}
-    .btn.danger{background:color-mix(in srgb,var(--danger) 12%,var(--panel));color:var(--danger);border:1px solid color-mix(in srgb,var(--danger) 32%,var(--line))}
-    .btn.warning{background:color-mix(in srgb,var(--warning) 15%,var(--panel));color:var(--warning);border:1px solid color-mix(in srgb,var(--warning) 30%,var(--line))}
-    .btn.full{width:100%}
-    .btn.big{min-height:62px;font-size:1.05rem;border-radius:17px}
-    .button-row{display:flex;gap:10px;flex-wrap:wrap}
-    .button-row .btn{flex:1 1 140px}
-    .record-panel{
-      padding:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--primary) 8%,var(--panel)),var(--panel));
-      border:1px solid color-mix(in srgb,var(--primary) 25%,var(--line));
-      border-radius:18px;margin-bottom:14px;
-    }
-    .record-status{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .record-left{display:flex;align-items:center;gap:12px}
-    .record-dot{
-      width:16px;height:16px;border-radius:50%;background:#9ca8b8;
-      box-shadow:0 0 0 6px color-mix(in srgb,#9ca8b8 16%,transparent);
-    }
-    .recording .record-dot{
-      background:#e23e4d;box-shadow:0 0 0 6px rgba(226,62,77,.15);
-      animation:pulse 1.2s infinite;
-    }
-    @keyframes pulse{50%{transform:scale(.75);opacity:.7}}
-    .timer{font-weight:900;font-variant-numeric:tabular-nums;font-size:1.15rem}
-    .marker-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
-    .marker{
-      border:1px solid var(--line);background:var(--panel);color:var(--text);
-      border-radius:13px;padding:11px 8px;font-weight:800;
-    }
-    .marker:active{transform:scale(.98)}
-    details{
-      background:var(--panel-2);border:1px solid var(--line);border-radius:14px;
-      padding:0 14px;margin-top:12px;
-    }
-    summary{padding:12px 0;font-weight:800;cursor:pointer}
-    .details-body{padding-bottom:14px}
-    .notice{
-      border-left:4px solid var(--warning);padding:11px 13px;
-      background:color-mix(in srgb,var(--warning) 10%,var(--panel));
-      border-radius:10px;color:var(--text);font-size:.82rem;margin:12px 0;
-    }
-    .chip-row{display:flex;flex-wrap:wrap;gap:8px}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;background:var(--panel-2);
-      border:1px solid var(--line);font-size:.78rem;font-weight:700;
-    }
-    .chip button{border:0;background:transparent;color:var(--danger);padding:0;font-weight:900}
-    .tab-strip{
-      display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;margin-bottom:10px;
-      scrollbar-width:none;
-    }
-    .tab-strip::-webkit-scrollbar{display:none}
-    .seg-btn{
-      white-space:nowrap;border:1px solid var(--line);background:var(--panel);
-      color:var(--muted);border-radius:999px;padding:8px 13px;font-weight:800;
-    }
-    .seg-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-    .preview{
-      white-space:pre-wrap;background:var(--panel-2);border:1px solid var(--line);
-      border-radius:14px;padding:15px;max-height:480px;overflow:auto;font-size:.9rem;
-    }
-    .history-toolbar{display:flex;gap:10px;margin-bottom:12px}
-    .history-item{
-      border:1px solid var(--line);background:var(--panel);border-radius:15px;
-      padding:14px;margin-bottom:10px;
-    }
-    .history-item h4{margin:0 0 4px;font-size:.96rem}
-    .history-meta{color:var(--muted);font-size:.78rem;margin-bottom:8px}
-    .history-snippet{color:var(--muted);font-size:.84rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .history-actions{display:flex;gap:8px;margin-top:10px}
-    .history-actions button{min-height:38px;padding:8px 12px;font-size:.82rem}
-    .empty{
-      text-align:center;padding:34px 14px;color:var(--muted);
-      border:1px dashed var(--line);border-radius:14px;
-    }
-    .dictionary-row{
-      display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:9px;
-    }
-    .dictionary-list{max-height:430px;overflow:auto;padding-right:3px}
-    .dict-item{
-      display:grid;grid-template-columns:1fr auto 1fr auto;gap:8px;align-items:center;
-      padding:10px;border-bottom:1px solid var(--line);font-size:.86rem;
-    }
-    .arrow{color:var(--muted);font-weight:900}
-    .small-btn{
-      width:36px;height:36px;border-radius:10px;border:1px solid var(--line);
-      background:var(--panel-2);color:var(--danger);font-weight:900;
-    }
-    .setting-row{
-      display:flex;justify-content:space-between;align-items:center;gap:16px;
-      padding:13px 0;border-bottom:1px solid var(--line);
-    }
-    .setting-row:last-child{border-bottom:0}
-    .setting-row strong{display:block}
-    .setting-row small{display:block;color:var(--muted)}
-    .switch{
-      position:relative;width:54px;height:31px;display:inline-block;flex:0 0 auto;
-    }
-    .switch input{opacity:0;width:0;height:0}
-    .slider{
-      position:absolute;inset:0;background:#aab4c3;border-radius:999px;transition:.2s;
-    }
-    .slider:before{
-      content:"";position:absolute;width:25px;height:25px;left:3px;top:3px;
-      background:white;border-radius:50%;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.2);
-    }
-    .switch input:checked + .slider{background:var(--primary)}
-    .switch input:checked + .slider:before{transform:translateX(23px)}
-    .bottom-nav{
-      position:fixed;left:0;right:0;bottom:0;z-index:30;
-      display:grid;grid-template-columns:repeat(5,1fr);
-      background:color-mix(in srgb,var(--panel) 95%,transparent);
-      backdrop-filter:blur(18px);
-      border-top:1px solid var(--line);
-      padding:7px max(7px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom)) max(7px,env(safe-area-inset-left));
-    }
-    .nav-btn{
-      border:0;background:transparent;color:var(--muted);
-      border-radius:12px;padding:6px 2px;font-size:.7rem;font-weight:800;
-      display:flex;flex-direction:column;align-items:center;gap:2px;
-    }
-    .nav-btn span:first-child{font-size:1.15rem}
-    .nav-btn.active{color:var(--primary);background:color-mix(in srgb,var(--primary) 9%,transparent)}
-    .toast{
-      position:fixed;left:50%;bottom:94px;transform:translate(-50%,16px);
-      background:#10233f;color:#fff;padding:11px 16px;border-radius:999px;
-      opacity:0;pointer-events:none;transition:.2s;z-index:80;
-      box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:.84rem;font-weight:700;
-      max-width:calc(100vw - 32px);text-align:center;
-    }
-    .toast.show{opacity:1;transform:translate(-50%,0)}
-    .modal{
-      position:fixed;inset:0;background:rgba(6,15,28,.62);z-index:60;
-      display:none;align-items:flex-end;justify-content:center;
-    }
-    .modal.show{display:flex}
-    .modal-card{
-      width:min(720px,100%);max-height:90vh;overflow:auto;
-      background:var(--panel);border-radius:24px 24px 0 0;padding:20px;
-      box-shadow:0 -20px 60px rgba(0,0,0,.3);
-    }
-    .modal-card h3{margin-top:0}
-    .kbd{
-      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:.8rem;background:var(--panel-2);border:1px solid var(--line);
-      border-bottom-width:2px;padding:2px 6px;border-radius:6px;
-    }
-    .counter{text-align:right;color:var(--muted);font-size:.76rem;margin-top:4px}
-    .danger-zone{border-color:color-mix(in srgb,var(--danger) 35%,var(--line))}
-    @media (max-width:720px){
-      .grid,.grid-3{grid-template-columns:1fr}
-      .hero h2{font-size:1.35rem}
-      .marker-row{grid-template-columns:repeat(3,1fr)}
-      .dictionary-row{grid-template-columns:1fr 1fr}
-      .dictionary-row .btn{grid-column:1/-1}
-      .dict-item{grid-template-columns:1fr auto 1fr auto}
-    }
-    @media (max-width:410px){
-      main{padding-left:12px;padding-right:12px}
-      .card{padding:15px}
-      .brand p{display:none}
-      .marker{font-size:.78rem;padding:10px 4px}
-      .nav-btn{font-size:.64rem}
-    }
-    @media print{
-      body{background:white;color:black}
-      .topbar,.bottom-nav,.no-print,.toast,.modal{display:none!important}
-      main{width:100%;padding:0}
-      .page{display:none!important}
-      #resultPage{display:block!important}
-      .card{box-shadow:none;border:0;padding:0}
-      #minutesOutput{border:0;background:white;min-height:0;padding:0;color:black}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090d18">
+<meta name="description" content="実務アプリとオリジナルゲームを分けて収録したKATO PORTAL">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KATO PORTAL">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>KATO PORTAL｜実務アプリ＆ゲーム</title>
+<style>
+:root{
+  --bg:#070a12;--bg2:#0d1422;--panel:#111a2b;--panel2:#18243a;
+  --text:#f7f9ff;--muted:#9aaac2;--line:#2b3955;
+  --app:#5ed6ff;--app2:#8c7fff;--game:#ffc765;--game2:#ff7c66;
+  --green:#63e6ae;--shadow:0 18px 50px rgba(0,0,0,.34);--radius:24px
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;
+  background:
+    radial-gradient(circle at 88% -5%,rgba(94,214,255,.17),transparent 28%),
+    radial-gradient(circle at 4% 20%,rgba(255,199,101,.10),transparent 25%),
+    linear-gradient(180deg,#070a12,#0b1220 45%,#070a12)
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.shell{max-width:1160px;margin:auto;min-height:100vh;padding-bottom:55px}
+.hero{
+  position:relative;overflow:hidden;padding:max(42px,env(safe-area-inset-top)) 18px 27px;
+  border-bottom:1px solid rgba(255,255,255,.08)
+}
+.hero:before{
+  content:"";position:absolute;width:300px;height:300px;right:-135px;top:-165px;
+  border-radius:50%;background:radial-gradient(circle,rgba(94,214,255,.26),transparent 67%)
+}
+.brand{display:flex;align-items:center;gap:13px;position:relative}
+.logo{
+  width:56px;height:56px;border-radius:19px;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--app),var(--app2));color:#06101d;
+  font-size:27px;font-weight:1000;box-shadow:0 12px 30px rgba(94,214,255,.22)
+}
+.brand h1{margin:0;font-size:clamp(1.65rem,7vw,2.75rem);letter-spacing:-.045em}
+.brand p{margin:2px 0 0;color:#b7c5da;font-size:.78rem;letter-spacing:.12em}
+.intro{position:relative;margin:21px 0 0;max-width:720px;color:#d7e1f0;line-height:1.75;font-size:.94rem}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px;position:relative}
+.install,.share{
+  border-radius:999px;padding:12px 17px;font-weight:900
+}
+.install{
+  display:none;border:0;background:linear-gradient(135deg,var(--app),var(--app2));color:#07111e
+}
+.install.show{display:inline-flex}
+.share{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.065);color:#eef3ff}
+.install-note{position:relative;margin-top:9px;min-height:16px;color:#8394b0;font-size:.72rem}
+
+/* Main category switch */
+.category-switch{
+  position:sticky;top:0;z-index:35;padding:12px 13px;
+  background:rgba(7,10,18,.91);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.07)
+}
+.switch-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:760px;margin:auto
+}
+.switch-btn{
+  min-height:66px;border:1px solid var(--line);border-radius:18px;
+  background:var(--panel);color:var(--muted);font-weight:950;text-align:left;
+  padding:10px 13px;display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center
+}
+.switch-btn .switch-icon{
+  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:21px;
+  background:var(--panel2)
+}
+.switch-btn strong{display:block;color:var(--text);font-size:.92rem}
+.switch-btn small{display:block;font-size:.68rem;margin-top:2px;font-weight:700}
+.switch-btn b{
+  min-width:28px;height:28px;padding:0 7px;border-radius:999px;
+  display:grid;place-items:center;background:var(--panel2);color:var(--text);font-size:.72rem
+}
+.switch-btn[data-mode="apps"].active{
+  border-color:rgba(94,214,255,.65);
+  background:linear-gradient(145deg,rgba(94,214,255,.16),rgba(140,127,255,.09)),var(--panel);
+  box-shadow:0 0 0 2px rgba(94,214,255,.07)
+}
+.switch-btn[data-mode="games"].active{
+  border-color:rgba(255,199,101,.62);
+  background:linear-gradient(145deg,rgba(255,199,101,.15),rgba(255,124,102,.08)),var(--panel);
+  box-shadow:0 0 0 2px rgba(255,199,101,.06)
+}
+.switch-btn[data-mode="apps"].active .switch-icon{background:linear-gradient(145deg,var(--app),var(--app2));color:#07111e}
+.switch-btn[data-mode="games"].active .switch-icon{background:linear-gradient(145deg,var(--game),var(--game2));color:#1d1004}
+
+.toolbar{padding:12px 14px 2px}
+.search{
+  max-width:720px;margin:0 auto 10px;display:flex;align-items:center;gap:9px;
+  padding:10px 13px;border:1px solid var(--line);border-radius:15px;background:var(--panel)
+}
+.search span{color:var(--muted)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--text);padding:3px}
+.subfilters{display:flex;gap:7px;max-width:900px;margin:auto;overflow:auto;scrollbar-width:none;padding-bottom:8px}
+.subfilters::-webkit-scrollbar{display:none}
+.filter{
+  flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:#aab9cf;
+  border-radius:999px;padding:8px 12px;font-size:.75rem;font-weight:850
+}
+.filter.active{background:#2c4569;border-color:#5c78a5;color:#fff}
+main{padding:10px 14px 22px}
+.section{max-width:1100px;margin:0 auto}
+.section[hidden]{display:none!important}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:7px 3px 12px}
+.section-head h2{font-size:1.25rem;margin:0}
+.section-head p{font-size:.76rem;color:var(--muted);margin:4px 0 0}
+.count{font-size:.73rem;color:#8fa2bf}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:13px}
+.card{
+  position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:232px;
+  padding:17px;border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(150deg,rgba(255,255,255,.035),transparent 42%),var(--panel);
+  box-shadow:var(--shadow);transition:.18s transform,.18s border-color
+}
+.card:hover{transform:translateY(-2px)}
+.card.hidden{display:none}
+.app-card:hover{border-color:#4f7da1}
+.game-card:hover{border-color:#7e6040}
+.card:before{
+  content:"";position:absolute;width:148px;height:148px;right:-67px;top:-72px;
+  border-radius:50%;background:var(--glow,rgba(94,214,255,.17))
+}
+.card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative}
+.card-icon{
+  width:53px;height:53px;border-radius:17px;display:grid;place-items:center;font-size:25px;
+  background:var(--icon);box-shadow:inset 0 1px rgba(255,255,255,.16),0 9px 22px rgba(0,0,0,.24)
+}
+.kind{
+  padding:5px 8px;border-radius:999px;font-size:.61rem;font-weight:950;letter-spacing:.08em;
+  color:#ceebff;background:#152f4a;border:1px solid #2e557d
+}
+.kind.game{color:#ffe2ad;background:#3b2a15;border-color:#6b4b22}
+.card h3{position:relative;margin:14px 0 6px;font-size:1.08rem}
+.card p{position:relative;margin:0;color:var(--muted);font-size:.82rem;line-height:1.65;flex:1}
+.tags{position:relative;display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tag{font-size:.65rem;padding:5px 7px;border-radius:999px;background:var(--panel2);color:#acbdd4;border:1px solid #2d3f5e}
+.open{
+  position:relative;display:flex;align-items:center;justify-content:center;text-decoration:none;
+  border-radius:13px;padding:12px;color:#07111d;font-size:.86rem;font-weight:950
+}
+.app-card .open{background:linear-gradient(135deg,var(--app),var(--app2))}
+.game-card .open{background:linear-gradient(135deg,var(--game),var(--game2));color:#1a1005}
+.empty{
+  display:none;max-width:700px;margin:30px auto;padding:30px;text-align:center;
+  border:1px dashed var(--line);border-radius:18px;color:var(--muted)
+}
+.empty.show{display:block}
+footer{text-align:center;color:#687a98;font-size:.72rem;padding:17px 16px max(28px,env(safe-area-inset-bottom))}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:100;transform:translate(-50%,20px);
+  opacity:0;pointer-events:none;transition:.2s;background:#f2f7ff;color:#0b1527;
+  border-radius:999px;padding:10px 15px;font-size:.76rem;font-weight:900;box-shadow:var(--shadow)
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:560px){
+  .brand h1{font-size:1.72rem}
+  .switch-btn{grid-template-columns:39px 1fr auto;padding:9px 10px}
+  .switch-btn .switch-icon{width:39px;height:39px}
+  .grid{grid-template-columns:1fr}
+  .card{min-height:218px}
+}
+@media(max-width:380px){
+  .switch-btn{grid-template-columns:34px 1fr;padding:8px}
+  .switch-btn .switch-icon{width:34px;height:34px;border-radius:11px}
+  .switch-btn b{display:none}
+  .switch-btn small{font-size:.62rem}
+}
+</style>
 </head>
 <body>
-<div class="app-shell" id="appShell">
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">議</div>
-      <div>
-        <h1>議事録一発</h1>
-        <p>録るだけ。会議が、仕事になる。</p>
-      </div>
+<div class="shell">
+<header class="hero">
+  <div class="brand">
+    <div class="logo">K</div>
+    <div>
+      <h1>KATO PORTAL</h1>
+      <p>BUSINESS APPS &amp; ORIGINAL GAMES</p>
     </div>
-    <button class="icon-btn" id="themeQuickBtn" aria-label="表示テーマ切替">◐</button>
-  </header>
+  </div>
+  <p class="intro">
+    仕事や投資に使う<strong>実務アプリ</strong>と、スマホで遊べる<strong>オリジナルゲーム</strong>を、
+    混ざらないように2つの入口へ分けました。
+  </p>
+  <div class="hero-actions">
+    <button class="install" id="installBtn">ホーム画面に追加</button>
+    <button class="share" id="shareBtn">一覧URLを共有</button>
+  </div>
+  <div class="install-note" id="installNote">Chromeのメニューから「アプリをインストール」または「ホーム画面に追加」も選べます。</div>
+</header>
 
-  <main>
-    <section class="page active" id="newPage">
-      <div class="hero">
-        <span class="hero-badge">🔒 端末内保存</span>
-        <h2>会議を録るか、文字起こしを貼るだけ</h2>
-        <p>誤字を整え、決定事項・宿題・期限を抽出しやすい形に変換します。</p>
-        <div class="privacy">
-          <span>🛡️</span>
-          <span>議事録・履歴はこの端末内に保存します。音声認識はブラウザの機能を使うため、Chromeなどでは音声が認識サービスへ送信される場合があります。</span>
-        </div>
-      </div>
+<nav class="category-switch" aria-label="メインカテゴリー">
+  <div class="switch-grid">
+    <button class="switch-btn active" data-mode="apps">
+      <span class="switch-icon">🧰</span>
+      <span><strong>実務アプリ</strong><small>仕事・投資・占い</small></span>
+      <b>4</b>
+    </button>
+    <button class="switch-btn" data-mode="games">
+      <span class="switch-icon">🎮</span>
+      <span><strong>ゲーム</strong><small>RPG・パズル・アクション</small></span>
+      <b>6</b>
+    </button>
+  </div>
+</nav>
 
-      <div class="card">
-        <div class="section-head">
-          <h3>① 会議情報</h3>
-          <small>分かる範囲だけでOK</small>
-        </div>
-        <div class="grid">
-          <div>
-            <label for="meetingTitle">会議名</label>
-            <input id="meetingTitle" placeholder="例：日立製作所 技術打合せ" />
-          </div>
-          <div>
-            <label for="meetingDate">日時</label>
-            <input id="meetingDate" type="datetime-local" />
-          </div>
-          <div>
-            <label for="company">相手先・部署</label>
-            <input id="company" placeholder="例：株式会社〇〇 技術部" />
-          </div>
-          <div>
-            <label for="attendees">出席者</label>
-            <input id="attendees" placeholder="例：相手先：山田様／自社：加藤、田中" />
-          </div>
-        </div>
-        <details>
-          <summary>目的・背景などを追加</summary>
-          <div class="details-body">
-            <label for="meetingPurpose">会議目的</label>
-            <textarea id="meetingPurpose" rows="3" placeholder="例：高純度SiC粉末の協業可能性と評価項目を確認する"></textarea>
-          </div>
-        </details>
-      </div>
-
-      <div class="card">
-        <div class="section-head">
-          <h3>② 録音・文字起こし</h3>
-          <small id="speechSupportText">音声認識を確認中</small>
-        </div>
-
-        <div class="record-panel" id="recordPanel">
-          <div class="record-status">
-            <div class="record-left">
-              <div class="record-dot"></div>
-              <div>
-                <strong id="recordLabel">録音待機中</strong>
-                <div class="help" id="interimText">Chrome系ブラウザ推奨</div>
-              </div>
-            </div>
-            <div class="timer" id="timer">00:00:00</div>
-          </div>
-          <div class="button-row" style="margin-top:14px">
-            <button class="btn primary big" id="recordBtn">🎙️ 音声入力を開始</button>
-            <button class="btn secondary big" id="pauseBtn" disabled>⏸ 一時停止</button>
-          </div>
-          <div class="marker-row">
-            <button class="marker" data-marker="重要">⭐ 重要</button>
-            <button class="marker" data-marker="決定">✅ 決定</button>
-            <button class="marker" data-marker="宿題">📌 宿題</button>
-          </div>
-        </div>
-
-        <div class="notice" id="voiceDiagnostic">
-          音声入力の利用環境を確認しています。
-        </div>
-        <div class="button-row" style="margin-bottom:14px">
-          <button class="btn secondary" id="keyboardVoiceBtn">⌨️ スマホ標準の音声入力</button>
-          <button class="btn secondary" id="voiceHelpBtn">❓ 使えない時の確認</button>
-        </div>
-
-        <label for="transcript">文字起こし</label>
-        <textarea id="transcript" placeholder="ここに文字起こしを貼り付けます。
-
-例：
-山田：今回の評価はまずICPと酸素量から始めたいです。
-加藤：承知しました。サンプル条件は当社で今週中に整理します。
-山田：次回は7月20日でお願いします。"></textarea>
-        <div class="counter"><span id="charCount">0</span>文字</div>
-
-        <div class="button-row" style="margin-top:12px">
-          <button class="btn secondary" id="pasteBtn">📋 貼り付け</button>
-          <button class="btn secondary" id="sampleBtn">🧪 サンプル</button>
-          <button class="btn danger" id="clearTranscriptBtn">🗑 消去</button>
-        </div>
-
-        <details>
-          <summary>整形オプション</summary>
-          <div class="details-body">
-            <div class="grid">
-              <div>
-                <label for="detailLevel">議事録の詳しさ</label>
-                <select id="detailLevel">
-                  <option value="brief">簡潔版：決定事項と宿題中心</option>
-                  <option value="standard" selected>標準版：通常の社内共有向け</option>
-                  <option value="detail">詳細版：技術背景や議論も残す</option>
-                </select>
-              </div>
-              <div>
-                <label for="tone">文体</label>
-                <select id="tone">
-                  <option value="business" selected>社内向け・簡潔</option>
-                  <option value="formal">社外共有向け・丁寧</option>
-                  <option value="technical">技術報告書風</option>
-                </select>
-              </div>
-            </div>
-            <div class="setting-row">
-              <div>
-                <strong>フィラーを削除</strong>
-                <small>「えー」「あの」「そのー」などを整理</small>
-              </div>
-              <label class="switch"><input id="removeFillers" type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="setting-row">
-              <div>
-                <strong>用語辞書を適用</strong>
-                <small>登録した誤認識を一括補正</small>
-              </div>
-              <label class="switch"><input id="applyDictionary" type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="setting-row">
-              <div>
-                <strong>推測を決定事項にしない</strong>
-                <small>「検討します」「可能性がある」を未決扱いにする</small>
-              </div>
-              <label class="switch"><input id="strictDecision" type="checkbox" checked><span class="slider"></span></label>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <div class="card">
-        <button class="btn primary big full" id="generateBtn">✨ 議事録作成画面へ</button>
-        <p class="help" style="text-align:center;margin-bottom:0">端末内で下書きを作り、ChatGPT用の高精度な指示文も同時生成します。</p>
-      </div>
-    </section>
-
-    <section class="page" id="resultPage">
-      <div class="card">
-        <div class="section-head">
-          <h3>議事録</h3>
-          <small id="resultStatus">編集中</small>
-        </div>
-        <div class="tab-strip no-print">
-          <button class="seg-btn active" data-result-tab="minutes">議事録</button>
-          <button class="seg-btn" data-result-tab="cleaned">整形後文字起こし</button>
-          <button class="seg-btn" data-result-tab="prompt">ChatGPT用指示文</button>
-        </div>
-
-        <div id="minutesTab">
-          <textarea id="minutesOutput" placeholder="ここに議事録が表示されます。自由に編集できます。"></textarea>
-          <div class="counter"><span id="minutesCharCount">0</span>文字</div>
-        </div>
-        <div id="cleanedTab" hidden>
-          <div class="preview" id="cleanedPreview"></div>
-        </div>
-        <div id="promptTab" hidden>
-          <div class="preview" id="promptPreview"></div>
-        </div>
-
-        <div class="button-row no-print" style="margin-top:14px">
-          <button class="btn primary" id="copyCurrentBtn">📋 表示中をコピー</button>
-          <button class="btn secondary" id="openChatGPTBtn">🤖 ChatGPTを開く</button>
-          <button class="btn success" id="saveBtn">💾 保存</button>
-        </div>
-      </div>
-
-      <div class="card no-print">
-        <div class="section-head">
-          <h3>書き出し</h3>
-          <small>共有・保存用</small>
-        </div>
-        <div class="grid-3">
-          <button class="btn secondary" id="exportTxtBtn">TXT</button>
-          <button class="btn secondary" id="exportMdBtn">Markdown</button>
-          <button class="btn secondary" id="exportHtmlBtn">HTML</button>
-        </div>
-        <button class="btn secondary full" style="margin-top:10px" id="printBtn">🖨 印刷・PDF保存</button>
-      </div>
-
-      <div class="card no-print">
-        <div class="section-head">
-          <h3>用途別コピー</h3>
-          <small>短く変換</small>
-        </div>
-        <div class="button-row">
-          <button class="btn secondary" id="copyActionsBtn">📌 宿題だけ</button>
-          <button class="btn secondary" id="copyMailBtn">✉️ メール共有文</button>
-          <button class="btn secondary" id="copyTeamsBtn">💬 Teams投稿文</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" id="historyPage">
-      <div class="card">
-        <div class="section-head">
-          <h3>過去の議事録</h3>
-          <small id="historyCount">0件</small>
-        </div>
-        <div class="history-toolbar">
-          <input id="historySearch" placeholder="会議名・相手先で検索" />
-        </div>
-        <div id="historyList"></div>
-      </div>
-    </section>
-
-    <section class="page" id="dictionaryPage">
-      <div class="card">
-        <div class="section-head">
-          <h3>専門用語・誤字補正辞書</h3>
-          <small><span id="dictCount">0</span>語</small>
-        </div>
-        <p class="help">左側の誤認識を見つけたら、右側の正しい表記へ置き換えます。</p>
-        <div class="dictionary-row">
-          <div>
-            <label for="dictWrong">誤認識・揺れ</label>
-            <input id="dictWrong" placeholder="例：シック" />
-          </div>
-          <div>
-            <label for="dictCorrect">正しい表記</label>
-            <input id="dictCorrect" placeholder="例：SiC" />
-          </div>
-          <button class="btn primary" id="addDictBtn">追加</button>
-        </div>
-        <div class="dictionary-list" id="dictionaryList"></div>
-      </div>
-      <div class="card flat">
-        <button class="btn secondary full" id="restoreDictBtn">初期辞書を復元</button>
-      </div>
-    </section>
-
-    <section class="page" id="settingsPage">
-      <div class="card">
-        <div class="section-head"><h3>表示・操作設定</h3></div>
-        <div class="setting-row">
-          <div>
-            <strong>ダークモード</strong>
-            <small>暗い場所で見やすくします</small>
-          </div>
-          <label class="switch"><input id="darkMode" type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div class="setting-row">
-          <div>
-            <strong>シニア向け大文字</strong>
-            <small>文字とボタンを大きくします</small>
-          </div>
-          <label class="switch"><input id="largeText" type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div class="setting-row">
-          <div>
-            <strong>入力内容を自動保存</strong>
-            <small>ブラウザを閉じても途中から再開</small>
-          </div>
-          <label class="switch"><input id="autoSave" type="checkbox" checked><span class="slider"></span></label>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-head"><h3>データ管理</h3></div>
-        <div class="button-row">
-          <button class="btn secondary" id="backupBtn">バックアップ書き出し</button>
-          <button class="btn secondary" id="restoreBtn">バックアップ読込み</button>
-        </div>
-        <input id="restoreFile" type="file" accept=".json,application/json" hidden />
-      </div>
-
-      <div class="card danger-zone">
-        <div class="section-head"><h3>初期化</h3></div>
-        <p class="help">議事録履歴・途中入力・辞書・設定をこの端末から削除します。</p>
-        <button class="btn danger full" id="resetAllBtn">すべてのデータを削除</button>
-      </div>
-    </section>
-  </main>
-
-  <nav class="bottom-nav no-print">
-    <button class="nav-btn active" data-page="newPage"><span>✍️</span><span>作成</span></button>
-    <button class="nav-btn" data-page="resultPage"><span>📄</span><span>結果</span></button>
-    <button class="nav-btn" data-page="historyPage"><span>🗂️</span><span>履歴</span></button>
-    <button class="nav-btn" data-page="dictionaryPage"><span>📚</span><span>辞書</span></button>
-    <button class="nav-btn" data-page="settingsPage"><span>⚙️</span><span>設定</span></button>
-  </nav>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<div class="modal" id="confirmModal">
-  <div class="modal-card">
-    <h3 id="modalTitle">確認</h3>
-    <p id="modalText"></p>
-    <div class="button-row">
-      <button class="btn secondary" id="modalCancel">キャンセル</button>
-      <button class="btn danger" id="modalOk">実行する</button>
-    </div>
+<div class="toolbar">
+  <label class="search"><span>⌕</span><input id="searchInput" placeholder="実務アプリを検索" autocomplete="off"></label>
+  <div class="subfilters" id="appFilters">
+    <button class="filter active" data-filter="all">すべて</button>
+    <button class="filter" data-filter="work">仕事</button>
+    <button class="filter" data-filter="invest">投資</button>
+    <button class="filter" data-filter="fortune">占い</button>
+  </div>
+  <div class="subfilters" id="gameFilters" hidden>
+    <button class="filter active" data-filter="all">すべて</button>
+    <button class="filter" data-filter="strategy">戦略</button>
+    <button class="filter" data-filter="puzzle">パズル</button>
+    <button class="filter" data-filter="shooting">シューティング</button>
+    <button class="filter" data-filter="rpg">RPG</button>
+    <button class="filter" data-filter="action">アクション</button>
   </div>
 </div>
 
+<main>
+<section class="section" id="appsSection">
+  <div class="section-head">
+    <div><h2>実務アプリ</h2><p>仕事、投資の学習・分析、占いツール</p></div>
+    <span class="count" id="appCount">4本</span>
+  </div>
+  <div class="grid">
+    <article class="card app-card" data-filter-tags="work 仕事 議事録 音声入力 会議 文字起こし">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#176fe5,#13a58d)">📝</div><span class="kind">BUSINESS</span></div>
+      <h3>議事録一発</h3>
+      <p>音声入力や文字起こしから、決定事項・宿題・期限を整理。専門用語辞書や履歴保存にも対応。</p>
+      <div class="tags"><span class="tag">仕事</span><span class="tag">音声入力</span><span class="tag">議事録</span></div>
+      <a class="open" href="./app_gijiroku.html">アプリを開く</a>
+    </article>
+
+    <article class="card app-card" data-filter-tags="invest 投資 株 株価 分析 初心者 予報 ナビ">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#2176d2,#55a7ff)">📈</div><span class="kind">ANALYSIS</span></div>
+      <h3>かぶ予報ナビ Pro</h3>
+      <p>初心者にも分かりやすい株価分析ナビ。テクニカルとファンダメンタルの見方を整理します。</p>
+      <div class="tags"><span class="tag">投資</span><span class="tag">株価分析</span><span class="tag">初心者向け</span></div>
+      <a class="open" href="./app_kabu_yohou.html">アプリを開く</a>
+    </article>
+
+    <article class="card app-card" data-filter-tags="invest 投資 株 学習 トレーニング クイズ market judge 500">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#00bd72,#047d60)">⚖️</div><span class="kind">LEARNING</span></div>
+      <h3>株トレ｜MARKET JUDGE 500</h3>
+      <p>チャート・決算・需給を3択で学ぶ株式判断トレーニング。全500問で判断力を鍛えます。</p>
+      <div class="tags"><span class="tag">投資学習</span><span class="tag">全500問</span><span class="tag">トレーニング</span></div>
+      <a class="open" href="./app_kabu_training.html">アプリを開く</a>
+    </article>
+
+    <article class="card app-card" data-filter-tags="fortune 占い 万象占術 運命 共鳴 シニア">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#7c5bf3,#d064bd)">🔮</div><span class="kind">FORTUNE</span></div>
+      <h3>万象占術｜運命共鳴</h3>
+      <p>複数の占術を総合して結果を表示。大きな文字と落ち着いた画面で見やすくしています。</p>
+      <div class="tags"><span class="tag">占い</span><span class="tag">見やすい</span><span class="tag">記録保存</span></div>
+      <a class="open" href="./app_bansho_uranai.html">アプリを開く</a>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="gamesSection" hidden>
+  <div class="section-head">
+    <div><h2>オリジナルゲーム</h2><p>インストール不要で遊べるスマホ向けHTMLゲーム</p></div>
+    <span class="count" id="gameCount">6本</span>
+  </div>
+  <div class="grid">
+    <article class="card game-card" data-filter-tags="strategy 戦略 戦国 国取り シミュレーション">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#8e4427,#d18a3a)">🏯</div><span class="kind game">STRATEGY</span></div>
+      <h3>戦国十二州 天下争覇録</h3>
+      <p>領地を広げ、武将を育て、十二州の統一を目指す戦略シミュレーション。</p>
+      <div class="tags"><span class="tag">戦略</span><span class="tag">国取り</span><span class="tag">武将育成</span></div>
+      <a class="open" href="./戦国十二州_天下争覇録_極・完成版.html">プレイする</a>
+    </article>
+
+    <article class="card game-card" data-filter-tags="puzzle パズル gravity shift 重力 思考">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#3e64ca,#7d56d9)">↕</div><span class="kind game">PUZZLE</span></div>
+      <h3>GRAVITY SHIFT</h3>
+      <p>重力を上下左右へ切り替えて迷宮を攻略する思考型サイバーパズル。</p>
+      <div class="tags"><span class="tag">重力</span><span class="tag">思考型</span><span class="tag">ステージ制</span></div>
+      <a class="open" href="./GRAVITY SHIFT.html">プレイする</a>
+    </article>
+
+    <article class="card game-card" data-filter-tags="puzzle パズル crash core 連鎖 バトル">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#c43c72,#f1783e)">💥</div><span class="kind game">PUZZLE</span></div>
+      <h3>CRASH CORE</h3>
+      <p>同色ブロックをつなぎ、大連鎖と必殺技で敵を倒す爽快バトルパズル。</p>
+      <div class="tags"><span class="tag">連鎖</span><span class="tag">バトル</span><span class="tag">爽快演出</span></div>
+      <a class="open" href="./crash_core.html">プレイする</a>
+    </article>
+
+    <article class="card game-card" data-filter-tags="shooting シューティング void striker dx 宇宙">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#087ba3,#4e58c7)">🚀</div><span class="kind game">SHOOTING</span></div>
+      <h3>VOID STRIKER DX</h3>
+      <p>宇宙を駆け抜けるスマホ向けハイスピードシューティング。</p>
+      <div class="tags"><span class="tag">シューティング</span><span class="tag">宇宙</span><span class="tag">ボス戦</span></div>
+      <a class="open" href="./void_striker_dx.html">プレイする</a>
+    </article>
+
+    <article class="card game-card" data-filter-tags="rpg 星使い 魔物 王国 ファンタジー 仲間 カジノ">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#4d55ba,#b85fbd)">✨</div><span class="kind game">RPG</span></div>
+      <h3>星使いと魔物の王国</h3>
+      <p>魔物を仲間にしながら王国を冒険するファンタジーRPG。</p>
+      <div class="tags"><span class="tag">RPG</span><span class="tag">魔物仲間</span><span class="tag">カジノ</span></div>
+      <a class="open" href="./星使いと魔物の王国.html">プレイする</a>
+    </article>
+
+    <article class="card game-card" data-filter-tags="action アクション 月影一閃 和風 剣">
+      <div class="card-top"><div class="card-icon" style="--icon:linear-gradient(145deg,#29396f,#8a2e5f)">⚔️</div><span class="kind game">ACTION</span></div>
+      <h3>月影一閃</h3>
+      <p>月夜を駆け、斬撃と必殺技で敵を倒す和風スタイリッシュアクション。</p>
+      <div class="tags"><span class="tag">アクション</span><span class="tag">和風</span><span class="tag">剣戟</span></div>
+      <a class="open" href="./月影一閃.html">プレイする</a>
+    </article>
+  </div>
+</section>
+
+<div class="empty" id="empty">該当する項目がありません。</div>
+</main>
+
+<footer>
+  © KATO PORTAL<br>
+  実務アプリの記録やゲームのセーブは、各アプリ内でブラウザに保存されます。
+</footer>
+</div>
+<div class="toast" id="toast"></div>
+
 <script>
 (() => {
-  "use strict";
+  const modeButtons=[...document.querySelectorAll('.switch-btn')];
+  const appFilters=document.getElementById('appFilters');
+  const gameFilters=document.getElementById('gameFilters');
+  const appsSection=document.getElementById('appsSection');
+  const gamesSection=document.getElementById('gamesSection');
+  const search=document.getElementById('searchInput');
+  const empty=document.getElementById('empty');
+  let mode='apps';
+  let filter='all';
 
-  const STORAGE = {
-    draft: "minutes_app_draft_v1",
-    history: "minutes_app_history_v1",
-    dictionary: "minutes_app_dictionary_v1",
-    settings: "minutes_app_settings_v1"
+  const activeCards=()=>[...document.querySelectorAll(mode==='apps'?'.app-card':'.game-card')];
+
+  function resetFilters(){
+    const group=mode==='apps'?appFilters:gameFilters;
+    [...group.querySelectorAll('.filter')].forEach((b,i)=>b.classList.toggle('active',i===0));
+    filter='all';
+  }
+
+  function render(){
+    appsSection.hidden=mode!=='apps';
+    gamesSection.hidden=mode!=='games';
+    appFilters.hidden=mode!=='apps';
+    gameFilters.hidden=mode!=='games';
+    search.placeholder=mode==='apps'?'実務アプリを検索':'ゲームを検索';
+
+    const q=search.value.trim().toLowerCase();
+    let shown=0;
+    activeCards().forEach(card=>{
+      const text=(card.dataset.filterTags+' '+card.innerText).toLowerCase();
+      const okFilter=filter==='all'||text.includes(filter);
+      const okQuery=!q||text.includes(q);
+      const visible=okFilter&&okQuery;
+      card.classList.toggle('hidden',!visible);
+      if(visible)shown++;
+    });
+    document.getElementById(mode==='apps'?'appCount':'gameCount').textContent=shown+'本';
+    empty.classList.toggle('show',shown===0);
+  }
+
+  modeButtons.forEach(btn=>btn.addEventListener('click',()=>{
+    mode=btn.dataset.mode;
+    modeButtons.forEach(x=>x.classList.toggle('active',x===btn));
+    search.value='';
+    resetFilters();
+    render();
+    window.scrollTo({top:document.querySelector('.category-switch').offsetTop,behavior:'smooth'});
+  }));
+
+  document.querySelectorAll('.subfilters').forEach(group=>{
+    group.addEventListener('click',e=>{
+      const btn=e.target.closest('.filter');
+      if(!btn)return;
+      filter=btn.dataset.filter;
+      [...group.querySelectorAll('.filter')].forEach(x=>x.classList.toggle('active',x===btn));
+      render();
+    });
+  });
+  search.addEventListener('input',render);
+
+  const toast=text=>{
+    const e=document.getElementById('toast');e.textContent=text;e.classList.add('show');
+    clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);
   };
 
-  const DEFAULT_DICTIONARY = [
-    ["シック","SiC"],["エスアイシー","SiC"],["炭化ケイ素","SiC"],
-    ["イビ電","イビデン"],["イビテン","イビデン"],
-    ["トーカロー","トーカロ"],["屋久島電工","屋久島電工"],
-    ["シリカゾル","シリカゾル"],["シリコンゾル","シリカゾル"],
-    ["ラマンアール","ラマンR"],["表面粗さ","表面粗さ"],
-    ["アイシーピー","ICP"],["シーヴイディー","CVD"],
-    ["ティーアイエム","TIM"],["ユーイーブイ","EUV"],
-    ["エイチビーエム","HBM"],["ディーエルシー","DLC"],
-    ["非粘着コート","非粘着コート"],["アルミナ","アルミナ"],
-    ["ファンダメンタル","ファンダメンタル"],["テクニカル","テクニカル"]
-  ];
-
-  const FILLERS = [
-    /(^|\s|[、。])えー+/g, /(^|\s|[、。])えっと+/g, /(^|\s|[、。])あのー*/g,
-    /(^|\s|[、。])そのー+/g, /(^|\s|[、。])まあ[、。]?/g, /(^|\s|[、。])なんか[、。]?/g,
-    /(^|\s|[、。])うーん[、。]?/g, /(^|\s|[、。])はいはい[、。]?/g
-  ];
-
-  const el = id => document.getElementById(id);
-  const $all = selector => [...document.querySelectorAll(selector)];
-  let currentResultTab = "minutes";
-  let recognition = null;
-  let isRecording = false;
-  let isPaused = false;
-  let recordStart = 0;
-  let elapsedBeforePause = 0;
-  let timerInterval = null;
-  let pendingConfirm = null;
-  let autosaveTimer = null;
-  let microphonePermissionGranted = false;
-  let recognitionStarting = false;
-  let recognitionErrorLock = false;
-
-  const state = {
-    dictionary: loadJSON(STORAGE.dictionary, DEFAULT_DICTIONARY),
-    history: loadJSON(STORAGE.history, []),
-    settings: loadJSON(STORAGE.settings, {
-      darkMode:false, largeText:false, autoSave:true
-    }),
-    cleanedTranscript:"",
-    generatedPrompt:"",
-    currentId:null
-  };
-
-  function loadJSON(key, fallback){
+  document.getElementById('shareBtn').addEventListener('click',async()=>{
     try{
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : structuredClone(fallback);
-    }catch{
-      return structuredClone(fallback);
-    }
-  }
-
-  function saveJSON(key, value){
-    localStorage.setItem(key, JSON.stringify(value));
-  }
-
-  function toast(message){
-    const t = el("toast");
-    t.textContent = message;
-    t.classList.add("show");
-    clearTimeout(t._timer);
-    t._timer = setTimeout(() => t.classList.remove("show"), 2200);
-  }
-
-  function confirmAction(title, text, onConfirm){
-    el("modalTitle").textContent = title;
-    el("modalText").textContent = text;
-    pendingConfirm = onConfirm;
-    el("confirmModal").classList.add("show");
-  }
-
-  function closeModal(){
-    el("confirmModal").classList.remove("show");
-    pendingConfirm = null;
-    el("modalOk").style.display = "";
-    el("modalCancel").textContent = "キャンセル";
-    el("modalText").textContent = "";
-  }
-
-  function navigate(pageId){
-    $all(".page").forEach(p => p.classList.toggle("active", p.id === pageId));
-    $all(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === pageId));
-    window.scrollTo({top:0, behavior:"smooth"});
-    if(pageId === "historyPage") renderHistory();
-    if(pageId === "dictionaryPage") renderDictionary();
-  }
-
-  function applySettings(){
-    document.documentElement.dataset.theme = state.settings.darkMode ? "dark" : "light";
-    document.documentElement.style.setProperty("--font-scale", state.settings.largeText ? "1.12" : "1");
-    el("darkMode").checked = state.settings.darkMode;
-    el("largeText").checked = state.settings.largeText;
-    el("autoSave").checked = state.settings.autoSave;
-  }
-
-  function formatDateTimeLocal(date = new Date()){
-    const pad = n => String(n).padStart(2,"0");
-    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  }
-
-  function formatJPDate(value){
-    if(!value) return "未入力";
-    const d = new Date(value);
-    if(Number.isNaN(d.getTime())) return value;
-    return new Intl.DateTimeFormat("ja-JP",{
-      year:"numeric",month:"2-digit",day:"2-digit",
-      hour:"2-digit",minute:"2-digit",weekday:"short"
-    }).format(d);
-  }
-
-  function safeFilename(name){
-    return (name || "議事録").replace(/[\\/:*?"<>|]/g,"_").slice(0,60);
-  }
-
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, ch => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-    })[ch]);
-  }
-
-  function getFormData(){
-    return {
-      meetingTitle:el("meetingTitle").value.trim(),
-      meetingDate:el("meetingDate").value,
-      company:el("company").value.trim(),
-      attendees:el("attendees").value.trim(),
-      meetingPurpose:el("meetingPurpose").value.trim(),
-      transcript:el("transcript").value,
-      detailLevel:el("detailLevel").value,
-      tone:el("tone").value,
-      removeFillers:el("removeFillers").checked,
-      applyDictionary:el("applyDictionary").checked,
-      strictDecision:el("strictDecision").checked
-    };
-  }
-
-  function setFormData(data={}){
-    const ids = ["meetingTitle","meetingDate","company","attendees","meetingPurpose","transcript","detailLevel","tone"];
-    ids.forEach(id => {
-      if(data[id] !== undefined && el(id)) el(id).value = data[id];
-    });
-    ["removeFillers","applyDictionary","strictDecision"].forEach(id => {
-      if(data[id] !== undefined) el(id).checked = !!data[id];
-    });
-    updateCounters();
-  }
-
-  function saveDraft(){
-    if(!state.settings.autoSave) return;
-    const payload = {
-      form:getFormData(),
-      minutesOutput:el("minutesOutput").value,
-      cleanedTranscript:state.cleanedTranscript,
-      generatedPrompt:state.generatedPrompt,
-      currentId:state.currentId,
-      savedAt:new Date().toISOString()
-    };
-    saveJSON(STORAGE.draft,payload);
-    el("resultStatus").textContent = "自動保存済み";
-  }
-
-  function scheduleAutosave(){
-    if(!state.settings.autoSave) return;
-    clearTimeout(autosaveTimer);
-    autosaveTimer = setTimeout(saveDraft,500);
-  }
-
-  function restoreDraft(){
-    const draft = loadJSON(STORAGE.draft,null);
-    if(!draft) return;
-    setFormData(draft.form || {});
-    el("minutesOutput").value = draft.minutesOutput || "";
-    state.cleanedTranscript = draft.cleanedTranscript || "";
-    state.generatedPrompt = draft.generatedPrompt || "";
-    state.currentId = draft.currentId || null;
-    el("cleanedPreview").textContent = state.cleanedTranscript;
-    el("promptPreview").textContent = state.generatedPrompt;
-    updateCounters();
-  }
-
-  function cleanTranscript(text, options){
-    let out = text
-      .replace(/\r\n/g,"\n")
-      .replace(/[ \t]+\n/g,"\n")
-      .replace(/\n{3,}/g,"\n\n")
-      .trim();
-
-    if(options.removeFillers){
-      FILLERS.forEach(rx => out = out.replace(rx, "$1"));
-      out = out.replace(/、{2,}/g,"、").replace(/。{2,}/g,"。");
-    }
-
-    if(options.applyDictionary){
-      state.dictionary
-        .filter(pair => pair[0] && pair[1] && pair[0] !== pair[1])
-        .sort((a,b) => b[0].length - a[0].length)
-        .forEach(([wrong,correct]) => {
-          out = out.split(wrong).join(correct);
-        });
-    }
-
-    out = out
-      .split("\n")
-      .map(line => line.trim())
-      .filter((line,i,arr) => line || (i>0 && arr[i-1]))
-      .join("\n")
-      .replace(/[ \u3000]{2,}/g," ");
-
-    return out;
-  }
-
-  function splitStatements(text){
-    return text
-      .replace(/\n+/g,"。")
-      .split(/[。！？!?]/)
-      .map(s => s.trim())
-      .filter(s => s.length >= 4);
-  }
-
-  function unique(arr){
-    return [...new Set(arr.map(s => s.trim()).filter(Boolean))];
-  }
-
-  function detectLines(text, patterns, exclusions=[]){
-    const statements = splitStatements(text);
-    return unique(statements.filter(s =>
-      patterns.some(p => p.test(s)) &&
-      !exclusions.some(p => p.test(s))
-    )).slice(0,12);
-  }
-
-  function findDeadlines(text){
-    return detectLines(text,[
-      /期限|までに|今週中|来週中|本日中|明日|次回まで|月\d{1,2}日|\d{1,2}\/\d{1,2}/
-    ]);
-  }
-
-  function buildLocalMinutes(data, cleaned){
-    const strictExclusions = data.strictDecision
-      ? [/検討|可能性|かもしれ|思います|したい|予定|候補|要確認|未定|方向で/]
-      : [];
-
-    const decisions = detectLines(cleaned,[
-      /決定|合意|確定|承認|採用|実施する|進める|対応する|とする|でいく|了承/
-    ],strictExclusions);
-
-    const actions = detectLines(cleaned,[
-      /担当|対応|宿題|確認する|整理する|作成する|提出する|送付する|連絡する|評価する|準備する|共有する|依頼する|持ち帰る|今週中|次回まで/
-    ]);
-
-    const pending = detectLines(cleaned,[
-      /検討|未決|保留|懸念|課題|要確認|未定|可能性|確認が必要|リスク/
-    ]);
-
-    const nextMeeting = detectLines(cleaned,[
-      /次回|次の会議|次回打合せ|次回会議|月\d{1,2}日|来週|再度/
-    ]).slice(0,4);
-
-    const topics = unique(
-      cleaned.split("\n")
-        .map(s => s.trim())
-        .filter(s => s.length >= 8)
-        .slice(0,12)
-    );
-
-    const detailMap = {
-      brief:"要点のみ",
-      standard:"標準",
-      detail:"詳細"
-    };
-
-    const lines = [];
-    lines.push(`# ${data.meetingTitle || "会議議事録"}`);
-    lines.push("");
-    lines.push(`- **日時**：${formatJPDate(data.meetingDate)}`);
-    lines.push(`- **相手先・部署**：${data.company || "未入力"}`);
-    lines.push(`- **出席者**：${data.attendees || "未入力"}`);
-    lines.push(`- **会議目的**：${data.meetingPurpose || "未入力"}`);
-    lines.push(`- **作成区分**：端末内自動下書き（${detailMap[data.detailLevel]}）`);
-    lines.push("");
-    lines.push("## 会議要約");
-    lines.push(topics.length
-      ? topics.slice(0, data.detailLevel === "brief" ? 3 : 5).map(s => `- ${s}`).join("\n")
-      : "- 文字起こしから十分な要約候補を抽出できませんでした。");
-    lines.push("");
-    lines.push("## 決定事項");
-    lines.push(decisions.length ? decisions.map(s => `- ${s}`).join("\n") : "- 明確な決定事項は抽出できませんでした。");
-    lines.push("");
-    lines.push("## アクション項目");
-    lines.push(actions.length
-      ? actions.map((s,i) => `${i+1}. ${s}\n   - 担当：要確認\n   - 期限：要確認`).join("\n")
-      : "- 明確なアクション項目は抽出できませんでした。");
-    lines.push("");
-    lines.push("## 未決事項・懸念点");
-    lines.push(pending.length ? pending.map(s => `- ${s}`).join("\n") : "- 特記事項なし。");
-
-    if(data.detailLevel !== "brief"){
-      lines.push("");
-      lines.push("## 主な議論");
-      lines.push(topics.length ? topics.map(s => `- ${s}`).join("\n") : "- 文字起こしを参照してください。");
-    }
-
-    lines.push("");
-    lines.push("## 次回までの確認事項");
-    const deadlines = findDeadlines(cleaned);
-    lines.push(deadlines.length ? deadlines.map(s => `- ${s}`).join("\n") : "- 次回までの期限・確認事項は要確認。");
-    lines.push("");
-    lines.push("## 次回会議");
-    lines.push(nextMeeting.length ? nextMeeting.map(s => `- ${s}`).join("\n") : "- 日時未定。");
-
-    lines.push("");
-    lines.push("---");
-    lines.push("※この下書きは端末内の簡易抽出です。ChatGPT用指示文を使うと、文脈を踏まえた高精度な議事録へ整えられます。");
-    return lines.join("\n");
-  }
-
-  function buildPrompt(data, cleaned){
-    const detailInstruction = {
-      brief:"簡潔版。全体を短くし、決定事項・担当・期限を最優先してください。",
-      standard:"標準版。会議の流れが分かる程度に要点を残してください。",
-      detail:"詳細版。技術的背景、条件、数値、議論の理由も可能な限り残してください。"
-    }[data.detailLevel];
-
-    const toneInstruction = {
-      business:"社内共有向けの簡潔で読みやすい日本語",
-      formal:"社外共有にも使える丁寧で中立的な日本語",
-      technical:"技術報告書に近い、正確で客観的な日本語"
-    }[data.tone];
-
-    return `以下の文字起こしから、正確な会議議事録を作成してください。
-
-【最重要ルール】
-- 音声文字起こしのため、誤字脱字・同音異義語・話者混同を考慮して補正する。
-- 事実と推測を分ける。
-- 「検討する」「可能性がある」「やりたい」は、決定事項にしない。
-- 明確に合意・確定した内容だけを「決定事項」に入れる。
-- 担当者や期限が不明な場合は、推測せず「要確認」と書く。
-- 数値、単位、固有名詞、材料名、会社名、製品名を省略しない。
-- 同じ内容の繰り返しは統合する。
-- 発言者の口調ではなく、客観的な議事録文体にする。
-- 会話にない内容を追加しない。
-
-【仕上がり】
-- 詳細度：${detailInstruction}
-- 文体：${toneInstruction}
-
-【会議情報】
-- 会議名：${data.meetingTitle || "未入力"}
-- 日時：${formatJPDate(data.meetingDate)}
-- 相手先・部署：${data.company || "未入力"}
-- 出席者：${data.attendees || "未入力"}
-- 会議目的：${data.meetingPurpose || "未入力"}
-
-【出力形式】
-# 会議名
-
-## 1. 会議概要
-- 日時
-- 相手先・部署
-- 出席者
-- 目的
-
-## 2. 要約
-会議全体を3〜5項目で簡潔にまとめる。
-
-## 3. 決定事項
-明確に決まったことだけを箇条書きにする。
-
-## 4. アクション項目
-| No. | 担当 | 実施内容 | 期限 | 状態 |
-|---|---|---|---|---|
-
-## 5. 主な議論
-話題ごとに見出しを付け、重要な数値・条件・背景を残す。
-
-## 6. 未決事項・懸念点
-検討中、保留、確認が必要な内容を分離する。
-
-## 7. 次回までの確認事項
-次回までに必要な準備や確認を整理する。
-
-## 8. 次回会議
-日時、予定、議題候補を記載する。情報がなければ「未定」とする。
-
-【文字起こし】
-${cleaned}`;
-  }
-
-  function generate(){
-    const data = getFormData();
-    if(!data.transcript.trim()){
-      toast("文字起こしを入力してください");
-      el("transcript").focus();
-      return;
-    }
-    const cleaned = cleanTranscript(data.transcript,data);
-    state.cleanedTranscript = cleaned;
-    state.generatedPrompt = buildPrompt(data,cleaned);
-    el("cleanedPreview").textContent = cleaned;
-    el("promptPreview").textContent = state.generatedPrompt;
-
-    if(!el("minutesOutput").value.trim() || !state.currentId){
-      el("minutesOutput").value = buildLocalMinutes(data,cleaned);
-    }
-    state.currentId = state.currentId || crypto.randomUUID();
-    el("resultStatus").textContent = "端末内下書き作成済み";
-    updateCounters();
-    saveDraft();
-    navigate("resultPage");
-    switchResultTab("minutes");
-    toast("議事録の下書きを作成しました");
-  }
-
-  function switchResultTab(tab){
-    currentResultTab = tab;
-    $all(".seg-btn").forEach(b => b.classList.toggle("active", b.dataset.resultTab === tab));
-    el("minutesTab").hidden = tab !== "minutes";
-    el("cleanedTab").hidden = tab !== "cleaned";
-    el("promptTab").hidden = tab !== "prompt";
-  }
-
-  function currentText(){
-    if(currentResultTab === "cleaned") return state.cleanedTranscript;
-    if(currentResultTab === "prompt") return state.generatedPrompt;
-    return el("minutesOutput").value;
-  }
-
-  async function copyText(text, success="コピーしました"){
-    if(!text){ toast("コピーする内容がありません"); return; }
-    try{
-      await navigator.clipboard.writeText(text);
-      toast(success);
-    }catch{
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
-      toast(success);
-    }
-  }
-
-  function saveHistory(){
-    const data = getFormData();
-    const item = {
-      id:state.currentId || crypto.randomUUID(),
-      title:data.meetingTitle || "無題の会議",
-      date:data.meetingDate || new Date().toISOString(),
-      company:data.company,
-      attendees:data.attendees,
-      purpose:data.meetingPurpose,
-      transcript:data.transcript,
-      cleanedTranscript:state.cleanedTranscript,
-      prompt:state.generatedPrompt,
-      minutes:el("minutesOutput").value,
-      options:{
-        detailLevel:data.detailLevel,tone:data.tone,
-        removeFillers:data.removeFillers,applyDictionary:data.applyDictionary,
-        strictDecision:data.strictDecision
-      },
-      updatedAt:new Date().toISOString()
-    };
-    const index = state.history.findIndex(x => x.id === item.id);
-    if(index >= 0) state.history[index] = item;
-    else state.history.unshift(item);
-    state.currentId = item.id;
-    saveJSON(STORAGE.history,state.history);
-    saveDraft();
-    el("resultStatus").textContent = "履歴へ保存済み";
-    toast("履歴に保存しました");
-  }
-
-  function renderHistory(){
-    const q = el("historySearch").value.trim().toLowerCase();
-    const list = state.history.filter(item =>
-      [item.title,item.company,item.attendees,item.minutes]
-        .join(" ").toLowerCase().includes(q)
-    );
-    el("historyCount").textContent = `${state.history.length}件`;
-    const wrap = el("historyList");
-    if(!list.length){
-      wrap.innerHTML = `<div class="empty">保存された議事録はありません。</div>`;
-      return;
-    }
-    wrap.innerHTML = list.map(item => `
-      <article class="history-item">
-        <h4>${escapeHtml(item.title)}</h4>
-        <div class="history-meta">${escapeHtml(formatJPDate(item.date))}${item.company ? "｜"+escapeHtml(item.company) : ""}</div>
-        <div class="history-snippet">${escapeHtml((item.minutes || "").replace(/[#*|]/g," "))}</div>
-        <div class="history-actions">
-          <button class="btn primary" data-open-history="${item.id}">開く</button>
-          <button class="btn secondary" data-copy-history="${item.id}">コピー</button>
-          <button class="btn danger" data-delete-history="${item.id}">削除</button>
-        </div>
-      </article>
-    `).join("");
-  }
-
-  function openHistory(id){
-    const item = state.history.find(x => x.id === id);
-    if(!item) return;
-    setFormData({
-      meetingTitle:item.title,
-      meetingDate:item.date ? String(item.date).slice(0,16) : "",
-      company:item.company,
-      attendees:item.attendees,
-      meetingPurpose:item.purpose,
-      transcript:item.transcript,
-      ...(item.options || {})
-    });
-    state.cleanedTranscript = item.cleanedTranscript || "";
-    state.generatedPrompt = item.prompt || "";
-    state.currentId = item.id;
-    el("cleanedPreview").textContent = state.cleanedTranscript;
-    el("promptPreview").textContent = state.generatedPrompt;
-    el("minutesOutput").value = item.minutes || "";
-    updateCounters();
-    saveDraft();
-    navigate("resultPage");
-    switchResultTab("minutes");
-  }
-
-  function deleteHistory(id){
-    const item = state.history.find(x => x.id === id);
-    confirmAction("議事録を削除", `「${item?.title || "この議事録"}」を削除します。`,() => {
-      state.history = state.history.filter(x => x.id !== id);
-      saveJSON(STORAGE.history,state.history);
-      renderHistory();
-      closeModal();
-      toast("削除しました");
-    });
-  }
-
-  function renderDictionary(){
-    el("dictCount").textContent = state.dictionary.length;
-    const wrap = el("dictionaryList");
-    wrap.innerHTML = state.dictionary.map(([wrong,correct],i) => `
-      <div class="dict-item">
-        <span>${escapeHtml(wrong)}</span>
-        <span class="arrow">→</span>
-        <span>${escapeHtml(correct)}</span>
-        <button class="small-btn" data-delete-dict="${i}" aria-label="削除">×</button>
-      </div>
-    `).join("");
-  }
-
-  function addDictionary(){
-    const wrong = el("dictWrong").value.trim();
-    const correct = el("dictCorrect").value.trim();
-    if(!wrong || !correct){toast("両方入力してください");return;}
-    const existing = state.dictionary.findIndex(x => x[0] === wrong);
-    if(existing >= 0) state.dictionary[existing] = [wrong,correct];
-    else state.dictionary.unshift([wrong,correct]);
-    saveJSON(STORAGE.dictionary,state.dictionary);
-    el("dictWrong").value = "";
-    el("dictCorrect").value = "";
-    renderDictionary();
-    toast("辞書へ追加しました");
-  }
-
-  function updateCounters(){
-    el("charCount").textContent = el("transcript").value.length.toLocaleString();
-    el("minutesCharCount").textContent = el("minutesOutput").value.length.toLocaleString();
-  }
-
-  function addMarker(type){
-    const time = el("timer").textContent;
-    const marker = `\n【${type} ${time}】`;
-    const t = el("transcript");
-    const start = t.selectionStart ?? t.value.length;
-    t.value = t.value.slice(0,start) + marker + t.value.slice(start);
-    t.focus();
-    t.selectionStart = t.selectionEnd = start + marker.length;
-    updateCounters();
-    scheduleAutosave();
-    toast(`${type}マーカーを追加しました`);
-  }
-
-  function voiceEnvironment(){
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let embedded = false;
-    try{ embedded = window.self !== window.top; }catch{ embedded = true; }
-    let policyBlocked = false;
-    try{
-      if(document.permissionsPolicy?.allowsFeature){
-        policyBlocked = !document.permissionsPolicy.allowsFeature("microphone");
-      }else if(document.featurePolicy?.allowsFeature){
-        policyBlocked = !document.featurePolicy.allowsFeature("microphone");
-      }
+      if(navigator.share)await navigator.share({title:document.title,url:location.href});
+      else{await navigator.clipboard.writeText(location.href);toast('URLをコピーしました');}
     }catch{}
-    return {
-      hasRecognition:!!SpeechRecognition,
-      secure:window.isSecureContext,
-      hasMedia:!!navigator.mediaDevices?.getUserMedia,
-      embedded,
-      policyBlocked,
-      protocol:location.protocol
-    };
+  });
+
+  let deferred=null;
+  const install=document.getElementById('installBtn');
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault();deferred=e;install.classList.add('show');
+    document.getElementById('installNote').textContent='KATO PORTALをホーム画面へ追加できます。';
+  });
+  install.addEventListener('click',async()=>{
+    if(!deferred)return;
+    deferred.prompt();await deferred.userChoice;deferred=null;install.classList.remove('show');
+  });
+  window.addEventListener('appinstalled',()=>{
+    install.classList.remove('show');
+    document.getElementById('installNote').textContent='インストール済みです。';
+  });
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
   }
-
-  function updateVoiceDiagnostic(message="", level=""){
-    const box = el("voiceDiagnostic");
-    const env = voiceEnvironment();
-    let text = message;
-    let color = "var(--warning)";
-
-    if(!text){
-      if(env.policyBlocked || env.embedded){
-        text = "このプレビュー画面ではマイクが制限されることがあります。HTMLをChromeで直接開くか、GitHub Pagesへ公開してから使用してください。";
-        level = "warning";
-      }else if(!env.secure || !env.hasMedia){
-        text = "現在の開き方ではマイクを利用できません。HTTPSの公開ページをChromeで開いてください。";
-        level = "error";
-      }else if(!env.hasRecognition){
-        text = "このブラウザは自動文字起こしに非対応です。下の『スマホ標準の音声入力』を使用してください。";
-        level = "error";
-      }else{
-        text = "音声入力を利用できます。初回のみ、開始ボタンを押した後にマイクを『許可』してください。";
-        level = "ok";
-      }
-    }
-
-    if(level === "ok") color = "var(--accent)";
-    if(level === "error") color = "var(--danger)";
-    box.style.borderLeftColor = color;
-    box.textContent = text;
-  }
-
-  function microphoneErrorMessage(error){
-    const name = error?.name || error?.error || "";
-    const map = {
-      NotAllowedError:"マイクが許可されていません。Chromeのアドレスバー横の設定から、マイクを『許可』にしてください。",
-      SecurityError:"この画面ではマイクがセキュリティ上ブロックされています。ChromeでHTTPSの公開ページを開いてください。",
-      NotFoundError:"使用できるマイクが見つかりません。端末のマイク設定を確認してください。",
-      NotReadableError:"別のアプリがマイクを使用中の可能性があります。通話・録音アプリを終了して再度お試しください。",
-      AbortError:"マイクの開始が中断されました。もう一度開始してください。",
-      TypeError:"この開き方ではマイク機能が使えません。GitHub PagesなどのHTTPSページで開いてください。",
-      "not-allowed":"マイクが許可されていません。サイト設定でマイクを許可してください。",
-      "service-not-allowed":"音声認識サービスがこの画面では利用できません。Chromeで公開ページを開いてください。",
-      "audio-capture":"マイクから音声を取得できません。端末のマイク設定を確認してください。",
-      network:"音声認識サービスへ接続できません。通信状態を確認してください。",
-      "language-not-supported":"日本語の音声認識が利用できません。Chromeを更新するか、スマホ標準音声入力を使用してください。",
-      aborted:"音声入力が中断されました。",
-      "no-speech":"音声を聞き取れませんでした。マイクへ少し近づいて話してください。"
-    };
-    return map[name] || `音声入力を開始できませんでした（${name || "原因不明"}）。Chromeで開き、マイクを許可してください。`;
-  }
-
-  async function requestMicrophonePermission(){
-    const env = voiceEnvironment();
-    if(!env.secure || !env.hasMedia){
-      const err = new Error("Microphone API unavailable");
-      err.name = "TypeError";
-      throw err;
-    }
-    if(env.policyBlocked){
-      const err = new Error("Permissions Policy blocked");
-      err.name = "SecurityError";
-      throw err;
-    }
-    if(microphonePermissionGranted) return true;
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}
-    });
-    stream.getTracks().forEach(track => track.stop());
-    microphonePermissionGranted = true;
-    await new Promise(resolve => setTimeout(resolve,180));
-    return true;
-  }
-
-  function openKeyboardVoiceInput(){
-    const t = el("transcript");
-    t.focus();
-    t.scrollIntoView({behavior:"smooth",block:"center"});
-    updateVoiceDiagnostic("キーボードを開きました。Gboardなどのマイクマークを押して話してください。これは自動認識APIが使えない場合にも利用できます。","ok");
-    toast("キーボードのマイクマークを押してください");
-  }
-
-  function showVoiceHelp(){
-    const env = voiceEnvironment();
-    const checks = [
-      `安全な画面：${env.secure ? "○" : "×"}`,
-      `マイクAPI：${env.hasMedia ? "○" : "×"}`,
-      `自動文字起こし：${env.hasRecognition ? "○" : "×"}`,
-      `埋め込み表示：${env.embedded ? "はい（制限される場合あり）" : "いいえ"}`
-    ].join("／");
-    el("modalTitle").textContent = "音声入力を使うには";
-    el("modalText").innerHTML = `
-      <strong>現在の診断</strong><br>${escapeHtml(checks)}<br><br>
-      1. このファイルをChatGPT内のプレビューではなく、Android版Chromeで開く。<br>
-      2. 音声入力開始後に表示されるマイク権限を「許可」にする。<br>
-      3. 権限を拒否済みの場合は、Chromeのサイト設定 → マイク → 許可へ変更する。<br>
-      4. 最も確実なのは、同梱の公開用一式をGitHub Pagesへ置き、HTTPSのURLから開く方法です。<br><br>
-      それでも使えない場合は「スマホ標準の音声入力」を押し、キーボード上のマイクを使ってください。`;
-    pendingConfirm = null;
-    el("modalOk").style.display = "none";
-    el("modalCancel").textContent = "閉じる";
-    el("confirmModal").classList.add("show");
-  }
-
-  function setupSpeech(){
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    updateVoiceDiagnostic();
-    if(!SpeechRecognition){
-      el("speechSupportText").textContent = "自動文字起こし非対応";
-      el("recordBtn").disabled = true;
-      el("recordBtn").textContent = "自動音声入力は非対応";
-      return;
-    }
-    el("speechSupportText").textContent = "自動文字起こし対応";
-    recognition = new SpeechRecognition();
-    recognition.lang = "ja-JP";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      recognitionStarting = false;
-      recognitionErrorLock = false;
-      updateVoiceDiagnostic("マイクを使用中です。発言が文字起こし欄へ順次追加されます。","ok");
-    };
-
-    recognition.onaudiostart = () => {
-      el("recordLabel").textContent = "音声入力中";
-      el("interimText").textContent = "聞き取り中…";
-    };
-
-    recognition.onresult = event => {
-      let finalText = "";
-      let interim = "";
-      for(let i=event.resultIndex;i<event.results.length;i++){
-        const txt = event.results[i][0].transcript;
-        if(event.results[i].isFinal) finalText += txt;
-        else interim += txt;
-      }
-      if(finalText){
-        const t = el("transcript");
-        const spacer = t.value && !t.value.endsWith("\n") ? "\n" : "";
-        t.value += spacer + finalText.trim();
-        updateCounters();
-        scheduleAutosave();
-      }
-      el("interimText").textContent = interim || (isRecording ? "聞き取り中…" : "Chrome系ブラウザ推奨");
-    };
-
-    recognition.onerror = event => {
-      recognitionStarting = false;
-      if(event.error === "no-speech"){
-        el("interimText").textContent = "音声を待っています…";
-        return;
-      }
-      if(recognitionErrorLock) return;
-      recognitionErrorLock = true;
-      const message = microphoneErrorMessage(event);
-      updateVoiceDiagnostic(message,"error");
-      toast(message);
-      stopRecording(false);
-    };
-
-    recognition.onend = () => {
-      recognitionStarting = false;
-      if(isRecording && !isPaused && !recognitionErrorLock){
-        setTimeout(() => {
-          if(!isRecording || isPaused) return;
-          try{
-            recognitionStarting = true;
-            recognition.start();
-          }catch{}
-        },250);
-      }
-    };
-  }
-
-  async function startRecording(){
-    if(!recognition){
-      openKeyboardVoiceInput();
-      return;
-    }
-    if(recognitionStarting) return;
-
-    try{
-      el("recordBtn").disabled = true;
-      el("recordLabel").textContent = "マイク確認中";
-      el("interimText").textContent = "初回はマイクを許可してください";
-      await requestMicrophonePermission();
-    }catch(error){
-      const message = microphoneErrorMessage(error);
-      updateVoiceDiagnostic(message,"error");
-      el("recordLabel").textContent = "マイクを開始できません";
-      el("interimText").textContent = "下の標準音声入力も利用できます";
-      el("recordBtn").disabled = false;
-      toast(message);
-      return;
-    }
-
-    recognitionErrorLock = false;
-    if(isPaused){
-      isPaused = false;
-      isRecording = true;
-      recordStart = Date.now();
-    }else{
-      isRecording = true;
-      recordStart = Date.now();
-      elapsedBeforePause = 0;
-    }
-
-    try{
-      recognitionStarting = true;
-      recognition.start();
-    }catch(error){
-      recognitionStarting = false;
-      isRecording = false;
-      const message = microphoneErrorMessage(error);
-      updateVoiceDiagnostic(message,"error");
-      toast(message);
-      el("recordBtn").disabled = false;
-      return;
-    }
-
-    el("recordPanel").classList.add("recording");
-    el("recordLabel").textContent = "音声入力を開始中";
-    el("recordBtn").textContent = "⏹ 終了";
-    el("recordBtn").disabled = false;
-    el("pauseBtn").disabled = false;
-    el("pauseBtn").textContent = "⏸ 一時停止";
-    clearInterval(timerInterval);
-    timerInterval = setInterval(updateTimer,250);
-  }
-
-  function pauseRecording(){
-    if(!isRecording) return;
-    isPaused = true;
-    isRecording = false;
-    elapsedBeforePause += Date.now() - recordStart;
-    try{recognition.stop();}catch{}
-    clearInterval(timerInterval);
-    el("recordPanel").classList.remove("recording");
-    el("recordLabel").textContent = "一時停止中";
-    el("recordBtn").textContent = "▶️ 再開";
-    el("pauseBtn").disabled = true;
-    el("interimText").textContent = "再開ボタンで続けられます";
-  }
-
-  function stopRecording(resetTimer=true){
-    if(isRecording) elapsedBeforePause += Date.now() - recordStart;
-    isRecording = false;
-    isPaused = false;
-    try{recognition?.stop();}catch{}
-    clearInterval(timerInterval);
-    el("recordPanel").classList.remove("recording");
-    el("recordLabel").textContent = "録音待機中";
-    el("recordBtn").textContent = "🎙️ 音声入力を開始";
-    el("pauseBtn").disabled = true;
-    el("pauseBtn").textContent = "⏸ 一時停止";
-    el("interimText").textContent = "Chromeで開き、マイクを許可してください";
-    recognitionStarting = false;
-    if(resetTimer){
-      elapsedBeforePause = 0;
-      el("timer").textContent = "00:00:00";
-    }
-  }
-
-  function updateTimer(){
-    const ms = elapsedBeforePause + (isRecording ? Date.now()-recordStart : 0);
-    const total = Math.floor(ms/1000);
-    const h = String(Math.floor(total/3600)).padStart(2,"0");
-    const m = String(Math.floor((total%3600)/60)).padStart(2,"0");
-    const s = String(total%60).padStart(2,"0");
-    el("timer").textContent = `${h}:${m}:${s}`;
-  }
-
-  function downloadFile(filename, content, type="text/plain;charset=utf-8"){
-    const blob = new Blob([content],{type});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),1000);
-  }
-
-  function extractSection(title){
-    const text = el("minutesOutput").value;
-    const rx = new RegExp(`##\\s*${title}[\\s\\S]*?(?=\\n##\\s|$)`,"i");
-    const m = text.match(rx);
-    return m ? m[0].trim() : "";
-  }
-
-  function buildShareText(type){
-    const data = getFormData();
-    const title = data.meetingTitle || "会議";
-    const decisions = extractSection("決定事項");
-    const actions = extractSection("アクション項目");
-    const pending = extractSection("未決事項・懸念点");
-    if(type === "mail"){
-      return `お疲れさまです。\n\n「${title}」の議事録を共有します。\n\n${decisions}\n\n${actions}\n\n${pending}\n\n認識違いがありましたらご連絡ください。`;
-    }
-    return `【${title} 議事メモ】\n${decisions}\n\n${actions}\n\n詳細は議事録をご確認ください。`;
-  }
-
-  function sampleTranscript(){
-    el("meetingTitle").value = "高純度SiC粉末 協業打合せ";
-    el("meetingDate").value = formatDateTimeLocal();
-    el("company").value = "屋久島電工";
-    el("attendees").value = "相手先：営業・技術担当／自社：加藤ほか";
-    el("meetingPurpose").value = "高純度化プロセスの協業可能性と評価項目の確認";
-    el("transcript").value = `相手先：半導体向けの高純度SiC粉末について引き合いが増えています。現在はGB15の洗浄処理品を販売していますが、さらに高純度化したいです。
-加藤：当社の高温熱処理を前段に入れて、その後に御社で洗浄する二段処理が考えられます。粒度を維持しながら不純物を低減できるか評価したいです。
-相手先：評価項目はICP、酸素量、金属不純物、灰分、表面分析、粒度変化、SEMを想定しています。
-加藤：まず当社で処理条件と必要サンプル量を今週中に整理します。
-相手先：こちらはGB15の未処理品と洗浄処理品を準備します。
-加藤：次回は7月20日の午前でお願いします。
-相手先：承知しました。サンプル発送日は確認して連絡します。`;
-    updateCounters();
-    scheduleAutosave();
-    toast("サンプルを入力しました");
-  }
-
-  function backup(){
-    const payload = {
-      exportedAt:new Date().toISOString(),
-      version:1,
-      history:state.history,
-      dictionary:state.dictionary,
-      settings:state.settings,
-      draft:loadJSON(STORAGE.draft,null)
-    };
-    downloadFile(`議事録一発_バックアップ_${new Date().toISOString().slice(0,10)}.json`,
-      JSON.stringify(payload,null,2),"application/json;charset=utf-8");
-  }
-
-  function restoreBackup(file){
-    const reader = new FileReader();
-    reader.onload = () => {
-      try{
-        const data = JSON.parse(reader.result);
-        if(data.history) { state.history = data.history; saveJSON(STORAGE.history,state.history); }
-        if(data.dictionary) { state.dictionary = data.dictionary; saveJSON(STORAGE.dictionary,state.dictionary); }
-        if(data.settings) { state.settings = data.settings; saveJSON(STORAGE.settings,state.settings); }
-        if(data.draft) saveJSON(STORAGE.draft,data.draft);
-        applySettings();
-        restoreDraft();
-        renderDictionary();
-        renderHistory();
-        toast("バックアップを復元しました");
-      }catch{
-        toast("バックアップファイルを読み込めませんでした");
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  function bindEvents(){
-    $all(".nav-btn").forEach(btn => btn.addEventListener("click",() => navigate(btn.dataset.page)));
-    $all(".seg-btn").forEach(btn => btn.addEventListener("click",() => switchResultTab(btn.dataset.resultTab)));
-    $all(".marker").forEach(btn => btn.addEventListener("click",() => addMarker(btn.dataset.marker)));
-
-    el("themeQuickBtn").addEventListener("click",() => {
-      state.settings.darkMode = !state.settings.darkMode;
-      saveJSON(STORAGE.settings,state.settings);
-      applySettings();
-    });
-
-    el("recordBtn").addEventListener("click",async() => {
-      if(isRecording) stopRecording();
-      else await startRecording();
-    });
-    el("pauseBtn").addEventListener("click",pauseRecording);
-    el("keyboardVoiceBtn").addEventListener("click",openKeyboardVoiceInput);
-    el("voiceHelpBtn").addEventListener("click",showVoiceHelp);
-
-    el("pasteBtn").addEventListener("click",async() => {
-      try{
-        const text = await navigator.clipboard.readText();
-        if(text){
-          const t = el("transcript");
-          t.value += (t.value ? "\n" : "") + text;
-          updateCounters();scheduleAutosave();toast("貼り付けました");
-        }
-      }catch{
-        toast("長押しして貼り付けてください");
-        el("transcript").focus();
-      }
-    });
-
-    el("sampleBtn").addEventListener("click",sampleTranscript);
-    el("clearTranscriptBtn").addEventListener("click",() => {
-      confirmAction("文字起こしを消去","入力した文字起こしをすべて消去します。",() => {
-        el("transcript").value="";updateCounters();saveDraft();closeModal();toast("消去しました");
-      });
-    });
-
-    el("generateBtn").addEventListener("click",generate);
-    el("copyCurrentBtn").addEventListener("click",() => copyText(currentText()));
-    el("openChatGPTBtn").addEventListener("click",async() => {
-      await copyText(state.generatedPrompt,"指示文をコピーしました");
-      window.open("https://chatgpt.com/","_blank","noopener");
-    });
-    el("saveBtn").addEventListener("click",saveHistory);
-
-    el("exportTxtBtn").addEventListener("click",() => {
-      downloadFile(`${safeFilename(getFormData().meetingTitle)}.txt`,el("minutesOutput").value);
-    });
-    el("exportMdBtn").addEventListener("click",() => {
-      downloadFile(`${safeFilename(getFormData().meetingTitle)}.md`,el("minutesOutput").value,"text/markdown;charset=utf-8");
-    });
-    el("exportHtmlBtn").addEventListener("click",() => {
-      const title = escapeHtml(getFormData().meetingTitle || "議事録");
-      const body = escapeHtml(el("minutesOutput").value).replace(/\n/g,"<br>");
-      const doc = `<!doctype html><html lang="ja"><meta charset="utf-8"><title>${title}</title><style>body{font-family:sans-serif;max-width:900px;margin:40px auto;padding:0 20px;line-height:1.8;color:#172033}h1{border-bottom:3px solid #1f5cb8;padding-bottom:10px}</style><body><h1>${title}</h1><div>${body}</div></body></html>`;
-      downloadFile(`${safeFilename(getFormData().meetingTitle)}.html`,doc,"text/html;charset=utf-8");
-    });
-    el("printBtn").addEventListener("click",() => window.print());
-
-    el("copyActionsBtn").addEventListener("click",() => copyText(extractSection("アクション項目") || "アクション項目はありません"));
-    el("copyMailBtn").addEventListener("click",() => copyText(buildShareText("mail"),"メール共有文をコピーしました"));
-    el("copyTeamsBtn").addEventListener("click",() => copyText(buildShareText("teams"),"Teams投稿文をコピーしました"));
-
-    el("historySearch").addEventListener("input",renderHistory);
-    el("historyList").addEventListener("click",e => {
-      const open = e.target.closest("[data-open-history]");
-      const copy = e.target.closest("[data-copy-history]");
-      const del = e.target.closest("[data-delete-history]");
-      if(open) openHistory(open.dataset.openHistory);
-      if(copy){
-        const item = state.history.find(x => x.id === copy.dataset.copyHistory);
-        if(item) copyText(item.minutes);
-      }
-      if(del) deleteHistory(del.dataset.deleteHistory);
-    });
-
-    el("addDictBtn").addEventListener("click",addDictionary);
-    el("dictionaryList").addEventListener("click",e => {
-      const btn = e.target.closest("[data-delete-dict]");
-      if(!btn) return;
-      state.dictionary.splice(Number(btn.dataset.deleteDict),1);
-      saveJSON(STORAGE.dictionary,state.dictionary);
-      renderDictionary();
-    });
-    el("restoreDictBtn").addEventListener("click",() => {
-      confirmAction("初期辞書を復元","現在の辞書を初期状態へ戻します。",() => {
-        state.dictionary = structuredClone(DEFAULT_DICTIONARY);
-        saveJSON(STORAGE.dictionary,state.dictionary);
-        renderDictionary();closeModal();toast("初期辞書を復元しました");
-      });
-    });
-
-    el("darkMode").addEventListener("change",e => {
-      state.settings.darkMode=e.target.checked;saveJSON(STORAGE.settings,state.settings);applySettings();
-    });
-    el("largeText").addEventListener("change",e => {
-      state.settings.largeText=e.target.checked;saveJSON(STORAGE.settings,state.settings);applySettings();
-    });
-    el("autoSave").addEventListener("change",e => {
-      state.settings.autoSave=e.target.checked;saveJSON(STORAGE.settings,state.settings);
-      if(e.target.checked) saveDraft();
-    });
-
-    el("backupBtn").addEventListener("click",backup);
-    el("restoreBtn").addEventListener("click",() => el("restoreFile").click());
-    el("restoreFile").addEventListener("change",e => {
-      const file=e.target.files?.[0];if(file) restoreBackup(file);e.target.value="";
-    });
-
-    el("resetAllBtn").addEventListener("click",() => {
-      confirmAction("すべて初期化","この端末に保存された履歴・辞書・設定・途中入力を削除します。元に戻せません。",() => {
-        Object.values(STORAGE).forEach(k => localStorage.removeItem(k));
-        location.reload();
-      });
-    });
-
-    el("modalCancel").addEventListener("click",closeModal);
-    el("modalOk").addEventListener("click",() => pendingConfirm?.());
-    el("confirmModal").addEventListener("click",e => {
-      if(e.target === el("confirmModal")) closeModal();
-    });
-
-    ["meetingTitle","meetingDate","company","attendees","meetingPurpose","transcript",
-     "detailLevel","tone","removeFillers","applyDictionary","strictDecision","minutesOutput"
-    ].forEach(id => {
-      const node=el(id);
-      node.addEventListener("input",() => {updateCounters();scheduleAutosave();});
-      node.addEventListener("change",scheduleAutosave);
-    });
-
-    window.addEventListener("beforeunload",saveDraft);
-  }
-
-  function init(){
-    applySettings();
-    el("meetingDate").value = formatDateTimeLocal();
-    restoreDraft();
-    renderDictionary();
-    renderHistory();
-    setupSpeech();
-    bindEvents();
-    updateCounters();
-  }
-
-  init();
-  if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  }
+  render();
 })();
 </script>
 </body>

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b0820">
+<title>運命共鳴 - シニア向け見やすい版</title>
+<style>
+:root{
+  --bg:#060511;
+  --bg2:#0e0b22;
+  --panel:linear-gradient(180deg,rgba(20,18,43,.92),rgba(12,11,30,.9));
+  --panel2:linear-gradient(180deg,rgba(29,25,59,.94),rgba(14,13,36,.92));
+  --line:rgba(255,255,255,.10);
+  --line-strong:rgba(255,223,156,.24);
+  --text:#f7f3ee;
+  --muted:#bdb4d7;
+  --muted-2:#938cad;
+  --gold:#ffdf9a;
+  --gold-2:#c89a46;
+  --violet:#9a7bff;
+  --violet-2:#6f55d7;
+  --cyan:#79dff7;
+  --pink:#ff8bc8;
+  --green:#8af2c1;
+  --danger:#ff879d;
+  --shadow:0 26px 70px rgba(0,0,0,.45);
+  --shadow-soft:0 14px 34px rgba(0,0,0,.24);
+  --inner:inset 0 1px 0 rgba(255,255,255,.08), inset 0 -1px 0 rgba(255,255,255,.025);
+  --radius:26px;
+  --safe:env(safe-area-inset-bottom,0px)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"Hiragino Sans","Yu Gothic UI","Noto Sans JP",system-ui,sans-serif}
+body{overflow-x:hidden;background:
+ radial-gradient(circle at 12% -10%,rgba(141,108,255,.24),transparent 30%),
+ radial-gradient(circle at 88% 6%,rgba(103,218,255,.13),transparent 24%),
+ radial-gradient(circle at 50% 110%,rgba(255,214,135,.11),transparent 30%),
+ linear-gradient(180deg,#05040f 0%,#0a081a 32%,#090715 100%);position:relative}
+body:before,body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1}
+body:before{background:
+ radial-gradient(circle at 20% 18%,rgba(255,255,255,.08) 0 1px,transparent 1.6px),
+ radial-gradient(circle at 78% 22%,rgba(255,255,255,.06) 0 1px,transparent 1.7px),
+ radial-gradient(circle at 66% 74%,rgba(255,255,255,.05) 0 1px,transparent 1.7px),
+ radial-gradient(circle at 34% 62%,rgba(255,255,255,.05) 0 1px,transparent 1.7px),
+ radial-gradient(circle at 11% 84%,rgba(255,255,255,.04) 0 1px,transparent 1.6px),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 32px);
+ opacity:.6}
+body:after{background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 22%,transparent 78%,rgba(255,255,255,.03));mix-blend-mode:screen;opacity:.16}
+button,input,select,textarea{font:inherit}
+button{color:inherit}
+#starCanvas{position:fixed;inset:0;z-index:-3;pointer-events:none;opacity:.9}
+.aurora{position:fixed;inset:-28%;z-index:-2;pointer-events:none;filter:blur(86px);opacity:.16;background:conic-gradient(from 90deg at 50% 50%,rgba(124,96,255,.8),rgba(77,215,255,.74),rgba(255,114,189,.52),rgba(124,96,255,.8));animation:drift 24s linear infinite}
+@keyframes drift{to{transform:rotate(360deg) scale(1.06)}}
+.app{max-width:760px;margin:0 auto;min-height:100vh;padding:20px 14px calc(118px + var(--safe))}
+.topbar{position:sticky;top:0;z-index:30;margin:-20px -14px 16px;padding:18px 14px 14px;background:linear-gradient(180deg,rgba(5,4,15,.96) 0%,rgba(5,4,15,.9) 74%,rgba(5,4,15,0));backdrop-filter:blur(18px)}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo,.onboardLogo{position:relative;overflow:hidden;display:grid;place-items:center;color:#fff7e6;text-shadow:0 1px 10px rgba(255,221,151,.22)}
+.logo{width:48px;height:48px;border-radius:18px;background:linear-gradient(145deg,rgba(29,25,60,.98),rgba(11,10,31,.96));border:1px solid rgba(255,220,153,.24);box-shadow:var(--shadow-soft), inset 0 0 0 1px rgba(255,255,255,.03);font-size:24px}
+.logo:before,.onboardLogo:before{content:"";position:absolute;inset:2px;border-radius:inherit;background:radial-gradient(circle at 28% 22%,rgba(255,238,199,.22),transparent 28%),linear-gradient(160deg,rgba(255,222,154,.18),transparent 40%,rgba(121,223,247,.10));pointer-events:none}
+.logo:after,.onboardLogo:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(255,223,160,.04)}
+.brand h1,.hero h2,.pageHead h2,.resultHero h2,.onboardTitle h1{font-family:Georgia,"Times New Roman","Hiragino Mincho ProN","Yu Mincho",serif;letter-spacing:.03em}
+.brand h1{font-size:19px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand p{margin:2px 0 0;color:var(--gold);font-size:10px;letter-spacing:.28em;text-transform:uppercase;opacity:.9}
+.topActions{display:flex;gap:8px}
+.iconBtn,.closeBtn{width:42px;height:42px;border-radius:15px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));box-shadow:var(--inner),0 6px 16px rgba(0,0,0,.18);display:grid;place-items:center;cursor:pointer;font-size:18px}
+.profileMini{display:flex;align-items:center;gap:9px;margin-top:12px;padding:10px 12px;border:1px solid rgba(255,223,160,.12);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.035));box-shadow:var(--inner), var(--shadow-soft);font-size:12px;color:var(--muted)}
+.profileMini #miniAvatar{width:30px;height:30px;display:grid;place-items:center;border-radius:11px;background:rgba(255,255,255,.08)}
+.profileMini b{color:var(--text)}
+.xpTrack{flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.25)}
+.xpTrack i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-2),var(--gold),#fff0bf);border-radius:999px;box-shadow:0 0 18px rgba(255,216,130,.28);transition:.4s}
+.screen{display:none;animation:fade .4s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hero,.panel,.fortuneCard,.menuCard,.systemCard,.historyItem,.achievement,.resultHero,.insight{position:relative;overflow:hidden}
+.hero,.panel,.fortuneCard,.menuCard,.systemCard,.historyItem,.achievement,.resultHero,.insight,.modalBox,.onboarding .panel{border:1px solid rgba(255,255,255,.08);box-shadow:var(--inner),var(--shadow-soft)}
+.hero:after,.panel:after,.fortuneCard:after,.menuCard:before,.systemCard:after,.resultHero:after,.insight:after,.achievement:after,.historyItem:after,.modalBox:after,.onboarding .panel:after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,0) 30%,rgba(255,223,155,.08) 70%,rgba(255,255,255,.02));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.hero{padding:26px;border-radius:34px;background:
+ radial-gradient(circle at 82% 15%,rgba(255,224,160,.14),transparent 18%),
+ radial-gradient(circle at 18% 20%,rgba(122,221,248,.10),transparent 24%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 22px),
+ linear-gradient(155deg,rgba(36,28,61,.97),rgba(15,13,34,.95) 56%,rgba(28,23,40,.94));box-shadow:0 26px 76px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.02)}
+.hero:before{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(255,223,155,.16);border-radius:50%;right:-110px;top:-112px;box-shadow:0 0 0 28px rgba(255,255,255,.022),0 0 0 58px rgba(255,223,155,.018),0 0 0 92px rgba(255,255,255,.014)}
+.heroEyebrow{color:var(--gold);font-size:11px;letter-spacing:.24em;font-weight:800;text-transform:uppercase}
+.hero h2{font-size:30px;line-height:1.24;margin:10px 0 10px}
+.hero p{font-size:13px;color:#ddd4ef;line-height:1.8;margin:0;max-width:540px}
+.syncRow{display:grid;grid-template-columns:118px 1fr;align-items:center;gap:18px;margin-top:22px}
+.syncRing{width:116px;height:116px;border-radius:50%;padding:8px;background:conic-gradient(from -45deg,var(--gold) 0 calc(var(--score)*1%),rgba(255,255,255,.10) 0);box-shadow:0 0 34px rgba(255,219,140,.18), inset 0 0 0 1px rgba(255,255,255,.06)}
+.syncInner{height:100%;border-radius:50%;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.08),transparent 26%),linear-gradient(180deg,#16142d,#0f0d22);border:1px solid rgba(255,255,255,.08)}
+.syncInner b{font-size:32px;display:block;font-family:Georgia,"Times New Roman",serif}
+.syncInner span{font-size:9px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.syncText h3{margin:0 0 6px;font-size:18px;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif}
+.syncText p{line-height:1.7;font-size:12px;color:#ddd4ef}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.tag{font-size:10px;padding:6px 10px;border:1px solid rgba(255,223,155,.16);border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));color:#eee8fb;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.primary,.secondary,.dangerBtn{position:relative;overflow:hidden}
+.primary{border:1px solid rgba(255,226,160,.28);border-radius:18px;padding:15px 18px;width:100%;background:linear-gradient(180deg,#c89a46,#f2d58e 52%,#bd8d38);color:#1f1432;font-weight:900;letter-spacing:.08em;box-shadow:0 16px 32px rgba(197,150,66,.24),inset 0 1px 0 rgba(255,255,255,.44);cursor:pointer;text-transform:none}
+.primary:before,.secondary:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.22) 48%,transparent 78%);transform:translateX(-120%);transition:.8s}
+.primary:active,.secondary:active,.menuCard:active,.iconBtn:active,.navBtn:active{transform:scale(.988)}
+.secondary{border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:13px 16px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));font-weight:800;cursor:pointer;box-shadow:var(--inner),0 10px 22px rgba(0,0,0,.15)}
+.dangerBtn{border:1px solid rgba(255,125,155,.32);background:linear-gradient(180deg,rgba(255,125,155,.14),rgba(255,125,155,.08));color:#ffd8e1}
+.sectionTitle{display:flex;justify-content:space-between;align-items:end;margin:26px 2px 12px;padding:0 2px}
+.sectionTitle h3{font-size:17px;margin:0;position:relative;padding-left:12px;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif}
+.sectionTitle h3:before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(180deg,var(--gold),rgba(255,255,255,.4))}
+.sectionTitle span,.sectionTitle button{font-size:11px;color:var(--gold);background:none;border:0;letter-spacing:.08em}
+.dailyGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.fortuneCard{padding:16px;border-radius:22px;background:var(--panel)}
+.fortuneCard .ftop{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;letter-spacing:.03em}
+.fortuneCard b{display:block;font-size:27px;margin:8px 0 6px;font-family:Georgia,"Times New Roman",serif;color:#fff6dc}
+.meter{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+.meter i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold-2),var(--gold),#f6e6ab);box-shadow:0 0 16px rgba(255,216,130,.2)}
+.fortuneCard p{font-size:10px;color:var(--muted);margin:8px 0 0;line-height:1.6}
+.menuGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.menuCard{min-height:136px;text-align:left;padding:18px;border-radius:23px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035)),repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 24px);cursor:pointer;overflow:hidden}
+.menuCard:before{background:linear-gradient(180deg,rgba(255,255,255,.04),transparent 45%)}
+.menuCard:after{content:"";position:absolute;width:96px;height:96px;border-radius:50%;right:-24px;bottom:-28px;background:var(--glow,#9b7cff);filter:blur(34px);opacity:.28}
+.menuIcon{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.menuCard b{display:block;font-size:14px;margin:13px 0 5px;line-height:1.4}
+.menuCard p{font-size:10px;line-height:1.62;color:var(--muted);margin:0}
+.newBadge{position:absolute;right:12px;top:12px;font-size:8px;font-weight:900;background:linear-gradient(180deg,#ff9ace,#ff72b6);padding:4px 6px;border-radius:999px;color:#2b1027;box-shadow:0 8px 18px rgba(255,114,182,.28)}
+.insight{padding:18px 18px 19px;border-radius:24px;border-color:rgba(137,242,193,.18);background:linear-gradient(145deg,rgba(31,79,69,.45),rgba(16,18,39,.9))}
+.insightHead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.insightHead span{font-size:24px}
+.insightHead b{font-size:14px}
+.insight p{font-size:12px;line-height:1.85;color:#d8f2e7;margin:0}
+.bottomNav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:50;width:min(720px,calc(100% - 18px));display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:9px 8px calc(9px + var(--safe));background:linear-gradient(180deg,rgba(15,13,35,.95),rgba(11,10,27,.93));border:1px solid rgba(255,255,255,.08);border-radius:26px;box-shadow:0 20px 50px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.05);backdrop-filter:blur(18px)}
+.navBtn{border:0;background:none;color:var(--muted-2);padding:8px 2px;border-radius:18px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;cursor:pointer;transition:.25s}
+.navBtn i{font-style:normal;font-size:19px}
+.navBtn.active{color:#1d1430;background:linear-gradient(180deg,#f1d284,#c99843);box-shadow:0 12px 24px rgba(201,152,67,.28), inset 0 1px 0 rgba(255,255,255,.35)}
+.pageHead{padding:6px 3px 14px}
+.pageHead h2{font-size:26px;margin:0 0 6px}
+.pageHead p{font-size:11px;color:var(--muted);line-height:1.7;margin:0}
+.panel{padding:18px;border-radius:24px;background:linear-gradient(180deg,rgba(20,18,43,.92),rgba(12,11,30,.9)),repeating-linear-gradient(135deg,rgba(255,223,155,.014) 0 1px,transparent 1px 16px);margin-bottom:12px}
+.panel h3{font-size:15px;margin:0 0 12px}
+.subtle{font-size:11px;color:var(--muted);line-height:1.72}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:11px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;color:var(--gold);font-weight:700;letter-spacing:.08em}
+.field input,.field select,.field textarea{width:100%;border:1px solid rgba(255,255,255,.1);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.04));padding:14px;color:var(--text);outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.04), inset 0 -1px 0 rgba(0,0,0,.18)}
+.field input::placeholder,.field textarea::placeholder{color:#948cab}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(255,223,155,.28);box-shadow:0 0 0 3px rgba(255,223,155,.08), inset 0 1px 0 rgba(255,255,255,.05)}
+.field textarea{min-height:98px;resize:vertical}
+.field option{color:#111}
+.question{margin-bottom:18px}
+.question h4{font-size:13px;margin:0 0 10px;line-height:1.62}
+.choiceRow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.choice{border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.035));border-radius:15px;padding:10px 2px;font-size:11px;text-align:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.choice .emoji{font-size:19px;display:block;margin-bottom:3px}
+.choice.selected{border-color:rgba(255,223,155,.34);background:linear-gradient(180deg,rgba(255,223,155,.18),rgba(255,223,155,.08));box-shadow:0 0 0 1px rgba(255,223,155,.16), 0 8px 22px rgba(0,0,0,.18)}
+.resultHero{padding:26px 18px;border-radius:30px;background:linear-gradient(155deg,rgba(32,28,67,.98),rgba(14,12,33,.96) 58%,rgba(29,23,39,.94)),repeating-linear-gradient(90deg,rgba(255,255,255,.01) 0 1px,transparent 1px 22px);margin-bottom:12px;text-align:center}
+.resultHero .bigIcon{font-size:56px;display:inline-grid;place-items:center;width:88px;height:88px;margin:0 auto 6px;border-radius:28px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08)}
+.resultHero h2{margin:8px 0 6px;font-size:24px}
+.resultHero p{font-size:11px;color:var(--muted);line-height:1.75}
+.scorePills{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:14px}
+.scorePill{padding:8px 11px;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.04));font-size:10px;border:1px solid rgba(255,255,255,.06)}
+.scorePill b{font-size:14px;color:var(--gold)}
+.chart{height:190px;display:flex;align-items:flex-end;gap:8px;padding:12px 2px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,.08)}
+.chart:before{content:"";position:absolute;left:0;right:0;top:24%;border-top:1px dashed rgba(255,255,255,.06)}
+.chart:after{content:"";position:absolute;left:0;right:0;top:58%;border-top:1px dashed rgba(255,255,255,.05)}
+.bar{flex:1;min-width:12px;border-radius:12px 12px 5px 5px;background:linear-gradient(180deg,#f3daa0 0%,#c99943 45%,#6d5cff 100%);position:relative;transition:.5s;box-shadow:0 10px 20px rgba(0,0,0,.22)}
+.bar span{position:absolute;bottom:-21px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--muted)}
+.bar i{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-style:normal;font-size:8px;color:#e6dcc8}
+.systemList{display:grid;gap:10px}
+.systemCard{padding:16px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03))}
+.systemHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.systemHead b{font-size:13px}
+.systemHead span{font-size:11px;color:var(--gold);text-align:right}
+.systemCard p{font-size:10px;color:var(--muted);line-height:1.7;margin:8px 0 0}
+.compatFaces{display:flex;justify-content:center;align-items:center;gap:17px;margin:15px 0}
+.face{width:80px;height:80px;border-radius:27px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08);font-size:33px;box-shadow:var(--inner)}
+.heartPulse{font-size:30px;animation:pulse 1.4s infinite}
+@keyframes pulse{50%{transform:scale(1.18)}}
+.oracleStage{min-height:318px;display:grid;place-items:center;perspective:800px}
+.oracleCard{width:206px;height:294px;position:relative;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.2,.8,.2,1);cursor:pointer}
+.oracleCard.flipped{transform:rotateY(180deg)}
+.cardFace{position:absolute;inset:0;backface-visibility:hidden;border-radius:28px;border:1px solid rgba(255,255,255,.16);box-shadow:0 26px 56px rgba(0,0,0,.48);overflow:hidden}
+.cardBack{display:grid;place-items:center;background:radial-gradient(circle at 50% 28%,rgba(255,223,155,.14),transparent 20%),repeating-radial-gradient(circle at center,#30255f 0 4px,#18132f 5px 13px);font-size:55px;color:#fff2cd}
+.cardBack:after{content:"";position:absolute;inset:14px;border:1px solid rgba(255,255,255,.32);border-radius:21px}
+.cardFront{transform:rotateY(180deg);padding:22px 17px;text-align:center;background:linear-gradient(160deg,#322467,#15122f 56%,#17384e);display:flex;flex-direction:column;justify-content:center}
+.cardFront .symbol{font-size:58px}
+.cardFront h3{font-size:22px;margin:14px 0 7px;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif}
+.cardFront p{font-size:11px;color:#d8d3eb;line-height:1.75;margin:0}
+.timeline{display:grid;gap:9px}
+.historyItem{display:flex;gap:10px;align-items:center;padding:13px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03))}
+.moodDot{width:41px;height:41px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:19px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.historyItem .txt{flex:1}
+.historyItem b{font-size:12px}
+.historyItem p{font-size:9px;color:var(--muted);margin:4px 0 0;line-height:1.55}
+.historyScore{font-size:17px;font-weight:900;color:var(--gold)}
+.achievementGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.achievement{padding:14px;border-radius:19px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));min-height:116px}
+.achievement.locked{filter:grayscale(1);opacity:.38}
+.achievement span{font-size:25px}
+.achievement b{display:block;font-size:11px;margin:8px 0 4px}
+.achievement p{font-size:9px;color:var(--muted);line-height:1.58;margin:0}
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
+.modal.show{display:flex}
+.modalBox{width:min(760px,100%);max-height:90vh;overflow:auto;background:linear-gradient(180deg,#13102d,#0e0c21);border-radius:32px 32px 0 0;padding:20px 16px calc(24px + var(--safe));animation:rise .35s ease}
+@keyframes rise{from{transform:translateY(30px);opacity:0}}
+.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.modalHead h3{margin:0;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN",serif}
+.toast{position:fixed;left:50%;bottom:112px;z-index:200;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:12px 16px;border-radius:15px;background:#f6ead0;color:#27193b;font-size:11px;font-weight:900;box-shadow:var(--shadow);transition:.3s;border:1px solid rgba(255,214,145,.45)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.onboarding{position:fixed;inset:0;z-index:300;background:radial-gradient(circle at 50% -10%,rgba(59,45,123,.95),rgba(8,7,19,.98) 40%,rgba(5,4,15,1));overflow:auto;padding:24px 16px}
+.onboardInner{max-width:620px;margin:0 auto;padding-bottom:40px}
+.onboardLogo{width:96px;height:96px;margin:28px auto 18px;border-radius:30px;font-size:46px;background:linear-gradient(145deg,rgba(31,28,63,.98),rgba(11,10,31,.96));border:1px solid rgba(255,223,155,.24);box-shadow:0 0 0 1px rgba(255,255,255,.02),0 22px 60px rgba(0,0,0,.36),0 0 36px rgba(255,216,130,.09)}
+.onboardTitle{text-align:center}
+.onboardTitle h1{font-size:33px;margin:0 0 6px}
+.onboardTitle p{font-size:11px;color:#d1cae7;line-height:1.8;margin:0}
+.privacyNote{font-size:9px;color:var(--muted);text-align:center;line-height:1.7;margin-top:12px}
+.hidden{display:none!important}
+.mt10{margin-top:10px}
+.mt14{margin-top:14px}
+.twoBtns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.center{text-align:center}
+.gold{color:var(--gold)}
+@media(min-width:600px){.dailyGrid{grid-template-columns:repeat(4,1fr)}.menuGrid{grid-template-columns:repeat(3,1fr)}.achievementGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:370px){.syncRow{grid-template-columns:96px 1fr}.syncRing{width:94px;height:94px}.syncInner b{font-size:26px}.hero h2{font-size:24px}.choiceRow{gap:4px}.choice{font-size:9px}.bottomNav{width:calc(100% - 10px);bottom:6px}}
+
+.sceneFx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.petal{position:absolute;top:-10vh;width:14px;height:14px;border-radius:2px 12px 12px 12px;background:linear-gradient(145deg,rgba(255,231,186,.70),rgba(220,168,89,.16));box-shadow:0 0 12px rgba(255,214,145,.14);opacity:.55;animation:petalFall linear infinite,petalSway ease-in-out infinite;filter:blur(.15px)}
+.petal:after{content:"";position:absolute;inset:2px 4px 6px 2px;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0))}
+@keyframes petalFall{0%{transform:translate3d(0,-8vh,0) rotate(0deg)}100%{transform:translate3d(var(--drift,20px),115vh,0) rotate(330deg)}}
+@keyframes petalSway{50%{margin-left:12px;transform:rotate(18deg)}}
+.luxSplash{position:fixed;inset:0;z-index:500;display:grid;place-items:center;background:radial-gradient(circle at 50% 18%,rgba(60,48,114,.22),rgba(6,5,17,.94) 40%,rgba(5,4,15,.995));backdrop-filter:blur(10px);transition:opacity .9s ease,visibility .9s ease}
+.luxSplash.hidden{opacity:0;visibility:hidden}
+.splashCore{position:relative;display:grid;place-items:center;text-align:center;padding:34px 24px;min-width:min(82vw,360px)}
+.splashRing{position:absolute;width:210px;height:210px;border-radius:50%;border:1px solid rgba(255,223,155,.18);box-shadow:0 0 0 20px rgba(255,255,255,.018),0 0 0 46px rgba(255,223,155,.012);animation:ritualSpin 9s linear infinite}
+.splashRing:before,.splashRing:after{content:"";position:absolute;inset:18px;border-radius:50%;border:1px dashed rgba(255,255,255,.10)}
+.splashRing:after{inset:44px;border-style:solid;opacity:.5}
+.splashGlyph{position:relative;z-index:1;width:94px;height:94px;border-radius:30px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(33,28,68,.97),rgba(10,9,30,.95));border:1px solid rgba(255,223,155,.22);color:#fff0cd;font-size:42px;box-shadow:0 0 0 1px rgba(255,255,255,.03),0 14px 40px rgba(0,0,0,.32)}
+.splashCore h2{position:relative;z-index:1;margin:26px 0 7px;font-size:28px;font-family:Georgia,"Times New Roman","Hiragino Mincho ProN","Yu Mincho",serif}
+.splashCore p{position:relative;z-index:1;margin:0;color:#d6cee9;font-size:12px;line-height:1.8;letter-spacing:.06em}
+@keyframes ritualSpin{to{transform:rotate(360deg)}}
+.hero,.resultHero,.panel,.menuCard,.fortuneCard,.achievement,.historyItem,.systemCard{will-change:transform,opacity}
+.hero::selection,.panel::selection,.resultHero::selection{background:rgba(255,223,155,.22)}
+.reveal-glow{animation:revealGlow .9s ease}
+@keyframes revealGlow{0%{transform:translateY(10px) scale(.985);opacity:0;filter:brightness(.88)}60%{transform:translateY(-1px) scale(1.008);opacity:1;filter:brightness(1.06)}100%{transform:none;opacity:1;filter:none}}
+.screen-enter{animation:screenEnter .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes screenEnter{0%{opacity:0;transform:translateY(12px) scale(.992)}100%{opacity:1;transform:none}}
+.oracleStage.ritual{animation:ritualPulse 1.15s ease}
+@keyframes ritualPulse{0%{filter:brightness(.9)}40%{filter:brightness(1.14);transform:scale(1.015)}100%{filter:none;transform:none}}
+.topbar:after{content:"";display:block;height:1px;margin-top:10px;background:linear-gradient(90deg,transparent,rgba(255,223,155,.18),transparent)}
+.hero .primary,.resultHero .primary,.panel .primary{overflow:hidden}
+.primary:hover:before,.secondary:hover:before{transform:translateX(120%)}
+.modalBox,.hero,.resultHero{backdrop-filter:blur(12px)}
+.pageHead h2{position:relative;display:inline-block;padding-right:18px}
+.pageHead h2:after{content:"";position:absolute;right:0;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:radial-gradient(circle,#ffdf9a 0,rgba(255,223,155,0) 72%);opacity:.9}
+
+
+button,.menuCard,.choice,.oracleCard,.navBtn,.iconBtn{isolation:isolate;position:relative;overflow:hidden}
+.press-flash{animation:pressFlash .56s ease}
+@keyframes pressFlash{0%{transform:scale(1);box-shadow:0 0 0 rgba(255,223,155,0)}35%{transform:scale(.988);box-shadow:0 0 0 1px rgba(255,223,155,.18),0 0 28px rgba(255,223,155,.24),0 0 50px rgba(123,177,255,.12)}100%{transform:scale(1);box-shadow:inherit}}
+.ripple-light{position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(.18);background:radial-gradient(circle,rgba(255,251,238,.96) 0%,rgba(255,236,187,.84) 22%,rgba(255,223,155,.42) 44%,rgba(255,223,155,.12) 62%,rgba(255,223,155,0) 74%);mix-blend-mode:screen;filter:blur(.3px);animation:rippleLight .78s cubic-bezier(.18,.82,.2,1) forwards;z-index:3}
+@keyframes rippleLight{0%{opacity:.96;transform:translate(-50%,-50%) scale(.12)}55%{opacity:.62}100%{opacity:0;transform:translate(-50%,-50%) scale(2.6)}}
+.primary .ripple-light{background:radial-gradient(circle,rgba(255,255,246,.98) 0%,rgba(255,244,199,.92) 26%,rgba(255,233,167,.48) 48%,rgba(255,233,167,.12) 68%,rgba(255,233,167,0) 76%)}
+.navBtn.press-flash,.iconBtn.press-flash{box-shadow:0 0 0 1px rgba(255,223,155,.18),0 0 24px rgba(255,223,155,.22),0 0 44px rgba(111,85,215,.18)!important}
+.menuCard.press-flash,.choice.press-flash{box-shadow:0 0 0 1px rgba(255,223,155,.12),0 14px 34px rgba(0,0,0,.22),0 0 26px rgba(255,223,155,.15)!important}
+
+
+.compareList{display:grid;gap:10px}
+.compareCard{padding:16px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.06);box-shadow:var(--inner)}
+.compareHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.compareHead b{font-size:13px}.compareHead span{font-size:10px;color:var(--gold)}
+.compareCols{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.voteCol{padding:10px 10px 9px;border-radius:14px;background:rgba(255,255,255,.04);min-height:84px}.voteCol strong{display:block;font-size:10px;color:var(--gold);margin-bottom:6px;letter-spacing:.06em}
+.voteCol div{font-size:10px;line-height:1.55;color:var(--text);opacity:.94}.voteCol div span{color:var(--muted)}
+.compareSummary{font-size:10px;line-height:1.7;color:var(--muted);margin:0}
+@media(max-width:420px){.compareCols{grid-template-columns:1fr}}
+
+
+.radarWrap{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;align-items:center}
+.radarStage{padding:8px 0}
+#radarChart{width:100%;max-width:320px;display:block;margin:0 auto;filter:drop-shadow(0 10px 26px rgba(0,0,0,.22))}
+.radarLegend{display:grid;gap:8px}
+.radarItem{padding:10px 11px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.06)}
+.radarItem .top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;margin-bottom:6px}
+.radarItem .top b{font-size:11px}.radarItem .top span{color:var(--gold)}
+.tinyMeter{height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.26)}
+.tinyMeter i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold-2),var(--gold),#f6e6ab)}
+.radarItem p{font-size:9px;color:var(--muted);line-height:1.55;margin:6px 0 0}
+@media(max-width:720px){.radarWrap{grid-template-columns:1fr}.radarStage{order:1}.radarSide{order:2}}
+
+
+.homeTopline{display:grid;grid-template-columns:1fr;gap:10px}.consensusCard,.contrastCallout,.miniRadarCard{padding:14px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.06);box-shadow:var(--inner)}
+.consensusHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.consensusHead b{font-size:13px}.consensusHead span{font-size:18px;font-weight:900;color:var(--gold)}
+.consensusCard p,.contrastCallout{font-size:10px;line-height:1.65;color:var(--muted);margin:8px 0 0}
+.contrastCallout{display:flex;align-items:center;min-height:54px;background:linear-gradient(135deg,rgba(255,223,155,.10),rgba(121,223,247,.06));color:#efe8d8}
+.radarMainStage{position:relative;cursor:pointer}.radarTapHint{width:auto;padding:10px 14px;position:absolute;right:8px;bottom:4px;font-size:10px}
+.categoryGrid{display:grid;grid-template-columns:1fr;gap:12px}.miniRadarCard svg{width:100%;max-width:220px;display:block;margin:6px auto 10px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
+.detailTopPill{display:inline-block;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);font-size:9px;margin:0 6px 6px 0}
+@media(min-width:720px){.homeTopline{grid-template-columns:1fr 1.2fr}.categoryGrid{grid-template-columns:repeat(3,1fr)}}
+
+
+/* heavy premium UI overrides */
+:root{
+  --bg:#04030b;
+  --bg2:#0a0815;
+  --panel:linear-gradient(180deg,rgba(18,16,35,.98),rgba(8,7,19,.97));
+  --panel2:linear-gradient(180deg,rgba(25,21,48,.98),rgba(10,9,24,.97));
+  --line:rgba(255,239,205,.12);
+  --line-strong:rgba(255,219,137,.38);
+  --text:#faf6ef;
+  --muted:#c2b7d2;
+  --muted-2:#9f95b8;
+  --gold:#f3d08a;
+  --gold-2:#9f6d25;
+  --shadow:0 34px 90px rgba(0,0,0,.62);
+  --shadow-soft:0 18px 44px rgba(0,0,0,.42);
+  --inner:inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(255,255,255,.02);
+}
+body{
+ background:
+ radial-gradient(circle at 14% -6%,rgba(112,86,188,.18),transparent 24%),
+ radial-gradient(circle at 88% 8%,rgba(69,114,154,.10),transparent 20%),
+ radial-gradient(circle at 50% 120%,rgba(191,138,55,.10),transparent 28%),
+ linear-gradient(180deg,#030209 0%,#06040f 34%,#070510 100%);
+}
+body:before{opacity:.45}
+body:after{opacity:.11}
+.topbar{
+ background:linear-gradient(180deg,rgba(4,3,11,.985) 0%,rgba(4,3,11,.95) 74%,rgba(4,3,11,0));
+ box-shadow:0 10px 30px rgba(0,0,0,.28);
+}
+.brand h1{letter-spacing:.08em}
+.brand p{color:#d9b36a;opacity:1}
+.logo,.onboardLogo{
+ background:linear-gradient(155deg,rgba(32,26,57,.99),rgba(9,8,21,.98));
+ border:1px solid rgba(243,208,138,.32);
+ box-shadow:0 18px 38px rgba(0,0,0,.36), inset 0 0 0 1px rgba(255,255,255,.03), inset 0 0 28px rgba(243,208,138,.07);
+}
+.iconBtn,.closeBtn{
+ border:1px solid rgba(243,208,138,.16);
+ background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 24px rgba(0,0,0,.25);
+}
+.profileMini{
+ border:1px solid rgba(243,208,138,.16);
+ background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 30px rgba(0,0,0,.22);
+}
+.hero,.resultHero,.panel,.fortuneCard,.menuCard,.systemCard,.historyItem,.achievement,.insight,.modalBox,.onboarding .panel,.consensusCard,.contrastCallout,.miniRadarCard,.compareCard,.radarItem{
+ border:1px solid rgba(243,208,138,.14);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.035), inset 0 0 0 1px rgba(255,255,255,.015), 0 18px 44px rgba(0,0,0,.34);
+}
+.hero:after,.panel:after,.fortuneCard:after,.systemCard:after,.resultHero:after,.insight:after,.achievement:after,.historyItem:after,.modalBox:after,.onboarding .panel:after,.consensusCard:after,.miniRadarCard:after,.compareCard:after,.radarItem:after{
+ background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,0) 24%,rgba(243,208,138,.14) 72%,rgba(255,255,255,.02));
+}
+.hero{
+ background:
+ radial-gradient(circle at 82% 14%,rgba(243,208,138,.16),transparent 18%),
+ radial-gradient(circle at 18% 18%,rgba(112,160,214,.08),transparent 22%),
+ linear-gradient(180deg,rgba(255,255,255,.028),transparent 18%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.012) 0 1px,transparent 1px 20px),
+ linear-gradient(155deg,rgba(30,24,51,.99),rgba(11,10,25,.985) 58%,rgba(20,15,27,.98));
+ box-shadow:0 32px 80px rgba(0,0,0,.52), inset 0 0 0 1px rgba(255,255,255,.02), inset 0 -18px 42px rgba(0,0,0,.12);
+}
+.hero:before{opacity:.7}
+.panel,
+.fortuneCard,
+.systemCard,
+.historyItem,
+.achievement,
+.insight,
+.consensusCard,
+.contrastCallout,
+.miniRadarCard,
+.compareCard,
+.radarItem{
+ background:
+ linear-gradient(180deg,rgba(18,16,35,.96),rgba(9,8,20,.95)),
+ repeating-linear-gradient(135deg,rgba(255,255,255,.008) 0 1px,transparent 1px 18px);
+}
+.menuCard{
+ background:
+ radial-gradient(circle at 100% 100%,rgba(243,208,138,.06),transparent 28%),
+ linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02)),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.01) 0 1px,transparent 1px 24px),
+ linear-gradient(180deg,rgba(18,16,35,.96),rgba(9,8,20,.95));
+ min-height:146px;
+}
+.menuCard b{font-size:15px;letter-spacing:.02em}
+.menuIcon,.resultHero .bigIcon,.face,.profileMini #miniAvatar{
+ background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025));
+ border:1px solid rgba(243,208,138,.12);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 10px 18px rgba(0,0,0,.18);
+}
+.resultHero{
+ background:
+ radial-gradient(circle at 50% 8%,rgba(243,208,138,.12),transparent 18%),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.008) 0 1px,transparent 1px 22px),
+ linear-gradient(155deg,rgba(29,24,52,.99),rgba(11,10,26,.985) 58%,rgba(20,15,27,.98));
+ box-shadow:0 24px 56px rgba(0,0,0,.44), inset 0 -12px 28px rgba(0,0,0,.10);
+}
+.panel h3,.sectionTitle h3,.modalHead h3{letter-spacing:.06em}
+.sectionTitle h3:before{width:4px;background:linear-gradient(180deg,#f3d08a,rgba(255,255,255,.5))}
+.primary{
+ border:1px solid rgba(243,208,138,.40);
+ background:linear-gradient(180deg,#7b541d,#c79b4a 42%,#f1d48e 52%,#9a6d27 100%);
+ color:#1a1003;
+ box-shadow:0 18px 34px rgba(101,67,17,.36), inset 0 1px 0 rgba(255,255,255,.45), inset 0 -2px 0 rgba(80,48,5,.20);
+}
+.secondary{
+ border:1px solid rgba(243,208,138,.16);
+ background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 22px rgba(0,0,0,.24);
+}
+.field input,.field select,.field textarea{
+ border:1px solid rgba(243,208,138,.12);
+ background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.022));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.03), inset 0 -1px 0 rgba(0,0,0,.26);
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(243,208,138,.30);box-shadow:0 0 0 3px rgba(243,208,138,.07), inset 0 1px 0 rgba(255,255,255,.05)}
+.bottomNav{
+ background:linear-gradient(180deg,rgba(11,10,23,.98),rgba(6,5,14,.97));
+ border:1px solid rgba(243,208,138,.14);
+ box-shadow:0 26px 60px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.05), inset 0 0 0 1px rgba(255,255,255,.02);
+}
+.navBtn{color:#a89dbb}
+.navBtn.active{background:linear-gradient(180deg,#f1d48e,#a9772e);color:#170e03;box-shadow:0 14px 28px rgba(145,100,30,.32),inset 0 1px 0 rgba(255,255,255,.35)}
+.modalBox{
+ background:
+ linear-gradient(180deg,rgba(17,15,34,.99),rgba(7,6,17,.985)),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.008) 0 1px,transparent 1px 18px);
+ box-shadow:0 -20px 64px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.radarTapHint{border-color:rgba(243,208,138,.20)}
+.consensusHead span,#workMiniScore,#loveMiniScore,#moneyMiniScore{color:#f3d08a;text-shadow:0 0 18px rgba(243,208,138,.18)}
+.compareCallout,.contrastCallout{color:#ebe1ce}
+#radarChart,#detailRadarChart,.miniRadarCard svg{filter:drop-shadow(0 14px 28px rgba(0,0,0,.30))}
+.toast{background:linear-gradient(180deg,#f4e5c1,#dec38b);color:#231506;border:1px solid rgba(170,121,41,.40);box-shadow:0 18px 42px rgba(0,0,0,.34)}
+
+
+/* hotel lounge premium overrides */
+:root{
+  --bg:#0a0908;
+  --bg2:#15110f;
+  --panel:linear-gradient(180deg,rgba(32,25,21,.97),rgba(16,13,12,.965));
+  --panel2:linear-gradient(180deg,rgba(44,34,28,.98),rgba(18,15,14,.97));
+  --line:rgba(255,236,210,.10);
+  --line-strong:rgba(223,186,127,.34);
+  --text:#f6f0e8;
+  --muted:#c9bcaf;
+  --muted-2:#a89786;
+  --gold:#e7c28a;
+  --gold-2:#a46c38;
+  --shadow:0 34px 90px rgba(0,0,0,.55);
+  --shadow-soft:0 18px 44px rgba(0,0,0,.34);
+}
+html,body{background:#0a0908}
+body{
+ background:
+ radial-gradient(circle at 16% -5%,rgba(157,98,52,.12),transparent 24%),
+ radial-gradient(circle at 88% 10%,rgba(198,148,94,.08),transparent 21%),
+ radial-gradient(circle at 50% 120%,rgba(121,77,39,.16),transparent 32%),
+ linear-gradient(180deg,#090807 0%,#11100e 38%,#0c0b0a 100%);
+}
+body:before{
+ background:
+ radial-gradient(circle at 22% 18%,rgba(255,250,239,.06) 0 1px,transparent 1.6px),
+ radial-gradient(circle at 80% 22%,rgba(255,245,232,.05) 0 1px,transparent 1.6px),
+ radial-gradient(circle at 68% 74%,rgba(255,245,232,.04) 0 1px,transparent 1.6px),
+ linear-gradient(90deg,transparent 0 10%,rgba(255,255,255,.008) 10% 10.15%,transparent 10.15% 100%);
+ opacity:.34;
+}
+body:after{background:linear-gradient(180deg,rgba(255,247,235,.03),transparent 18%,transparent 84%,rgba(255,240,220,.025));opacity:.10}
+.aurora{opacity:.08;filter:blur(110px);background:conic-gradient(from 90deg at 50% 50%,rgba(161,104,56,.85),rgba(89,60,37,.6),rgba(205,167,108,.5),rgba(161,104,56,.85))}
+.topbar{
+ background:linear-gradient(180deg,rgba(9,8,7,.985) 0%,rgba(9,8,7,.94) 74%,rgba(9,8,7,0));
+ box-shadow:0 12px 36px rgba(0,0,0,.24);
+}
+.brand h1{letter-spacing:.12em}
+.brand p{color:#d8b07a;letter-spacing:.34em}
+.logo,.onboardLogo{
+ background:
+ radial-gradient(circle at 30% 24%,rgba(255,240,210,.16),transparent 26%),
+ linear-gradient(155deg,rgba(56,43,33,.99),rgba(20,17,15,.98));
+ border:1px solid rgba(223,186,127,.28);
+ box-shadow:0 18px 42px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.06), inset 0 0 38px rgba(223,186,127,.06);
+}
+.iconBtn,.closeBtn{
+ border-radius:16px;
+ border:1px solid rgba(223,186,127,.14);
+ background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.018));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 22px rgba(0,0,0,.18);
+}
+.profileMini{
+ border:1px solid rgba(223,186,127,.12);
+ background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.016));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 16px 30px rgba(0,0,0,.18);
+}
+.hero,.resultHero,.panel,.fortuneCard,.menuCard,.systemCard,.historyItem,.achievement,.insight,.modalBox,.onboarding .panel,.consensusCard,.contrastCallout,.miniRadarCard,.compareCard,.radarItem{
+ border:1px solid rgba(223,186,127,.12);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.025), inset 0 0 0 1px rgba(255,255,255,.01), 0 18px 38px rgba(0,0,0,.26);
+}
+.hero:after,.panel:after,.fortuneCard:after,.systemCard:after,.resultHero:after,.insight:after,.achievement:after,.historyItem:after,.modalBox:after,.onboarding .panel:after,.consensusCard:after,.miniRadarCard:after,.compareCard:after,.radarItem:after{
+ background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,0) 28%,rgba(223,186,127,.11) 76%,rgba(255,255,255,.02));
+}
+.hero{
+ border-radius:36px;
+ background:
+ radial-gradient(circle at 84% 14%,rgba(223,186,127,.12),transparent 18%),
+ radial-gradient(circle at 16% 18%,rgba(255,255,255,.05),transparent 16%),
+ linear-gradient(180deg,rgba(255,255,255,.02),transparent 16%),
+ linear-gradient(155deg,rgba(40,31,25,.99),rgba(19,16,15,.985) 58%,rgba(26,21,18,.98));
+ box-shadow:0 34px 82px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.03), inset 0 -16px 40px rgba(0,0,0,.08);
+}
+.hero:before{
+ border-color:rgba(223,186,127,.12);
+ box-shadow:0 0 0 24px rgba(255,255,255,.014),0 0 0 52px rgba(223,186,127,.010),0 0 0 84px rgba(255,255,255,.012);
+}
+.heroEyebrow,.field label,.gold,.sectionTitle span,.sectionTitle button,.scorePill b,.consensusHead span,#workMiniScore,#loveMiniScore,#moneyMiniScore{color:#e3bf8b}
+.hero h2,.pageHead h2,.resultHero h2,.modalHead h3,.panel h3,.sectionTitle h3,.brand h1,.onboardTitle h1{font-family:Georgia,"Times New Roman","Hiragino Mincho ProN","Yu Mincho",serif}
+.hero p,.subtle,.fortuneCard p,.systemCard p,.compareSummary,.historyItem p,.consensusCard p,.contrastCallout,.miniRadarCard p{color:#cbbfaf}
+.panel,
+.fortuneCard,
+.systemCard,
+.historyItem,
+.achievement,
+.insight,
+.consensusCard,
+.contrastCallout,
+.miniRadarCard,
+.compareCard,
+.radarItem{
+ background:
+ linear-gradient(180deg,rgba(29,23,20,.96),rgba(14,12,11,.95)),
+ linear-gradient(180deg,rgba(255,255,255,.015),transparent 30%);
+}
+.menuCard{
+ min-height:146px;
+ background:
+ radial-gradient(circle at 100% 100%,rgba(223,186,127,.05),transparent 26%),
+ linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.012)),
+ linear-gradient(180deg,rgba(31,24,20,.96),rgba(15,12,11,.95));
+}
+.menuCard:after{opacity:.18;filter:blur(38px)}
+.menuIcon,.resultHero .bigIcon,.face,.profileMini #miniAvatar{
+ background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
+ border:1px solid rgba(223,186,127,.10);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 20px rgba(0,0,0,.16);
+}
+.resultHero{
+ background:
+ radial-gradient(circle at 50% 10%,rgba(223,186,127,.10),transparent 17%),
+ linear-gradient(155deg,rgba(41,32,25,.99),rgba(17,14,13,.985) 58%,rgba(23,19,16,.98));
+ box-shadow:0 24px 54px rgba(0,0,0,.30), inset 0 -12px 28px rgba(0,0,0,.08);
+}
+.primary{
+ border:1px solid rgba(232,197,140,.34);
+ background:linear-gradient(180deg,#76512d,#b8864a 46%,#e4c08a 54%,#8a5e31 100%);
+ color:#1f1308;
+ box-shadow:0 16px 30px rgba(105,70,33,.28), inset 0 1px 0 rgba(255,255,255,.40), inset 0 -2px 0 rgba(78,51,24,.18);
+}
+.secondary{
+ border:1px solid rgba(223,186,127,.13);
+ background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.016));
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 10px 20px rgba(0,0,0,.18);
+}
+.choice,.navBtn,.field input,.field select,.field textarea{
+ border-color:rgba(223,186,127,.10);
+}
+.field input,.field select,.field textarea{
+ background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(223,186,127,.24);box-shadow:0 0 0 3px rgba(223,186,127,.05), inset 0 1px 0 rgba(255,255,255,.04)}
+.bottomNav{
+ background:linear-gradient(180deg,rgba(17,14,12,.98),rgba(10,9,8,.97));
+ border:1px solid rgba(223,186,127,.12);
+ box-shadow:0 24px 54px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.04), inset 0 0 0 1px rgba(255,255,255,.01);
+}
+.navBtn{color:#b2a28f}
+.navBtn.active{
+ background:linear-gradient(180deg,#e4c08a,#9d6a34);
+ color:#201308;
+ box-shadow:0 14px 24px rgba(122,82,37,.26),inset 0 1px 0 rgba(255,255,255,.32);
+}
+.modalBox{
+ background:linear-gradient(180deg,rgba(27,22,19,.99),rgba(12,10,9,.985));
+ box-shadow:0 -20px 60px rgba(0,0,0,.46), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.oracleCard .cardBack{
+ background:radial-gradient(circle at 50% 28%,rgba(223,186,127,.14),transparent 20%),repeating-radial-gradient(circle at center,#3a2a22 0 4px,#191310 5px 13px);
+ color:#f4dfb8;
+}
+.cardFront{background:linear-gradient(160deg,#4a3428,#1a1513 56%,#2d221b)}
+.contrastCallout{background:linear-gradient(135deg,rgba(223,186,127,.08),rgba(255,255,255,.02));color:#e7dccd}
+.radarTapHint{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.016))}
+#radarChart,#detailRadarChart,.miniRadarCard svg{filter:drop-shadow(0 12px 24px rgba(0,0,0,.18))}
+.toast{background:linear-gradient(180deg,#ead7b0,#d3b07b);color:#2a1b0c;border:1px solid rgba(152,104,46,.34);box-shadow:0 16px 34px rgba(0,0,0,.22)}
+
+
+/* senior-friendly strong overrides */
+html{font-size:20px}
+body{font-size:19px;line-height:1.95;letter-spacing:.01em}
+.app{max-width:840px;padding:22px 16px calc(132px + var(--safe))}
+.topbar{margin:-22px -16px 18px;padding:18px 16px 16px}
+.logo{width:56px;height:56px;font-size:28px}
+.brand h1{font-size:28px;line-height:1.3}
+.brand p{font-size:12px;letter-spacing:.18em}
+.topActions{gap:10px}.iconBtn,.closeBtn{width:52px;height:52px;font-size:24px;border-radius:18px}
+.profileMini{font-size:16px;padding:14px 16px;gap:10px;border-radius:20px}
+.profileMini #miniAvatar{width:36px;height:36px;font-size:20px}.xpTrack{height:10px}
+.seniorBadge{margin-top:10px;padding:11px 14px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));border:1px solid rgba(223,186,127,.12);font-size:15px;color:#f0dfc1}
+.hero{padding:28px;border-radius:30px}.heroEyebrow{font-size:13px;letter-spacing:.12em}.hero h2{font-size:38px;line-height:1.38;margin:10px 0 12px}.hero p{font-size:17px;line-height:1.95}
+.syncRow{grid-template-columns:130px 1fr;gap:18px}.syncRing{width:128px;height:128px}.syncInner b{font-size:38px}.syncInner span{font-size:11px}.syncText h3{font-size:24px}.syncText p{font-size:16px;line-height:1.9}.tagrow{gap:8px}.tag{font-size:12px;padding:8px 12px}
+.primary{font-size:18px;padding:18px 20px;min-height:60px;border-radius:20px}.secondary{font-size:16px;padding:16px 18px;min-height:56px;border-radius:18px}
+.sectionTitle{margin:28px 2px 14px}.sectionTitle h3{font-size:24px}.sectionTitle span,.sectionTitle button{font-size:14px}
+.panel{padding:22px;border-radius:24px}.panel h3{font-size:20px;margin-bottom:14px}.subtle{font-size:16px;line-height:1.95}
+.dailyGrid,.menuGrid,.achievementGrid,.categoryGrid,.twoBtns,.formGrid,.compareCols,.radarWrap,.homeTopline{grid-template-columns:1fr!important}
+.fortuneCard{padding:18px;border-radius:22px}.fortuneCard .ftop{font-size:15px}.fortuneCard b{font-size:34px}.fortuneCard p{font-size:14px;line-height:1.9}
+.menuCard{min-height:150px;padding:20px;border-radius:22px}.menuIcon{width:52px;height:52px;font-size:27px}.menuCard b{font-size:18px;margin:14px 0 8px}.menuCard p{font-size:14px;line-height:1.8}
+.consensusHead b{font-size:18px}.consensusHead span{font-size:28px}.consensusCard p,.contrastCallout,.miniRadarCard p{font-size:14px;line-height:1.9}.contrastCallout{min-height:64px;padding:15px}
+.radarStage,.radarMainStage{padding-bottom:8px}.radarTapHint{position:static;margin-top:12px;width:100%;font-size:15px}
+#radarChart,#detailRadarChart{max-width:360px}.miniRadarCard svg{max-width:250px}.radarItem{padding:12px 13px}.radarItem .top{font-size:13px}.radarItem .top b{font-size:14px}.radarItem p{font-size:12px;line-height:1.8}
+.pageHead{padding:8px 4px 16px}.pageHead h2{font-size:34px;margin-bottom:8px}.pageHead p{font-size:16px;line-height:1.95}
+.field{gap:8px;margin-bottom:14px}.field label{font-size:13px}.field input,.field select,.field textarea{font-size:18px;padding:16px;border-radius:18px}.field textarea{min-height:116px}
+.question{margin-bottom:22px}.question h4{font-size:18px;line-height:1.85}.choiceRow{grid-template-columns:1fr;gap:10px}.choice{font-size:15px;padding:14px 8px;border-radius:18px;text-align:left;padding-left:14px}.choice .emoji{font-size:24px;display:inline-block;margin:0 10px 0 0;vertical-align:middle}
+.resultHero{padding:28px 20px;border-radius:28px}.resultHero .bigIcon{width:94px;height:94px;font-size:60px}.resultHero h2{font-size:30px}.resultHero p{font-size:15px;line-height:1.9}
+.scorePills{gap:10px}.scorePill{font-size:13px;padding:10px 13px}.scorePill b{font-size:16px}
+.chart{height:220px}.bar span,.bar i{font-size:10px}
+.systemCard{padding:18px;border-radius:20px}.systemHead b{font-size:16px}.systemHead span{font-size:13px}.systemCard p{font-size:14px;line-height:1.85}
+.voteCol{padding:12px}.voteCol strong{font-size:13px}.voteCol div{font-size:13px;line-height:1.75}.compareSummary{font-size:14px;line-height:1.9}
+.compatFaces{gap:16px}.face{width:88px;height:88px;font-size:36px}
+.oracleStage{min-height:340px}.oracleCard{width:230px;height:320px}.cardFront h3{font-size:26px}.cardFront p{font-size:14px;line-height:1.9}
+.timeline{gap:12px}.historyItem{padding:15px;border-radius:18px}.moodDot{width:46px;height:46px;font-size:22px}.historyItem b{font-size:15px}.historyItem p{font-size:12px;line-height:1.8}.historyScore{font-size:20px}
+.achievement{min-height:126px;padding:16px}.achievement span{font-size:28px}.achievement b{font-size:14px}.achievement p{font-size:12px;line-height:1.75}
+.modalBox{padding:22px 18px calc(28px + var(--safe));border-radius:30px 30px 0 0}.modalHead h3{font-size:28px}
+.toast{font-size:14px;padding:14px 18px;bottom:128px}
+.bottomNav{padding:10px 8px calc(12px + var(--safe));border-radius:28px;grid-template-columns:repeat(5,1fr);gap:8px}
+.navBtn{font-size:12px;padding:12px 4px;border-radius:18px}.navBtn i{font-size:22px}.navBtn.active{transform:none}
+.onboardLogo{width:104px;height:104px;font-size:50px}.onboardTitle h1{font-size:42px}.onboardTitle p{font-size:16px;line-height:1.95}.privacyNote{font-size:12px;line-height:1.85}
+@media(max-width:480px){html{font-size:19px}body{font-size:18px}.brand h1{font-size:25px}.hero h2{font-size:34px}.pageHead h2{font-size:30px}.sectionTitle h3{font-size:22px}.subtle,.hero p,.pageHead p,.resultHero p{font-size:15px}.syncRow{grid-template-columns:1fr}.syncRing{margin:0 auto}.bottomNav{width:calc(100% - 12px)}}
+
+
+/* layout refinements for senior edition */
+.sectionTitle{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:8px;
+  margin:30px 2px 16px;
+}
+.sectionTitle h3{
+  width:100%;
+  max-width:none;
+  margin:0;
+  line-height:1.48;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+.sectionTitle span,
+.sectionTitle button{
+  display:block;
+  margin-left:16px;
+  line-height:1.7;
+  letter-spacing:.04em;
+  text-align:left;
+}
+.pageHead h2,
+.hero h2,
+.resultHero h2,
+.panel h3,
+.systemHead b,
+.compareHead b,
+.consensusHead b{
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+.systemHead,
+.compareHead,
+.consensusHead,
+.fortuneCard .ftop,
+.radarItem .top{
+  gap:8px;
+}
+.contrastCallout,
+.consensusCard p,
+.radarItem p,
+.systemCard p,
+.compareSummary,
+.voteCol div,
+.fortuneCard p,
+.pageHead p,
+.hero p,
+.subtle{
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+@media(max-width:560px){
+  .systemHead,
+  .compareHead,
+  .consensusHead,
+  .fortuneCard .ftop,
+  .radarItem .top{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .sectionTitle h3{font-size:21px;line-height:1.5}
+  .sectionTitle span,
+  .sectionTitle button{font-size:14px;margin-left:16px}
+  .pageHead h2{font-size:28px}
+  .pageHead p,
+  .hero p,
+  .subtle,
+  .systemCard p,
+  .compareSummary,
+  .fortuneCard p{font-size:14px;line-height:1.9}
+  .contrastCallout{padding:15px 16px}
+}
+
+</style>
+</head>
+<body>
+<canvas id="starCanvas"></canvas><div class="aurora"></div><div class="sceneFx" id="sceneFx"></div><div class="luxSplash" id="luxSplash"><div class="splashCore"><div class="splashRing"></div><div class="splashGlyph">✦</div><h2>運命を整えています</h2><p>星図と心象を重ね、静かに共鳴を描いています</p></div></div>
+<div id="onboarding" class="onboarding hidden">
+  <div class="onboardInner">
+    <div class="onboardLogo">✦</div>
+    <div class="onboardTitle"><h1>運命共鳴</h1><p>シニア向け見やすい版<br>大きな文字で、ゆっくり分かりやすく。</p></div>
+    <div class="panel mt14">
+      <div class="formGrid">
+        <div class="field full"><label>呼び名</label><input id="obName" maxlength="12" placeholder="例：じゅん"></div>
+        <div class="field full"><label>生年月日</label><input id="obBirth" type="date"></div>
+        <div class="field"><label>出生時間（任意）</label><input id="obTime" type="time"></div>
+        <div class="field"><label>性別（任意）</label><select id="obGender"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div>
+        <div class="field full"><label>出生地（任意）</label><input id="obPlace" maxlength="30" placeholder="例：岐阜県"></div>
+      </div>
+      <button class="primary" onclick="completeOnboarding()">運命プロファイルを生成</button>
+      <p class="privacyNote">入力内容と記録は、この端末のブラウザ内に保存されます。占いは娯楽・自己理解のためのヒントです。</p>
+    </div>
+  </div>
+</div>
+<div class="app">
+  <header class="topbar">
+    <div class="toprow">
+      <div class="brand"><div class="logo">✦</div><div><h1>運命共鳴</h1><p>シニア向け見やすい版</p></div></div>
+      <div class="topActions"><button class="iconBtn" id="soundBtn" onclick="toggleSound()">音</button><button class="iconBtn" onclick="openSettings()">⚙</button></div>
+    </div>
+    <div class="profileMini"><span id="miniAvatar">🌙</span><b id="miniName">ゲスト</b><span id="miniLevel">Lv.1</span><div class="xpTrack"><i id="xpBar" style="width:0%"></i></div><span id="xpText">0/100</span></div>
+  </header>
+
+  <main>
+    <section id="homeScreen" class="screen active">
+      <div class="hero">
+        <div class="heroEyebrow" id="todayLabel">本日の運命共鳴</div>
+        <h2 id="heroTitle">今日の運命を同期しています</h2>
+        <p id="heroSummary">生まれ持った運命傾向と、今日の心理状態を重ねて総合解析します。</p>
+        <div class="syncRow">
+          <div class="syncRing" id="syncRing" style="--score:72"><div class="syncInner"><div><b id="syncScore">72</b><span>SYNC SCORE</span></div></div></div>
+          <div class="syncText"><h3 id="syncType">静かな上昇期</h3><p id="syncAdvice">小さな違和感を見逃さず、丁寧に整えるほど流れが良くなります。</p><div class="tagrow" id="syncTags"></div></div>
+        </div>
+        <button class="primary mt14" onclick="startPsychCheck()">30秒で今日の心を同期する</button>
+      </div>
+      <div class="sectionTitle"><h3>総合占術ダッシュボード</h3><span>トップで一目表示</span></div>
+      <div class="panel">
+        <div class="homeTopline">
+          <div class="consensusCard"><div class="consensusHead"><b>占術一致率</b><span id="consistencyRate">78%</span></div><div class="tinyMeter"><i id="consistencyBar" style="width:78%"></i></div><p id="consistencyText">複数占術がかなり同じ方向を示しています。</p></div>
+          <div class="contrastCallout" id="compareCallout">強気サイン：六運星・西洋星座 / 慎重サイン：月相タイプ・九星気学</div>
+        </div>
+        <div class="radarWrap mt14">
+          <div class="radarStage radarMainStage" onclick="openRadarDetailModal()">
+            <svg id="radarChart" viewBox="0 0 320 320" aria-label="多占術レーダーチャート"></svg>
+            <button class="secondary radarTapHint" type="button" onclick="event.stopPropagation();openRadarDetailModal()">詳細比較を見る</button>
+          </div>
+          <div class="radarSide">
+            <p class="subtle" id="homeAggregationText"></p>
+            <div class="radarLegend" id="radarLegend"></div>
+            <p class="subtle mt10 gold" id="homeContrastText"></p>
+          </div>
+        </div>
+      </div>
+      <div class="sectionTitle"><h3>テーマ別 多占術レーダー</h3><span>仕事・恋愛・金運</span></div>
+      <div class="categoryGrid">
+        <div class="miniRadarCard"><div class="systemHead"><b>仕事運</b><span id="workMiniScore">--%</span></div><svg id="workRadar" viewBox="0 0 220 220" aria-label="仕事運レーダー"></svg><p class="subtle" id="workMiniText"></p></div>
+        <div class="miniRadarCard"><div class="systemHead"><b>恋愛運</b><span id="loveMiniScore">--%</span></div><svg id="loveRadar" viewBox="0 0 220 220" aria-label="恋愛運レーダー"></svg><p class="subtle" id="loveMiniText"></p></div>
+        <div class="miniRadarCard"><div class="systemHead"><b>金運</b><span id="moneyMiniScore">--%</span></div><svg id="moneyRadar" viewBox="0 0 220 220" aria-label="金運レーダー"></svg><p class="subtle" id="moneyMiniText"></p></div>
+      </div>
+      <div class="sectionTitle"><h3>今日の4大運勢</h3><span id="fortuneDate"></span></div>
+      <div class="dailyGrid" id="dailyGrid"></div>
+      <div class="sectionTitle"><h3>運命メニュー</h3><span>8つの解析</span></div>
+      <div class="menuGrid">
+        <button class="menuCard" style="--glow:#6ee7ff" onclick="showScreen('analysisScreen')"><span class="menuIcon">🔭</span><b>統合運命解析</b><p>8つ以上の占術を重ね、違いも含めて総合判定する。</p></button>
+        <button class="menuCard" style="--glow:#ff7dbf" onclick="startPsychCheck()"><span class="newBadge">DAILY</span><span class="menuIcon">🧠</span><b>心理シンク</b><p>今の気分・疲労・行動力を30秒で記録。</p></button>
+        <button class="menuCard" style="--glow:#ffcb6b" onclick="showScreen('oracleScreen');prepareOracle()"><span class="menuIcon">🃏</span><b>共鳴オラクル</b><p>今日の心に必要な象徴カードを一枚。</p></button>
+        <button class="menuCard" style="--glow:#ff819e" onclick="showScreen('compatScreen')"><span class="menuIcon">💞</span><b>多層相性診断</b><p>恋愛・友人・仕事・家族の相性を分析。</p></button>
+        <button class="menuCard" style="--glow:#82efb9" onclick="showScreen('decisionScreen')"><span class="menuIcon">🧭</span><b>選択シミュレーター</b><p>迷いを心理と運気の両面から整理する。</p></button>
+        <button class="menuCard" style="--glow:#a98cff" onclick="showScreen('recordScreen')"><span class="menuIcon">📈</span><b>心と運気の記録</b><p>日々の変化から、自分のリズムを発見。</p></button>
+      </div>
+      <div class="sectionTitle"><h3>AI風パターン洞察</h3><span>端末内解析</span></div>
+      <div class="insight"><div class="insightHead"><span>🪞</span><b id="insightTitle">まだ記録が少ないようです</b></div><p id="insightText">心理シンクを続けると、曜日や睡眠、気分の変化からあなた固有の傾向を表示します。</p></div>
+    </section>
+
+    <section id="analysisScreen" class="screen">
+      <div class="pageHead"><h2>統合運命解析</h2><p>独自の六運星・数秘・西洋星座・九星・干支・動物占い・月相・誕生季節を横断し、「こっちはこう、でも別の占いではこう」と見比べながら総合判定します。</p></div>
+      <div class="resultHero"><div class="bigIcon" id="coreIcon">🌌</div><h2 id="coreTitle">運命核を生成中</h2><p id="coreDesc"></p><div class="scorePills" id="corePills"></div></div>
+      <div class="panel"><h3>8つの占術レイヤー</h3><div class="systemList" id="systemList"></div></div>
+      <div class="panel"><h3>占術ごとの見解比較</h3><div class="compareList" id="comparisonList"></div></div>
+      <div class="panel"><h3>総合判定</h3><p class="subtle" id="synthesisText"></p><p class="subtle mt10 gold" id="tensionText"></p></div>
+      <div class="panel"><h3>あなたの取扱説明書</h3><p class="subtle" id="manualText"></p></div>
+      <div class="panel"><h3>12か月の運気波形</h3><div class="chart" id="yearChart"></div><p class="subtle center">数値は未来の確定値ではなく、行動の振り返りに使うエンタメ指標です。</p></div>
+    </section>
+
+    <section id="psychScreen" class="screen">
+      <div class="pageHead"><h2>今日の心理シンク</h2><p>直感で選んでください。正解も不正解もありません。</p></div>
+      <div class="panel" id="questionsBox"></div>
+      <button class="primary" onclick="finishPsychCheck()">占いと心理を共鳴させる</button>
+    </section>
+
+    <section id="psychResultScreen" class="screen">
+      <div class="resultHero"><div class="bigIcon" id="psychResultIcon">🌿</div><h2 id="psychResultTitle"></h2><p id="psychResultText"></p><div class="scorePills" id="psychPills"></div></div>
+      <div class="panel"><h3>今日の内面バランス</h3><div id="psychBars"></div></div>
+      <div class="panel"><h3>今日の処方箋</h3><p class="subtle" id="prescriptionText"></p></div>
+      <div class="twoBtns"><button class="secondary" onclick="showScreen('recordScreen')">記録を見る</button><button class="primary" onclick="showScreen('homeScreen')">ホームへ</button></div>
+    </section>
+
+    <section id="oracleScreen" class="screen">
+      <div class="pageHead"><h2>共鳴オラクル</h2><p>質問を心に浮かべ、カードをタップしてください。1日1枚の結果は同じです。</p></div>
+      <div class="oracleStage"><div class="oracleCard" id="oracleCard" onclick="flipOracle()"><div class="cardFace cardBack">✦</div><div class="cardFace cardFront"><div class="symbol" id="oracleSymbol">🌙</div><h3 id="oracleTitle">月の門</h3><p id="oracleText"></p></div></div></div>
+      <button class="primary" onclick="flipOracle()">カードをめくる</button>
+    </section>
+
+    <section id="compatScreen" class="screen">
+      <div class="pageHead"><h2>多層相性診断</h2><p>相手の生年月日を入力すると、価値観・テンポ・対話・長期安定性を分けて表示します。</p></div>
+      <div class="panel">
+        <div class="field"><label>相手の呼び名</label><input id="partnerName" maxlength="12" placeholder="例：みき"></div>
+        <div class="field"><label>相手の生年月日</label><input id="partnerBirth" type="date"></div>
+        <div class="field"><label>関係性</label><select id="relationType"><option>恋愛・結婚</option><option>友人</option><option>仕事</option><option>親子・家族</option></select></div>
+        <button class="primary" onclick="calculateCompatibility()">二人の共鳴を解析</button>
+      </div>
+      <div id="compatResult" class="hidden">
+        <div class="resultHero"><div class="compatFaces"><div class="face" id="myFace">🌙</div><div class="heartPulse">💫</div><div class="face" id="partnerFace">☀️</div></div><h2 id="compatTitle"></h2><p id="compatText"></p><div class="scorePills" id="compatPills"></div></div>
+        <div class="panel"><h3>関係を育てる鍵</h3><p class="subtle" id="compatAdvice"></p></div>
+      </div>
+    </section>
+
+    <section id="decisionScreen" class="screen">
+      <div class="pageHead"><h2>選択シミュレーター</h2><p>占いで結論を決めるのではなく、今の心の偏りと確認すべき材料を整理します。</p></div>
+      <div class="panel">
+        <div class="field"><label>迷っていること</label><textarea id="decisionText" maxlength="180" placeholder="例：新しい仕事に挑戦するか迷っている"></textarea></div>
+        <div class="field"><label>現在の気持ち</label><select id="decisionMood"><option>期待が大きい</option><option>不安が大きい</option><option>半々で迷っている</option><option>周囲に勧められている</option><option>急いで決める必要がある</option></select></div>
+        <button class="primary" onclick="simulateDecision()">判断材料を整理する</button>
+      </div>
+      <div id="decisionResult" class="hidden"></div>
+    </section>
+
+    <section id="recordScreen" class="screen">
+      <div class="pageHead"><h2>心と運気の記録</h2><p>最近の心理シンクを時系列で振り返ります。</p></div>
+      <div class="panel"><h3>最近7回の心のエネルギー</h3><div class="chart" id="recordChart"></div></div>
+      <div class="panel"><h3>記録履歴</h3><div class="timeline" id="historyList"></div></div>
+    </section>
+
+    <section id="collectionScreen" class="screen">
+      <div class="pageHead"><h2>共鳴コレクション</h2><p>毎日の記録や各機能の利用で称号が解放されます。</p></div>
+      <div class="achievementGrid" id="achievementGrid"></div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottomNav">
+  <button class="navBtn active" data-screen="homeScreen" onclick="showScreen('homeScreen',this)"><i>⌂</i>ホーム</button>
+  <button class="navBtn" data-screen="analysisScreen" onclick="showScreen('analysisScreen',this)"><i>✦</i>運命</button>
+  <button class="navBtn" data-screen="psychScreen" onclick="startPsychCheck(this)"><i>🧠</i>心理</button>
+  <button class="navBtn" data-screen="recordScreen" onclick="showScreen('recordScreen',this)"><i>▥</i>記録</button>
+  <button class="navBtn" data-screen="collectionScreen" onclick="showScreen('collectionScreen',this)"><i>♛</i>称号</button>
+</nav>
+
+<div class="modal" id="settingsModal"><div class="modalBox"><div class="modalHead"><h3>設定・プロフィール・音</h3><button class="closeBtn" onclick="closeModal()">×</button></div>
+  <div class="formGrid">
+    <div class="field full"><label>呼び名</label><input id="setName"></div><div class="field full"><label>生年月日</label><input id="setBirth" type="date"></div>
+    <div class="field"><label>出生時間</label><input id="setTime" type="time"></div><div class="field"><label>性別</label><select id="setGender"><option value="">未設定</option><option>男性</option><option>女性</option><option>その他</option></select></div>
+    <div class="field full"><label>出生地</label><input id="setPlace"></div>
+  </div>
+  <div class="field full"><label>音の雰囲気</label><select id="setSoundMode"><option value="wa">和モダン</option><option value="lux">ラグジュアリー</option><option value="quiet">静音</option></select></div>
+  <button class="primary" onclick="saveSettings()">プロフィールを更新</button>
+  <button class="secondary dangerBtn mt10" style="width:100%" onclick="resetData()">すべての記録を削除</button>
+  <p class="privacyNote">本アプリは医療診断・投資判断・人生の重大な決定を代替しません。</p>
+</div></div>
+<div class="modal" id="radarDetailModal"><div class="modalBox"><div class="modalHead"><h3>多占術レーダー詳細</h3><button class="closeBtn" onclick="closeRadarDetailModal()">×</button></div><div class="panel"><svg id="detailRadarChart" viewBox="0 0 320 320" aria-label="詳細レーダーチャート"></svg><p class="subtle center mt10" id="detailRadarLead"></p></div><div class="panel"><h3>強気サイン vs 慎重サイン</h3><div class="compareList" id="detailCompareList"></div></div><div class="panel"><h3>総合所見</h3><p class="subtle" id="detailSummaryText"></p></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORAGE_KEY='fateSync_v2_wamodern';
+const LEGACY_STORAGE_KEYS=['fateSync_v1','fateSync_v2_wamodern'];
+const defaultState={profile:null,xp:0,level:1,sound:true,soundMode:'wa',psychHistory:[],oracleHistory:{},compatCount:0,decisionCount:0,openedAnalysis:false};
+let state=loadState(), audioCtx=null,bgmTimer=null,bgmSubTimers=[],psychAnswers=[null,null,null,null,null];
+function loadState(){try{for(const key of LEGACY_STORAGE_KEYS){const raw=localStorage.getItem(key);if(raw)return {...defaultState,...JSON.parse(raw||'{}')}}return {...defaultState}}catch{return {...defaultState}}}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function hashString(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return Math.abs(h>>>0)}
+function seeded(seed){let x=seed||123456789;return()=>{x|=0;x=x+0x6D2B79F5|0;let t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function clamp(v,a=0,b=100){return Math.max(a,Math.min(b,v))}
+function dateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function parseBirth(v){const d=new Date(v+'T12:00:00');return isNaN(d)?null:d}
+function digitSum(n){return String(n).replace(/\D/g,'').split('').reduce((a,b)=>a+Number(b),0)}
+function reduceNum(n,masters=true){while(n>9 && !(masters&&[11,22,33].includes(n)))n=digitSum(n);return n}
+function addXP(n){state.xp+=n;while(state.xp>=state.level*100){state.xp-=state.level*100;state.level++;toast(`レベル${state.level}に上がりました`);playTone('level')}saveState();renderProfileBar()}
+function profileSeed(extra=''){if(!state.profile)return hashString(extra);return hashString(`${state.profile.birth}|${state.profile.name}|${extra}`)}
+
+const zodiac=[
+['山羊座','♑',1,19],['水瓶座','♒',2,18],['魚座','♓',3,20],['牡羊座','♈',4,19],['牡牛座','♉',5,20],['双子座','♊',6,20],['蟹座','♋',7,22],['獅子座','♌',8,22],['乙女座','♍',9,22],['天秤座','♎',10,22],['蠍座','♏',11,21],['射手座','♐',12,21],['山羊座','♑',12,31]
+];
+const zodiacTraits={
+'牡羊座':['始動力','迷う前に動ける開拓者。勢いを整えると強い。'],'牡牛座':['継続力','五感と現実感覚に優れ、積み上げを価値へ変える。'],'双子座':['編集力','情報を素早くつなぎ、言葉で空気を変える。'],'蟹座':['保護力','身近な人や居場所を守ることで力を発揮する。'],'獅子座':['表現力','誇りと創造性で周囲を明るくする中心人物。'],'乙女座':['改善力','細部を見抜き、現実的な改善を積み重ねる。'],'天秤座':['調和力','複数の視点を比べ、美しい着地点を探せる。'],'蠍座':['集中力','一度決めた対象を深く掘り、本質へ近づく。'],'射手座':['展望力','遠くの可能性を見て、学びながら前進する。'],'山羊座':['構築力','長期目標を現実の段取りへ落とし込む。'],'水瓶座':['革新力','常識から少し離れ、新しい仕組みを考える。'],'魚座':['共感力','境界を越えて感情や物語を受け取る。']};
+const animals=['子（ねずみ）','丑（うし）','寅（とら）','卯（うさぎ）','辰（たつ）','巳（へび）','午（うま）','未（ひつじ）','申（さる）','酉（とり）','戌（いぬ）','亥（いのしし）'];
+const animalTraits=['機転と収集','忍耐と土台','勇気と突破','調和と感性','理想とスケール','洞察と変化','自由と行動','優しさと美意識','知恵と遊び心','精密さと誇り','忠誠と正義','包容力と直進'];
+const nineStars=['一白水星','二黒土星','三碧木星','四緑木星','五黄土星','六白金星','七赤金星','八白土星','九紫火星'];
+const nineTraits=['柔軟・内省','育成・受容','発信・始動','縁・調整','中心・変革','責任・統率','喜び・交流','蓄積・転換','直感・美意識'];
+const sixStars=[
+ {name:'黎明星',icon:'🌅',key:'始動',desc:'停滞を破り、最初の一歩を作る運命核。'},
+ {name:'蒼流星',icon:'🌊',key:'適応',desc:'環境を読み、形を変えながら進む運命核。'},
+ {name:'翠環星',icon:'🌿',key:'育成',desc:'人・技術・関係を時間をかけて育てる運命核。'},
+ {name:'紅耀星',icon:'🔥',key:'表現',desc:'熱量と存在感で周囲を動かす運命核。'},
+ {name:'白刻星',icon:'🗻',key:'構築',desc:'現実を整え、壊れにくい仕組みを作る運命核。'},
+ {name:'紫宵星',icon:'🌌',key:'洞察',desc:'表面の奥を読み、意味を見つける運命核。'}
+];
+const numerologyTraits={1:['開拓者','自立と決断'],2:['調律者','協力と感受性'],3:['表現者','創造と会話'],4:['建築家','秩序と持続'],5:['旅人','自由と変化'],6:['守護者','責任と愛情'],7:['探究者','分析と精神性'],8:['実現者','成果と影響力'],9:['統合者','共感と完成'],11:['直感の伝達者','感性と啓示'],22:['大規模な構築者','理想の現実化'],33:['献身の導き手','包容と奉仕']};
+const moonTypes=[
+ {name:'新月型',icon:'🌑',desc:'始まりを作り、余白から発想を生む。'},
+ {name:'上弦型',icon:'🌓',desc:'挑戦の途中で工夫を重ね、伸ばしていく。'},
+ {name:'満月型',icon:'🌕',desc:'感情や魅力が外へ広がり、人を惹きつける。'},
+ {name:'下弦型',icon:'🌗',desc:'見直しと整理が得意で、本質を残して磨く。'}
+];
+const animalFortuneTypes=[
+ {name:'狼',icon:'🐺',core:'独自路線',action:'積極',social:'マイペース',thought:'論理',love:'安定',desc:'一人で考える時間を大切にし、自分のやり方で完成度を高める。'},
+ {name:'こじか',icon:'🦌',core:'愛され感受',action:'慎重',social:'オープン',thought:'直感',love:'安定',desc:'繊細さと愛嬌で人を惹きつけ、安心できる関係で力を発揮する。'},
+ {name:'猿',icon:'🐒',core:'器用と発想',action:'積極',social:'オープン',thought:'直感',love:'情熱',desc:'その場の工夫と軽やかな発想が魅力。空気を読んで立ち回るのが得意。'},
+ {name:'チーター',icon:'🐆',core:'瞬発と目標',action:'積極',social:'オープン',thought:'直感',love:'情熱',desc:'スピード感と目標志向が強く、勝負どころで一気に走れる。'},
+ {name:'黒ひょう',icon:'🐈‍⬛',core:'洗練と美意識',action:'積極',social:'マイペース',thought:'直感',love:'情熱',desc:'センスとプライドを大切にし、自分らしい輝き方を求める。'},
+ {name:'ライオン',icon:'🦁',core:'王道と責任',action:'慎重',social:'マイペース',thought:'論理',love:'安定',desc:'簡単に弱みを見せず、責任ある立場で本領を発揮しやすい。'},
+ {name:'虎',icon:'🐯',core:'理想と信頼',action:'慎重',social:'オープン',thought:'論理',love:'安定',desc:'大きな視野で人を見る堅実派。信頼されると粘り強い。'},
+ {name:'たぬき',icon:'🦝',core:'継承と温厚',action:'慎重',social:'オープン',thought:'論理',love:'安定',desc:'基礎を大切にし、周囲との調和の中で着実に成果を重ねる。'},
+ {name:'コアラ',icon:'🐨',core:'夢と現実感',action:'慎重',social:'マイペース',thought:'直感',love:'安定',desc:'のんびり見えて実は計算もできる。好きなことへの集中力が強い。'},
+ {name:'ゾウ',icon:'🐘',core:'重厚と継続',action:'慎重',social:'マイペース',thought:'論理',love:'安定',desc:'大きな課題でも長い時間をかけて積み上げられる持久型。'},
+ {name:'ひつじ',icon:'🐑',core:'共感と連携',action:'慎重',social:'オープン',thought:'直感',love:'安定',desc:'仲間意識が強く、環境を整えて全体をうまく回していく。'},
+ {name:'ペガサス',icon:'🪽',core:'自由とひらめき',action:'積極',social:'マイペース',thought:'直感',love:'情熱',desc:'枠に縛られず、インスピレーションで一気に世界を変える。'}
+];
+
+function getZodiac(d){const m=d.getMonth()+1,day=d.getDate();for(const z of zodiac){if(m<z[2]||(m===z[2]&&day<=z[3]))return {name:z[0],symbol:z[1]}}return {name:'山羊座',symbol:'♑'}}
+function lifePath(d){return reduceNum(digitSum(`${d.getFullYear()}${d.getMonth()+1}${d.getDate()}`))}
+function getNineStar(y){let n=11-(digitSum(y)%9);while(n>9)n-=9;while(n<1)n+=9;return {name:nineStars[n-1],trait:nineTraits[n-1],num:n}}
+function getAnimal(y){let i=(y-4)%12;if(i<0)i+=12;return {name:animals[i],trait:animalTraits[i],index:i}}
+function getSixStar(d){const idx=(d.getFullYear()+d.getMonth()*2+d.getDate()+digitSum(d.getFullYear()))%6;return sixStars[idx]}
+function getSeason(d){const m=d.getMonth()+1;if([3,4,5].includes(m))return ['春生まれ','拡張と芽吹き'];if([6,7,8].includes(m))return ['夏生まれ','熱量と体験'];if([9,10,11].includes(m))return ['秋生まれ','収穫と選別'];return ['冬生まれ','内省と蓄積']}
+function getMoonType(d){const idx=(d.getDate()+d.getMonth()+digitSum(d.getFullYear()))%4;return moonTypes[idx]}
+function getAnimalFortune(d){const idx=(d.getFullYear()+d.getMonth()+1+d.getDate()+digitSum(d.getFullYear()))%12;return animalFortuneTypes[idx]}
+function getProfileAnalysis(){const d=parseBirth(state.profile.birth),z=getZodiac(d),lp=lifePath(d),num=numerologyTraits[lp]||numerologyTraits[reduceNum(lp,false)]||['探究者','分析と精神性'],ns=getNineStar(d.getFullYear()),an=getAnimal(d.getFullYear()),ss=getSixStar(d),season=getSeason(d),moon=getMoonType(d),af=getAnimalFortune(d);return{d,z,lp,num,ns,an,ss,season,moon,af}}
+
+function completeOnboarding(){const name=$('#obName').value.trim(),birth=$('#obBirth').value;if(!name||!birth){toast('呼び名と生年月日を入力してください');return}state.profile={name,birth,time:$('#obTime').value,gender:$('#obGender').value,place:$('#obPlace').value.trim()};saveState();$('#onboarding').classList.add('hidden');initialize();playTone('start')}
+let fxReady=false;function initialize(){if(!fxReady){setupStars();createPetals();bootSequence();attachInteractiveLightEffects();fxReady=true}if(!state.profile){$('#onboarding').classList.remove('hidden');if(state.sound)startBGM();return}renderAll();if(state.sound)startBGM()}
+function renderAll(){renderProfileBar();renderHome();renderAnalysis();renderRecords();renderAchievements()}
+
+function pickAxisValue(map,key,fallback='慎重'){return map[key]||fallback}
+const axisMaps={
+ action:{six:{'始動':'積極','適応':'積極','育成':'慎重','表現':'積極','構築':'慎重','洞察':'慎重'},num:{1:'積極',2:'慎重',3:'積極',4:'慎重',5:'積極',6:'慎重',7:'慎重',8:'積極',9:'積極',11:'積極',22:'慎重',33:'慎重'},zodiac:{'牡羊座':'積極','牡牛座':'慎重','双子座':'積極','蟹座':'慎重','獅子座':'積極','乙女座':'慎重','天秤座':'積極','蠍座':'慎重','射手座':'積極','山羊座':'慎重','水瓶座':'積極','魚座':'慎重'},nine:{1:'慎重',2:'慎重',3:'積極',4:'慎重',5:'積極',6:'慎重',7:'積極',8:'慎重',9:'積極'},season:{'春生まれ':'積極','夏生まれ':'積極','秋生まれ':'慎重','冬生まれ':'慎重'},moon:{'新月型':'積極','上弦型':'積極','満月型':'積極','下弦型':'慎重'}},
+ social:{six:{'始動':'オープン','適応':'オープン','育成':'オープン','表現':'オープン','構築':'マイペース','洞察':'マイペース'},num:{1:'マイペース',2:'オープン',3:'オープン',4:'マイペース',5:'オープン',6:'オープン',7:'マイペース',8:'マイペース',9:'オープン',11:'オープン',22:'マイペース',33:'オープン'},zodiac:{'牡羊座':'オープン','牡牛座':'マイペース','双子座':'オープン','蟹座':'オープン','獅子座':'オープン','乙女座':'マイペース','天秤座':'オープン','蠍座':'マイペース','射手座':'オープン','山羊座':'マイペース','水瓶座':'マイペース','魚座':'オープン'},nine:{1:'マイペース',2:'オープン',3:'オープン',4:'オープン',5:'マイペース',6:'マイペース',7:'オープン',8:'マイペース',9:'オープン'},season:{'春生まれ':'オープン','夏生まれ':'オープン','秋生まれ':'マイペース','冬生まれ':'マイペース'},moon:{'新月型':'マイペース','上弦型':'オープン','満月型':'オープン','下弦型':'マイペース'}},
+ thought:{six:{'始動':'直感','適応':'直感','育成':'論理','表現':'直感','構築':'論理','洞察':'論理'},num:{1:'論理',2:'直感',3:'直感',4:'論理',5:'直感',6:'論理',7:'論理',8:'論理',9:'直感',11:'直感',22:'論理',33:'直感'},zodiac:{'牡羊座':'直感','牡牛座':'論理','双子座':'論理','蟹座':'直感','獅子座':'直感','乙女座':'論理','天秤座':'論理','蠍座':'直感','射手座':'直感','山羊座':'論理','水瓶座':'論理','魚座':'直感'},nine:{1:'直感',2:'論理',3:'直感',4:'論理',5:'論理',6:'論理',7:'直感',8:'論理',9:'直感'},season:{'春生まれ':'直感','夏生まれ':'直感','秋生まれ':'論理','冬生まれ':'論理'},moon:{'新月型':'直感','上弦型':'論理','満月型':'直感','下弦型':'論理'}},
+ love:{six:{'始動':'情熱','適応':'情熱','育成':'安定','表現':'情熱','構築':'安定','洞察':'安定'},num:{1:'情熱',2:'安定',3:'情熱',4:'安定',5:'情熱',6:'安定',7:'安定',8:'情熱',9:'情熱',11:'情熱',22:'安定',33:'安定'},zodiac:{'牡羊座':'情熱','牡牛座':'安定','双子座':'情熱','蟹座':'安定','獅子座':'情熱','乙女座':'安定','天秤座':'安定','蠍座':'情熱','射手座':'情熱','山羊座':'安定','水瓶座':'安定','魚座':'情熱'},nine:{1:'安定',2:'安定',3:'情熱',4:'安定',5:'情熱',6:'安定',7:'情熱',8:'安定',9:'情熱'},season:{'春生まれ':'情熱','夏生まれ':'情熱','秋生まれ':'安定','冬生まれ':'安定'},moon:{'新月型':'情熱','上弦型':'情熱','満月型':'情熱','下弦型':'安定'}}
+};
+function buildComparisonData(a){const reduced=reduceNum(a.lp,false);const baseVotes={
+ action:[['六運星',pickAxisValue(axisMaps.action.six,a.ss.key)],['数秘術',pickAxisValue(axisMaps.action.num,reduced)],['西洋星座',pickAxisValue(axisMaps.action.zodiac,a.z.name)],['九星気学',pickAxisValue(axisMaps.action.nine,a.ns.num)],['動物占い',a.af.action],['月相タイプ',pickAxisValue(axisMaps.action.moon,a.moon.name)],['季節心理',pickAxisValue(axisMaps.action.season,a.season[0])]],
+ social:[['六運星',pickAxisValue(axisMaps.social.six,a.ss.key)],['数秘術',pickAxisValue(axisMaps.social.num,reduced)],['西洋星座',pickAxisValue(axisMaps.social.zodiac,a.z.name)],['九星気学',pickAxisValue(axisMaps.social.nine,a.ns.num)],['動物占い',a.af.social],['月相タイプ',pickAxisValue(axisMaps.social.moon,a.moon.name)],['季節心理',pickAxisValue(axisMaps.social.season,a.season[0])]],
+ thought:[['六運星',pickAxisValue(axisMaps.thought.six,a.ss.key)],['数秘術',pickAxisValue(axisMaps.thought.num,reduced)],['西洋星座',pickAxisValue(axisMaps.thought.zodiac,a.z.name)],['九星気学',pickAxisValue(axisMaps.thought.nine,a.ns.num)],['動物占い',a.af.thought],['月相タイプ',pickAxisValue(axisMaps.thought.moon,a.moon.name)],['季節心理',pickAxisValue(axisMaps.thought.season,a.season[0])]],
+ love:[['六運星',pickAxisValue(axisMaps.love.six,a.ss.key)],['数秘術',pickAxisValue(axisMaps.love.num,reduced)],['西洋星座',pickAxisValue(axisMaps.love.zodiac,a.z.name)],['九星気学',pickAxisValue(axisMaps.love.nine,a.ns.num)],['動物占い',a.af.love],['月相タイプ',pickAxisValue(axisMaps.love.moon,a.moon.name)],['季節心理',pickAxisValue(axisMaps.love.season,a.season[0])]]
+ };
+ const defs=[
+  ['action','行動スタイル','積極派','慎重派'],
+  ['social','対人距離','オープン派','マイペース派'],
+  ['thought','判断の仕方','直感派','論理派'],
+  ['love','恋愛・魅力','情熱派','安定派']
+ ];
+ return defs.map(([key,title,leftLabel,rightLabel])=>{const votes=baseVotes[key];const left=votes.filter(v=>v[1]===leftLabel);const right=votes.filter(v=>v[1]===rightLabel);const diff=Math.abs(left.length-right.length);const dominant=left.length>=right.length?leftLabel:rightLabel;let summary='';if(diff<=1){summary=`占術の見解はほぼ拮抗しています。${leftLabel}の面と${rightLabel}の面を両方持つため、場面によって出方が変わりやすいタイプです。`;}else{const support=(left.length>right.length?left:right).map(v=>v[0]).join('・');const contrast=(left.length>right.length?right:left).map(v=>v[0]).join('・')||'明確な逆意見は少なめ';summary=`${support}は「${dominant}」寄り。${contrast==='明確な逆意見は少なめ'?contrast:`一方で${contrast}は別の顔を示します。`} 総合的には${dominant}がベースですが、状況次第で逆側の性質も出ます。`;}
+ return {key,title,leftLabel,rightLabel,left,right,dominant,diff,summary};});}
+
+function buildHomeDivinationScores(a,d,last){
+  const psychBoost=last?Math.round((last.energy+(100-last.stress)+last.action+last.social+last.rest)/10):0;
+  const seed=profileSeed('home-divination-'+dateKey());
+  const rng=seeded(seed);
+  const bases={
+    six:48+({始動:14,適応:10,育成:8,表現:13,構築:9,洞察:11}[a.ss.key]||10),
+    num:46+Math.min(18,(reduceNum(a.lp,false)%9)*2),
+    zodiac:47+({牡羊座:14,牡牛座:10,双子座:12,蟹座:9,獅子座:13,乙女座:10,天秤座:11,蠍座:12,射手座:13,山羊座:10,水瓶座:12,魚座:11}[a.z.name]||11),
+    nine:44+a.ns.num*4,
+    eto:45+(a.an.index%6)*5,
+    animal:47+({積極:12,慎重:8}[a.af.action]||10)+({オープン:4,マイペース:2}[a.af.social]||3),
+    moon:46+({新月型:12,上弦型:10,満月型:13,下弦型:9}[a.moon.name]||10),
+    season:46+({春生まれ:11,夏生まれ:12,秋生まれ:9,冬生まれ:8}[a.season[0]]||9)
+  };
+  const totalBias=Math.round((d.total-50)*0.28)+Math.round(psychBoost*0.35);
+  const defs=[
+    ['六運星','核となる運命傾向',bases.six,a.ss.name],
+    ['数秘術','価値観と人生テーマ',bases.num,`${a.lp}`],
+    ['西洋星座','表現スタイルと気質',bases.zodiac,a.z.name],
+    ['九星気学','環境との相性',bases.nine,a.ns.name],
+    ['十二支','行動リズム',bases.eto,a.an.name],
+    ['動物占い','対人キャラ',bases.animal,a.af.name],
+    ['月相タイプ','感情の波',bases.moon,a.moon.name],
+    ['誕生季節','ベース温度感',bases.season,a.season[0]]
+  ];
+  return defs.map((x,i)=>{const jitter=Math.round((rng()*2-1)*8);const score=clamp(Math.round(x[2]+totalBias+jitter),28,96);return {name:x[0],desc:x[1],score,label:x[3]}})
+}
+function renderRadarChartTo(svgId,items,opt={}){
+  const svg=$(typeof svgId==='string'?`#${svgId.replace(/^#/,'')}`:svgId); if(!svg) return;
+  const vb=(svg.getAttribute('viewBox')||'0 0 320 320').split(/\s+/).map(Number); const size=vb[2]||320; const cx=size/2, cy=size/2; const levels=5, maxR=opt.small?size*0.28:size*0.33; const labelR=maxR+(opt.small?22:32); const font=opt.small?11:14; const fillId=(opt.fillId||svg.id+'Fill').replace(/[^a-zA-Z0-9_:-]/g,'');
+  const lines=[]; for(let l=1;l<=levels;l++){ const r=maxR*l/levels; const pts=items.map((_,i)=>{const ang=-Math.PI/2+(Math.PI*2*i/items.length); return `${(cx+Math.cos(ang)*r).toFixed(1)},${(cy+Math.sin(ang)*r).toFixed(1)}`}).join(' '); lines.push(`<polygon points="${pts}" fill="${l===levels?'rgba(255,255,255,.02)':'none'}" stroke="rgba(255,255,255,${l===levels?'.14':'.08'})" stroke-width="1"/>`) }
+  const axes=items.map((it,i)=>{const ang=-Math.PI/2+(Math.PI*2*i/items.length); const x=(cx+Math.cos(ang)*maxR).toFixed(1), y=(cy+Math.sin(ang)*maxR).toFixed(1), lx=(cx+Math.cos(ang)*labelR).toFixed(1), ly=(cy+Math.sin(ang)*labelR).toFixed(1); return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,.10)" stroke-width="1"/><text x="${lx}" y="${ly}" fill="#d9d1eb" font-size="${font}" text-anchor="middle">${it.name}</text>`}).join('');
+  const polyPts=items.map((it,i)=>{const ang=-Math.PI/2+(Math.PI*2*i/items.length); const r=maxR*(it.score/100); return `${(cx+Math.cos(ang)*r).toFixed(1)},${(cy+Math.sin(ang)*r).toFixed(1)}`}).join(' ');
+  const dots=items.map((it,i)=>{const ang=-Math.PI/2+(Math.PI*2*i/items.length); const r=maxR*(it.score/100); const x=(cx+Math.cos(ang)*r).toFixed(1), y=(cy+Math.sin(ang)*r).toFixed(1), rr=opt.small?3.2:4; return `<circle cx="${x}" cy="${y}" r="${rr}" fill="#ffdf9a" stroke="#fff5dd" stroke-width="1.2"/>`}).join('');
+  const rings=opt.small?'':[20,40,60,80,100].map(v=>`<text x="${cx}" y="${cy-maxR*(v/100)+4}" fill="rgba(255,255,255,.30)" font-size="8">${v}</text>`).join('');
+  svg.innerHTML=`<defs><linearGradient id="${fillId}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(255,223,155,.42)"/><stop offset="100%" stop-color="rgba(121,223,247,.16)"/></linearGradient></defs>${lines.join('')}${axes}<polygon points="${polyPts}" fill="url(#${fillId})" stroke="#ffdf9a" stroke-width="${opt.small?1.8:2.2}"/>${dots}<circle cx="${cx}" cy="${cy}" r="${opt.small?3.6:4.5}" fill="#fff2cd"/>${rings}`;
+}
+function computeConsistency(items){const scores=items.map(x=>x.score); const range=Math.max(...scores)-Math.min(...scores); const avg=scores.reduce((a,b)=>a+b,0)/scores.length; return clamp(Math.round(100-range*1.15-Math.abs(avg-72)*.25),36,97)}
+function buildCategoryRadarSets(items){const index=Object.fromEntries(items.map(it=>[it.name,it])); const make=(key,title,weights,lead)=>{const arr=Object.entries(weights).map(([name,w])=>({name,score:clamp(Math.round((index[name]?.score||60)+w),20,99)})); const avg=Math.round(arr.reduce((a,b)=>a+b.score,0)/arr.length); const top=arr.slice().sort((a,b)=>b.score-a.score).slice(0,2).map(x=>x.name).join('・'); return {key,title,items:arr,avg,text:`${lead}。特に ${top} が強く支えています。`}};
+  return [
+    make('work','仕事運',{'六運星':8,'数秘術':6,'西洋星座':2,'九星気学':8,'十二支':4,'動物占い':2,'月相タイプ':-2,'誕生季節':3},'仕事では、現実性と段取りを示す占術を強めに評価'),
+    make('love','恋愛運',{'六運星':2,'数秘術':3,'西洋星座':8,'九星気学':1,'十二支':2,'動物占い':9,'月相タイプ':7,'誕生季節':2},'恋愛では、感情・魅力・対人の柔らかさを示す占術を重視'),
+    make('money','金運',{'六運星':6,'数秘術':7,'西洋星座':-1,'九星気学':6,'十二支':5,'動物占い':1,'月相タイプ':-2,'誕生季節':4},'金運では、安定性と管理感覚を示す占術を重視')
+  ]
+}
+function openRadarDetailModal(){const m=$('#radarDetailModal'); if(m) m.classList.add('show')}
+function closeRadarDetailModal(){const m=$('#radarDetailModal'); if(m) m.classList.remove('show')}
+function renderRadarDetail(divs,consistency){renderRadarChartTo('detailRadarChart',divs,{fillId:'detailRadarFill'}); const top=divs.slice().sort((a,b)=>b.score-a.score); const strong=top.slice(0,3), cautious=top.slice(-3).reverse(); $('#detailRadarLead').innerHTML=`<span class="detailTopPill">占術一致率 ${consistency}%</span><span class="detailTopPill">最上位 ${strong[0].name} ${strong[0].score}%</span><span class="detailTopPill">慎重サイン ${cautious[0].name} ${cautious[0].score}%</span>`; $('#detailCompareList').innerHTML=`<div class="compareCard"><div class="compareHead"><b>強気サイン</b><span>前向き材料</span></div><p class="compareSummary">${strong.map(x=>`${x.name}は${x.score}%（${x.label}）`).join('、')}。今日はこのあたりの占術が「進めてよい」と強く出しています。</p></div><div class="compareCard"><div class="compareHead"><b>慎重サイン</b><span>ブレーキ材料</span></div><p class="compareSummary">${cautious.map(x=>`${x.name}は${x.score}%（${x.label}）`).join('、')}。一方でこちらは「様子見」寄り。強気サインだけで突っ走らず、慎重サインも加味して総合判断しています。</p></div>`; $('#detailSummaryText').textContent=`このアプリでは、1つの占いの結果だけで決めず、8つの占術を横並びで評価しています。今日の総合判断は、強気サインの多さと慎重サインの強さ、そして一致率 ${consistency}% をまとめて出したものです。`}
+function renderProfileBar(){if(!state.profile)return;const a=getProfileAnalysis();$('#miniName').textContent=state.profile.name;$('#miniLevel').textContent=`Lv.${state.level}`;$('#miniAvatar').textContent=a.ss.icon;const need=state.level*100;$('#xpBar').style.width=`${clamp(state.xp/need*100)}%`;$('#xpText').textContent=`${state.xp}/${need}`;$('#soundBtn').textContent=state.sound?'音':'消'}
+function getDailyData(){const seed=profileSeed(dateKey()),r=seeded(seed);const last=state.psychHistory.find(x=>x.date===dateKey());const psychAdjust=last?Math.round((last.energy-50)*.18):0;const names=['総合運','仕事運','対人運','金運'];const icons=['✦','💼','🤝','◈'];const tips=[['整えるほど流れが育つ','一つに集中すると前進'],['準備が成果につながる','説明を丁寧にすると吉'],['聞く姿勢が縁を強める','短い感謝を言葉に'],['衝動より比較が味方','小さな節約が満足へ']];const scores=names.map((n,i)=>clamp(Math.round(53+r()*39+(i===0?psychAdjust:psychAdjust*.45)),25,98));const total=Math.round(scores.reduce((a,b)=>a+b)/4);return{scores,total,names,icons,tips,rand:r}}
+function renderHome(){if(!state.profile)return;const d=getDailyData(),a=getProfileAnalysis(),last=state.psychHistory.find(x=>x.date===dateKey());const now=new Date();$('#fortuneDate').textContent=`${now.getMonth()+1}/${now.getDate()}`;$('#todayLabel').textContent=`${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}  TODAY'S RESONANCE`;const types=d.total>=85?['追い風共鳴期','迷っていたことを小さく試す日。']:d.total>=70?['静かな上昇期','目立つ一手より、丁寧な積み上げが後から効きます。']:d.total>=55?['調律と観察の時','急がず周囲を見れば、良い選択肢が浮かびます。']:['内側を整える日','大きく進めなくても大丈夫。消耗を減らすことが前進です。'];$('#heroTitle').textContent=`${state.profile.name}さん、今日は「${types[0]}」`;$('#heroSummary').textContent=last?`今日の気分も反映しています。${a.ss.name}・数秘${a.lp}・${a.af.name}など、いろいろな占いをまとめた結果です。`:`${a.ss.name}・数秘${a.lp}・${a.af.name}など、8つの占いをまとめて見ています。気分チェックをすると、今日の状態も入ります。`;$('#syncScore').textContent=d.total;$('#syncRing').style.setProperty('--score',d.total);$('#syncType').textContent=types[0];$('#syncAdvice').textContent=types[1];$('#syncTags').innerHTML=[a.ss.key,a.z.name,`動物占い:${a.af.name}`,last?`心エネルギー${last.energy}`:'心理未同期'].map(x=>`<span class="tag">${x}</span>`).join('');const divs=buildHomeDivinationScores(a,d,last);renderRadarChartTo('radarChart',divs,{fillId:'homeRadarFill'});$('#radarLegend').innerHTML=divs.map(it=>`<div class="radarItem"><div class="top"><b>${it.name}</b><span>${it.score}%</span></div><div class="tinyMeter"><i style="width:${it.score}%"></i></div><p>${it.label} / ${it.desc}</p></div>`).join('');const ranked=divs.slice().sort((x,y)=>y.score-x.score);const high=ranked.slice(0,3),low=ranked.slice(-2).reverse();const consistency=computeConsistency(divs);$('#consistencyRate').textContent=`${consistency}%`;$('#consistencyBar').style.width=`${consistency}%`;$('#consistencyText').textContent=consistency>=82?'いろいろな占いが、ほぼ同じ答えを出しています。':consistency>=68?'よい流れですが、少し慎重に見る占いもあります。':'占いによって意見が分かれています。今日は無理せず、様子を見ながら進めましょう。';$('#compareCallout').textContent=`良い流れ：${high.map(x=>x.name).join('・')}　/　注意したい流れ：${low.map(x=>x.name).join('・')}`;$('#homeAggregationText').textContent=`今日は「${high.map(x=>`${x.name}${x.score}%`).join('・')}」が強く後押し。単独の占いではなく、8つの占術を同時に見て総合スコア ${d.total} として判断しています。`;$('#homeContrastText').textContent=`一方で「${low.map(x=>`${x.name}${x.score}%`).join('・')}」はやや慎重寄り。全占術が完全一致しているわけではなく、強い後押しと慎重サインの両方を見比べて最終判断しています。`;const cats=buildCategoryRadarSets(divs);cats.forEach(cat=>{renderRadarChartTo(`${cat.key}Radar`,cat.items,{small:true,fillId:`${cat.key}Fill`});$(`#${cat.key}MiniScore`).textContent=`${cat.avg}%`;$(`#${cat.key}MiniText`).textContent=cat.text});renderRadarDetail(divs,consistency);$('#dailyGrid').innerHTML=d.names.map((n,i)=>`<div class="fortuneCard"><div class="ftop"><span>${d.icons[i]} ${n}</span><span>${d.scores[i]}%</span></div><b>${'★'.repeat(Math.ceil(d.scores[i]/20))}<span style="opacity:.18">${'★'.repeat(5-Math.ceil(d.scores[i]/20))}</span></b><div class="meter"><i style="width:${d.scores[i]}%"></i></div><p>${d.tips[i][d.scores[i]%2]}</p></div>`).join('');renderInsight()}function renderInsight(){const h=state.psychHistory;if(h.length<3){$('#insightTitle').textContent='まだ記録が少ないようです';$('#insightText').textContent='心理シンクを3回以上続けると、あなた固有の心のリズムを表示します。';return}const recent=h.slice(0,7),avg=Math.round(recent.reduce((a,b)=>a+b.energy,0)/recent.length),stress=Math.round(recent.reduce((a,b)=>a+b.stress,0)/recent.length);let title,text;if(avg>=72&&stress<55){title='行動力と余白が両立しています';text='最近は心のエネルギーが高く、ストレスも過度ではありません。新しいことは、小さく試すと良い流れを保ちやすいでしょう。'}else if(stress>=70){title='頑張りが先行しやすい傾向';text='最近はストレス値が高めです。意欲が低いとは限りませんが、判断を急ぐ前に睡眠と予定の詰まりを確認してください。'}else if(avg<50){title='回復を優先したい周期';text='エネルギーが低めの記録が続いています。大きな目標より、負担を一つ減らす行動の方が今の流れに合っています。'}else{title='波はあるものの安定圏です';text='大きな偏りは見られません。調子の良い日の条件をメモすると、あなたの再現可能なリズムが見つかりそうです。'}$('#insightTitle').textContent=title;$('#insightText').textContent=text}
+
+function renderAnalysis(){if(!state.profile)return;const a=getProfileAnalysis();$('#coreIcon').textContent=a.ss.icon;$('#coreTitle').textContent=`${a.ss.name} × ${a.num[0]} × ${a.af.name}`;$('#coreDesc').textContent=`六運星では「${a.ss.key}」、数秘では「${a.num[1]}」、動物占いでは「${a.af.core}」が強く出ています。西洋星座の${zodiacTraits[a.z.name][0]}、九星気学の${a.ns.trait}も重ねると、単独の占いではなく多面的に読むタイプです。`;$('#corePills').innerHTML=[`六運星 <b>${a.ss.name}</b>`,`数秘 <b>${a.lp}</b>`,`九星 <b>${a.ns.num}</b>`,`動物占い <b>${a.af.name}</b>`].map(x=>`<span class="scorePill">${x}</span>`).join('');const systems=[['独自・六運星',`${a.ss.icon} ${a.ss.name}`,a.ss.desc],['数秘術',`Life Path ${a.lp}・${a.num[0]}`,`${a.num[1]}を人生の主要テーマとして持ちやすい傾向。`],['西洋星座',`${a.z.symbol} ${a.z.name}`,zodiacTraits[a.z.name][1]],['九星気学',a.ns.name,`${a.ns.trait}の性質を通じて、環境との関わり方を読みます。`],['十二支',a.an.name,`${a.an.trait}が対人関係や行動リズムに表れやすいタイプ。`],['動物占い',`${a.af.icon} ${a.af.name}`,`${a.af.core}タイプ。${a.af.desc}`],['月相タイプ',`${a.moon.icon} ${a.moon.name}`,a.moon.desc],['誕生季節',a.season[0],`${a.season[1]}を象徴とする、季節心理の補助レイヤー。`]];$('#systemList').innerHTML=systems.map(s=>`<div class="systemCard"><div class="systemHead"><b>${s[0]}</b><span>${s[1]}</span></div><p>${s[2]}</p></div>`).join('');const comparisons=buildComparisonData(a);$('#comparisonList').innerHTML=comparisons.map(c=>`<div class="compareCard"><div class="compareHead"><b>${c.title}</b><span>総合は「${c.dominant}」寄り</span></div><div class="compareCols"><div class="voteCol"><strong>${c.leftLabel}</strong>${c.left.map(v=>`<div><span>${v[0]}</span>：${v[1]}</div>`).join('')||'<div>少数派</div>'}</div><div class="voteCol"><strong>${c.rightLabel}</strong>${c.right.map(v=>`<div><span>${v[0]}</span>：${v[1]}</div>`).join('')||'<div>少数派</div>'}</div></div><p class="compareSummary">${c.summary}</p></div>`).join('');const strong=comparisons.filter(c=>c.diff>=2).map(c=>`「${c.title}」は${c.dominant}`).join('、');const mixed=comparisons.filter(c=>c.diff<=1).map(c=>`「${c.title}」`).join('、');$('#synthesisText').textContent=`総合的には、${state.profile.name}さんは${strong||'複数の占術が拮抗するバランスタイプ'}と読むのが自然です。特に動物占いの「${a.af.name}」と六運星の「${a.ss.name}」は行動の核を示し、数秘${a.lp}と西洋星座の${a.z.name}がそこに価値観と表現の色を加えます。`;$('#tensionText').textContent=mixed?`一方で、${mixed}は占術ごとに意見が割れやすい部分です。つまり「場面によって別の顔が出る領域」で、ここがあなたの奥行きでもあります。`:`今回は大きく矛盾する見解は少なく、複数の占いがかなり同じ方向を示しています。`;const manual=[`得意なのは「${a.ss.key}」と「${zodiacTraits[a.z.name][0]}」を同時に使う場面です。`,`動物占いの${a.af.name}は「${a.af.core}」を示し、対人面では${a.af.social==='オープン'?'人とのやり取りで流れが良くなりやすい':'自分のペースを守るほど強みが出やすい'}タイプです。`,`迷ったときは、数秘${a.lp}が示す「${a.num[1]}」に戻り、さらに占術比較で割れている項目を見て「今日は積極か慎重か」を選ぶと整理しやすくなります。`];$('#manualText').textContent=manual.join(' ');const r=seeded(profileSeed('year'+new Date().getFullYear()));$('#yearChart').innerHTML=Array.from({length:12},(_,i)=>{const v=clamp(Math.round(45+r()*50+Math.sin((i+profileSeed('wave')%5)/2)*9),25,98);return `<div class="bar" style="height:${v}%"><i>${v}</i><span>${i+1}月</span></div>`}).join('')}
+
+const psychQuestions=[
+ {q:'今の心のエネルギーは？',icons:['🪫','😴','🙂','✨','🔥'],labels:['ほぼない','少ない','普通','高い','非常に高い'],dim:'energy',reverse:false},
+ {q:'頭の中に考え事が詰まっていますか？',icons:['🌤️','☁️','🌫️','🌧️','⛈️'],labels:['すっきり','少し','普通','多い','非常に多い'],dim:'stress',reverse:false},
+ {q:'人と関わる余力はありますか？',icons:['🚪','🤏','🙂','🤝','🎉'],labels:['閉じたい','少なめ','普通','ある','かなりある'],dim:'social',reverse:false},
+ {q:'新しいことを始めたい気持ちは？',icons:['🛌','👀','🌱','🚀','⚡'],labels:['ない','弱い','少し','強い','今すぐ'],dim:'action',reverse:false},
+ {q:'昨夜の休息感は？',icons:['🥀','😵','😐','🌿','🌞'],labels:['最悪','不足','普通','良い','十分'],dim:'rest',reverse:false}
+];
+function startPsychCheck(btn){psychAnswers=[null,null,null,null,null];renderQuestions();showScreen('psychScreen',btn)}
+function renderQuestions(){$('#questionsBox').innerHTML=psychQuestions.map((q,qi)=>`<div class="question"><h4>${qi+1}. ${q.q}</h4><div class="choiceRow">${q.labels.map((l,i)=>`<button class="choice" data-q="${qi}" data-v="${i+1}" onclick="choosePsych(${qi},${i+1},this)"><span class="emoji">${q.icons[i]}</span>${l}</button>`).join('')}</div></div>`).join('')}
+function choosePsych(q,v,el){psychAnswers[q]=v;$$(`.choice[data-q="${q}"]`).forEach(x=>x.classList.remove('selected'));el.classList.add('selected');playTone('tap')}
+function finishPsychCheck(){if(psychAnswers.some(x=>x===null)){toast('5問すべて選んでください');return}const vals=psychAnswers.map(x=>(x-1)*25),energy=vals[0],stress=vals[1],social=vals[2],action=vals[3],rest=vals[4],balance=clamp(Math.round((energy+(100-stress)+social+action+rest)/5));const entry={date:dateKey(),time:Date.now(),energy,stress,social,action,rest,balance};state.psychHistory=state.psychHistory.filter(x=>x.date!==entry.date);state.psychHistory.unshift(entry);state.psychHistory=state.psychHistory.slice(0,120);addXP(25);saveState();renderPsychResult(entry);renderAll();showScreen('psychResultScreen');setTimeout(()=>flashReveal('#psychResultScreen .resultHero'),40);playTone('result')}
+function renderPsychResult(e){let icon,title,text;if(e.stress>=75&&e.rest<=25){icon='🌙';title='回復を最優先したい心';text='意欲の問題ではなく、心身の処理容量が少なくなっています。重要な判断は、可能なら一度眠ってから見直しましょう。'}else if(e.energy>=75&&e.action>=75){icon='🚀';title='行動の火が灯っています';text='始める力が高い状態です。勢いを一つの小さな行動に変えると、満足度につながりやすいでしょう。'}else if(e.social<=25){icon='🫧';title='静かな余白を求める心';text='人を嫌っているのではなく、一人で感覚を戻す時間が必要なようです。短い休憩でも境界を作ってください。'}else if(e.balance>=65){icon='🌿';title='しなやかな安定状態';text='極端な偏りが少なく、状況に合わせて動きやすい心です。今の良い状態を作った条件を一つ覚えておきましょう。'}else{icon='🧭';title='調整しながら進む心';text='前進したい部分と休みたい部分が混在しています。全部を解決せず、今日の優先順位を一つだけ決めると整います。'}$('#psychResultIcon').textContent=icon;$('#psychResultTitle').textContent=title;$('#psychResultText').textContent=text;$('#psychPills').innerHTML=[`心の余力 <b>${e.balance}</b>`,`行動力 <b>${e.action}</b>`,`休息感 <b>${e.rest}</b>`].map(x=>`<span class="scorePill">${x}</span>`).join('');const dims=[['心エネルギー',e.energy,'⚡'],['ストレス',e.stress,'☁️'],['社交余力',e.social,'🤝'],['行動意欲',e.action,'🚀'],['休息感',e.rest,'🌿']];$('#psychBars').innerHTML=dims.map(x=>`<div style="display:grid;grid-template-columns:100px 1fr 34px;gap:8px;align-items:center;margin:10px 0;font-size:10px"><span>${x[2]} ${x[0]}</span><div class="meter"><i style="width:${x[1]}%"></i></div><b>${x[1]}</b></div>`).join('');let prescription=e.stress>=75?'予定を一つ減らすか、決めなくてよいことを明日に送る。':e.rest<=25?'15分だけ画面から離れ、目と頭を休ませる。':e.action>=75?'10分で終わる最初の一歩を、今の勢いで始める。':e.social<=25?'一人で落ち着ける短い時間を先に確保する。':'今日うまくいった小さなことを一つ記録する。';$('#prescriptionText').textContent=`今日の開運心理アクション：${prescription} これは運を魔法で変える行為ではなく、自分が動きやすい状態を作るための小さな実験です。`}
+
+const oracleCards=[
+['🌙','月の門','答えを急がず、まだ言葉になっていない感覚を観察してください。'],['☀️','陽光の鍵','隠すより、明るく簡潔に伝えるほど状況が動きます。'],['🌊','流転の器','変化を止めるより、変えられる部分に合わせて形を変える日。'],['🔥','小さな火種','完璧な準備より、消えない程度の小さな一歩を。'],['🌿','緑の回廊','結果を急がず、育つための環境を整えることが先です。'],['🪞','真実の鏡','相手の反応ではなく、自分が本当に望むことを確かめて。'],['🗝️','境界の鍵','引き受けることと断ること、その両方が信頼を作ります。'],['🕊️','風の便り','思い込みを一度外し、別の人の言葉に耳を傾けて。'],['💎','静かな価値','目立たなくても、すでに持っている強みを安売りしないで。'],['🧭','北極の針','迷ったら、半年後の自分が納得できる方向を選ぶ。'],['🌌','星間の余白','何もしない時間にも意味があります。空白を埋めすぎないで。'],['⚖️','双天秤','正しさを決める前に、失うものと得るものを両方書き出して。']
+];
+let currentOracle=null;
+function prepareOracle(){const idx=profileSeed('oracle'+dateKey())%oracleCards.length;currentOracle=oracleCards[idx];$('#oracleSymbol').textContent=currentOracle[0];$('#oracleTitle').textContent=currentOracle[1];$('#oracleText').textContent=currentOracle[2];$('#oracleCard').classList.toggle('flipped',!!state.oracleHistory[dateKey()])}
+function flipOracle(){if(!currentOracle)prepareOracle();const c=$('#oracleCard');if(!c.classList.contains('flipped')){$('#oracleScreen .oracleStage').classList.remove('ritual');void $('#oracleScreen .oracleStage').offsetWidth;$('#oracleScreen .oracleStage').classList.add('ritual');c.classList.add('flipped');if(!state.oracleHistory[dateKey()]){state.oracleHistory[dateKey()]=currentOracle[1];addXP(10);saveState()}flashReveal(c);playTone('oracle')}}
+
+function calculateCompatibility(){const name=$('#partnerName').value.trim(),birth=$('#partnerBirth').value;if(!name||!birth){toast('相手の呼び名と生年月日を入力してください');return}const mine=getProfileAnalysis(),d=parseBirth(birth),their={z:getZodiac(d),lp:lifePath(d),ns:getNineStar(d.getFullYear()),an:getAnimal(d.getFullYear()),ss:getSixStar(d)};const r=seeded(hashString(state.profile.birth+birth+$('#relationType').value));const base=55;const values={価値観:clamp(Math.round(base+(mine.lp===their.lp?22:0)+(9-Math.abs(reduceNum(mine.lp,false)-reduceNum(their.lp,false)))*1.5+r()*15)),会話:clamp(Math.round(base+(mine.z.name===their.z.name?18:0)+r()*27)),行動テンポ:clamp(Math.round(base+(mine.ss.name===their.ss.name?15:0)+(mine.an.index%3===their.an.index%3?10:0)+r()*20)),長期安定:clamp(Math.round(base+(mine.ns.num===their.ns.num?18:0)+r()*25))};const total=Math.round(Object.values(values).reduce((a,b)=>a+b)/4);$('#myFace').textContent=mine.ss.icon;$('#partnerFace').textContent=their.ss.icon;$('#compatTitle').textContent=`${state.profile.name} × ${name}：共鳴度 ${total}%`;$('#compatText').textContent=total>=85?'違いを刺激として活かしやすい高共鳴ペアです。似ている部分に安心しつつ、役割を固定しすぎないことが鍵。':total>=70?'基本的なテンポは合わせやすい組み合わせです。考え方の違いを早めに言葉にすると、長所が補完関係になります。':total>=55?'自然に合う部分と、意識的な調整が必要な部分が半々です。相手を変えるより、ルールを具体化すると安定します。':'違いがはっきり出やすい組み合わせです。ただし相性の低さは失敗の予言ではなく、説明と境界設定が重要というサインです。';$('#compatPills').innerHTML=Object.entries(values).map(([k,v])=>`<span class="scorePill">${k} <b>${v}</b></span>`).join('');const low=Object.entries(values).sort((a,b)=>a[1]-b[1])[0][0],high=Object.entries(values).sort((a,b)=>b[1]-a[1])[0][0];$('#compatAdvice').textContent=`二人の強みは「${high}」。一方、「${low}」は暗黙の了解にせず、具体的な希望や期限を言葉にするほど関係が育ちます。占い結果より、実際の対話と行動を優先してください。`;$('#compatResult').classList.remove('hidden');flashReveal('#compatResult .resultHero');state.compatCount++;addXP(15);saveState();renderAchievements();playTone('result')}
+
+function simulateDecision(){const text=$('#decisionText').value.trim();if(text.length<5){toast('迷っていることをもう少し具体的に入力してください');return}const mood=$('#decisionMood').value,last=state.psychHistory[0],daily=getDailyData(),risk=mood.includes('急い')?80:mood.includes('不安')?68:mood.includes('周囲')?62:45;const energy=last?last.energy:50,stress=last?last.stress:50;let headline;if(stress>=75||risk>=75)headline='結論より、判断条件を整える段階';else if(energy>=70&&daily.total>=70)headline='小さく試し、情報を増やせる段階';else headline='賛否を分けて比較する段階';const positives=['この選択で得たい変化を、具体的な一文にする','最小サイズで試せる方法がないか探す','成功した場合に増える選択肢を確認する'];const cautions=stress>=70?['疲労や焦りが結論を極端にしていないか','今日中に決める必要が本当にあるか','信頼できる第三者に事実だけ説明できるか']:['費用・時間・撤退条件が曖昧でないか','期待だけでなく最悪の場合も許容できるか','半年後にも意味がある選択か'];$('#decisionResult').innerHTML=`<div class="resultHero"><div class="bigIcon">🧭</div><h2>${headline}</h2><p>「${escapeHtml(text)}」について、現在の心理状態と今日の運気指標から、断定ではなく確認ポイントを整理しました。</p><div class="scorePills"><span class="scorePill">心エネルギー <b>${energy}</b></span><span class="scorePill">心理負荷 <b>${stress}</b></span><span class="scorePill">今日の流れ <b>${daily.total}</b></span></div></div><div class="panel"><h3>前向きに確認すること</h3>${positives.map(x=>`<p class="subtle">✓ ${x}</p>`).join('')}</div><div class="panel"><h3>決める前の安全確認</h3>${cautions.map(x=>`<p class="subtle">• ${x}</p>`).join('')}</div><div class="panel"><h3>一行アドバイス</h3><p class="subtle">${stress>=75?'まず睡眠や時間的余裕を確保し、同じ問いを明日もう一度読む。':energy>=70?'取り返しのつく範囲で小さく試し、結果を見て次を決める。':'「やる／やらない」の二択ではなく、条件付きの第三案を作る。'}</p></div>`;$('#decisionResult').classList.remove('hidden');flashReveal('#decisionResult');state.decisionCount++;addXP(15);saveState();renderAchievements();playTone('result')}
+function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+function renderRecords(){const h=state.psychHistory.slice(0,7).reverse();$('#recordChart').innerHTML=h.length?h.map(x=>`<div class="bar" style="height:${Math.max(12,x.energy)}%"><i>${x.energy}</i><span>${x.date.slice(5).replace('-','/')}</span></div>`).join(''):'<p class="subtle center" style="width:100%;align-self:center">まだ記録がありません</p>';$('#historyList').innerHTML=state.psychHistory.length?state.psychHistory.map(x=>{const mood=x.energy>=75?'🔥':x.energy>=50?'🙂':x.energy>=25?'🌙':'🪫';return `<div class="historyItem"><div class="moodDot">${mood}</div><div class="txt"><b>${x.date} 心理シンク</b><p>ストレス ${x.stress} ／ 行動力 ${x.action} ／ 休息 ${x.rest}</p></div><div class="historyScore">${x.balance}</div></div>`}).join(''):'<p class="subtle center">心理シンクを行うと、ここに履歴が残ります。</p>'}
+const achievements=[
+['first','🌱','最初の共鳴','心理シンクを1回記録',()=>state.psychHistory.length>=1],['week','📅','七日の観測者','心理シンクを7回記録',()=>state.psychHistory.length>=7],['oracle','🃏','象徴を読む者','オラクルカードを引く',()=>Object.keys(state.oracleHistory).length>=1],['compat','💞','縁の翻訳者','相性診断を行う',()=>state.compatCount>=1],['decision','🧭','選択の航海士','選択シミュレーターを使う',()=>state.decisionCount>=1],['level5','👑','共鳴の熟練者','レベル5に到達',()=>state.level>=5],['high','🔥','内なる太陽','心エネルギー75以上を記録',()=>state.psychHistory.some(x=>x.energy>=75)],['calm','🌿','静けさの庭師','ストレス25以下を記録',()=>state.psychHistory.some(x=>x.stress<=25)],['collector','🌌','星図収集家','30回心理シンクを記録',()=>state.psychHistory.length>=30]
+];
+function renderAchievements(){$('#achievementGrid').innerHTML=achievements.map(a=>`<div class="achievement ${a[4]()?'':'locked'}"><span>${a[4]()?a[1]:'🔒'}</span><b>${a[2]}</b><p>${a[3]}</p></div>`).join('')}
+
+function showScreen(id,btn){$$('.screen').forEach(s=>s.classList.remove('active'));const target=$('#'+id);target.classList.add('active');target.classList.remove('screen-enter');void target.offsetWidth;target.classList.add('screen-enter');$$('.navBtn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));if(btn&&btn.classList.contains('navBtn'))btn.classList.add('active');if(id==='analysisScreen'){state.openedAnalysis=true;saveState();renderAnalysis()}if(id==='recordScreen')renderRecords();if(id==='collectionScreen')renderAchievements();window.scrollTo({top:0,behavior:'smooth'});playTone('nav')}
+function openSettings(){const p=state.profile;$('#setName').value=p.name;$('#setBirth').value=p.birth;$('#setTime').value=p.time||'';$('#setGender').value=p.gender||'';$('#setPlace').value=p.place||'';$('#setSoundMode').value=state.soundMode||'wa';$('#settingsModal').classList.add('show')}
+function closeModal(){$('#settingsModal').classList.remove('show')}
+function saveSettings(){const name=$('#setName').value.trim(),birth=$('#setBirth').value;if(!name||!birth){toast('呼び名と生年月日を入力してください');return}state.profile={name,birth,time:$('#setTime').value,gender:$('#setGender').value,place:$('#setPlace').value.trim()};state.soundMode=$('#setSoundMode').value||'wa';saveState();stopBGM();if(state.sound)startBGM();closeModal();renderAll();toast('設定を更新しました');playTone('result')}
+function resetData(){if(confirm('プロフィールとすべての記録を削除しますか？')){LEGACY_STORAGE_KEYS.forEach(k=>localStorage.removeItem(k));location.reload()}}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2200)}
+
+function ensureAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}
+function scheduleBgm(fn,ms){const id=setTimeout(fn,ms);bgmSubTimers.push(id);return id}
+function clearBgmSubTimers(){bgmSubTimers.forEach(clearTimeout);bgmSubTimers=[]}
+function bell(freq=660,dur=.16,gain=.03,type='sine'){if(!audioCtx)return;const t=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();o.type=type;f.type='lowpass';f.frequency.value=2200;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.frequency.setValueAtTime(freq,t);o.connect(f).connect(g).connect(audioCtx.destination);o.start(t);o.stop(t+dur+.03)}
+function pad(freq=196,dur=2.3,gain=.006){if(!audioCtx)return;const t=audioCtx.currentTime,o1=audioCtx.createOscillator(),o2=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();o1.type='sine';o2.type='triangle';o1.frequency.value=freq;o2.frequency.value=freq*2;o2.detune.value=4;f.type='lowpass';f.frequency.value=950;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.55);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o1.connect(f);o2.connect(f);f.connect(g).connect(audioCtx.destination);o1.start(t);o2.start(t);o1.stop(t+dur+.04);o2.stop(t+dur+.04)}
+function koto(freq=392,dur=.52,gain=.018){if(!audioCtx)return;const t=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain(),f=audioCtx.createBiquadFilter();o.type='triangle';o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(freq*.996,t+dur);f.type='lowpass';f.frequency.value=1700;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(f).connect(g).connect(audioCtx.destination);o.start(t);o.stop(t+dur+.03)}
+function playSequence(notes,{instrument='bell',step=150,gain=.025,dur=.18}={}){ensureAudio();notes.forEach((n,i)=>{setTimeout(()=>{if(!state.sound)return;if(instrument==='koto')koto(n,dur*2,gain);else bell(n,dur,gain)},i*step)})}
+function playTone(type='tap'){if(!state.sound)return;ensureAudio();const mode=state.soundMode||'wa';if(mode==='quiet'){const map={tap:[660,.03],nav:[420,.025],result:[760,.04],oracle:[560,.05],level:[880,.05],start:[620,.05]};const [f,g]=map[type]||map.tap;bell(f,.08,g);return}if(mode==='lux'){if(type==='tap')bell(740,.1,.026);else if(type==='nav'){bell(392,.11,.024);setTimeout(()=>bell(587,.08,.016),70)}else if(type==='result'){pad(196,1.1,.004);playSequence([523.25,659.25,783.99],{step:95,gain:.026,dur:.16})}else if(type==='oracle'){pad(174.61,1.8,.005);playSequence([392,523.25,659.25],{step:140,gain:.024,dur:.24})}else if(type==='level'){playSequence([392,523.25,659.25,783.99],{step:105,gain:.028,dur:.18})}else if(type==='start'){pad(196,1.0,.004);playSequence([329.63,392,523.25],{step:120,gain:.022,dur:.18})}return}
+if(type==='tap')bell(659.25,.09,.022);
+else if(type==='nav'){koto(293.66,.24,.012);setTimeout(()=>bell(440,.09,.015),50)}
+else if(type==='result'){pad(146.83,1.2,.0045);playSequence([329.63,392,493.88],{instrument:'koto',step:120,gain:.015,dur:.22})}
+else if(type==='oracle'){pad(130.81,1.8,.005);playSequence([261.63,392,523.25],{instrument:'koto',step:170,gain:.016,dur:.28})}
+else if(type==='level'){playSequence([293.66,392,440,587.33],{instrument:'koto',step:105,gain:.018,dur:.2})}
+else if(type==='start'){pad(174.61,1.1,.004);playSequence([261.63,329.63,392],{instrument:'koto',step:120,gain:.014,dur:.22})}}
+function startBGM(){if(!state.sound||bgmTimer)return;ensureAudio();const mode=state.soundMode||'wa';const waPhrases=[[220,293.66,329.63,293.66],[246.94,293.66,392,293.66],[220,293.66,440,329.63]];const luxPhrases=[[196,246.94,293.66,369.99],[220,277.18,329.63,415.30],[196,293.66,369.99,329.63]];const quietPhrases=[[220,293.66,220,329.63]];const phrases=mode==='lux'?luxPhrases:mode==='quiet'?quietPhrases:waPhrases;let idx=0;const playPhrase=()=>{if(document.hidden||!state.sound)return;ensureAudio();clearBgmSubTimers();const phrase=phrases[idx++%phrases.length];pad(mode==='quiet'?phrase[0]:phrase[0]/2,mode==='quiet'?1.9:2.5,mode==='quiet' ? 0.0026 : 0.0038);phrase.forEach((f,i)=>scheduleBgm(()=>{if(!state.sound||document.hidden)return; if(mode==='lux')bell(f,.22,.012,'sine'); else if(mode==='quiet')bell(f,.18,.008,'sine'); else koto(f,.42,.0105)},i*(mode==='quiet'?700:520)));if(mode!=='quiet')scheduleBgm(()=>{if(state.sound&&!document.hidden)bell(phrase[phrase.length-1]*1.5,.12,.0085)},1900)};playPhrase();bgmTimer=setInterval(playPhrase,mode==='quiet'?3000:2550)}
+function stopBGM(){clearInterval(bgmTimer);bgmTimer=null;clearBgmSubTimers()}
+function toggleSound(){state.sound=!state.sound;saveState();$('#soundBtn').textContent=state.sound?'音':'消';if(state.sound){ensureAudio();startBGM();playTone('start')}else stopBGM()}
+document.addEventListener('pointerdown',()=>{if(state.sound&&!audioCtx){ensureAudio();startBGM()}},{once:true});
+
+function setupStars(){const c=$('#starCanvas'),ctx=c.getContext('2d');let stars=[];function resize(){const dpr=Math.min(devicePixelRatio,2);c.width=innerWidth*dpr;c.height=innerHeight*dpr;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.min(110,Math.floor(innerWidth*innerHeight/7000))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+.2,a:Math.random()*.75+.15,s:Math.random()*.008+.002}))}function draw(t){ctx.clearRect(0,0,innerWidth,innerHeight);for(const s of stars){const a=s.a*(.6+.4*Math.sin(t*s.s));ctx.fillStyle=`rgba(215,224,255,${a})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()}requestAnimationFrame(draw)}resize();addEventListener('resize',resize);requestAnimationFrame(draw)}
+function createPetals(){const box=$('#sceneFx');if(!box||box.childElementCount) return;const n=Math.min(18,Math.max(10,Math.floor(innerWidth/28)));for(let i=0;i<n;i++){const s=document.createElement('span');s.className='petal';s.style.left=(Math.random()*100)+'vw';s.style.animationDuration=(12+Math.random()*13)+'s,'+(4+Math.random()*3)+'s';s.style.animationDelay=(-Math.random()*18)+'s,'+(-Math.random()*5)+'s';s.style.setProperty('--drift',(-40+Math.random()*90)+'px');s.style.opacity=(.18+Math.random()*.35).toFixed(2);s.style.transform='scale('+(0.7+Math.random()*1.1).toFixed(2)+')';box.appendChild(s)}}
+function bootSequence(){const splash=$('#luxSplash');if(!splash)return;setTimeout(()=>splash.classList.add('hidden'),1450);setTimeout(()=>splash.remove(),2400)}
+function flashReveal(target){const el=typeof target==='string'?$(target):target;if(!el)return;el.classList.remove('reveal-glow');void el.offsetWidth;el.classList.add('reveal-glow')}
+function attachInteractiveLightEffects(){if(document.body.dataset.lightFxReady)return;document.body.dataset.lightFxReady='1';document.addEventListener('pointerdown',e=>{const host=e.target.closest('button,.menuCard,.choice,.oracleCard,.navBtn,.iconBtn');if(!host)return;triggerInteractiveLight(host,e)},true)}
+function triggerInteractiveLight(host,e){host.classList.remove('press-flash');void host.offsetWidth;host.classList.add('press-flash');const rect=host.getBoundingClientRect();const ripple=document.createElement('span');ripple.className='ripple-light';const x=(typeof e.clientX==='number'?e.clientX:rect.left+rect.width/2)-rect.left;const y=(typeof e.clientY==='number'?e.clientY:rect.top+rect.height/2)-rect.top;ripple.style.left=`${x}px`;ripple.style.top=`${y}px`;const size=Math.max(rect.width,rect.height)*1.35;ripple.style.width=`${size}px`;ripple.style.height=`${size}px`;host.appendChild(ripple);ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});host.addEventListener('animationend',()=>host.classList.remove('press-flash'),{once:true})}
+
+$('#settingsModal').addEventListener('click',e=>{if(e.target.id==='settingsModal')closeModal()});
+$('#radarDetailModal').addEventListener('click',e=>{if(e.target.id==='radarDetailModal')closeRadarDetailModal()});
+initialize();
+</script>
+
+<style id="kato-portal-return-style">
+.kato-portal-return{
+  position:fixed;right:12px;bottom:calc(88px + env(safe-area-inset-bottom,0px));
+  z-index:2147483647;display:flex;align-items:center;gap:6px;
+  padding:10px 13px;border-radius:999px;text-decoration:none;
+  color:#fff!important;background:rgba(12,22,40,.92);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 9px 26px rgba(0,0,0,.34);
+  backdrop-filter:blur(12px);font:800 13px/1.1 system-ui,-apple-system,"Noto Sans JP",sans-serif;
+}
+.kato-portal-return:active{transform:scale(.97)}
+@media print{.kato-portal-return{display:none!important}}
+</style>
+<a class="kato-portal-return" href="./index.html" aria-label="KATO LAB一覧へ戻る">← 一覧</a>
+
+</body>
+</html>
